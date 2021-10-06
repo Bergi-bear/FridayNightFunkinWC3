@@ -43,7 +43,7 @@ end
 
 function StartArrow()
     for i = 1, #BoPeeBo do
-        TimerStart(CreateTimer(), BoPeeBo[i]*.5, false, function()
+        TimerStart(CreateTimer(), BoPeeBo[i]*.6, false, function()
             local step=nil
             if ArroPos[i] then
                 step=ArroPos[i]
