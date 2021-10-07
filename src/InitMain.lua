@@ -53,7 +53,7 @@ function StartArrow()
                 step=step[GetRandomInt(1,#step)] --никогда так не делайте
             end
             CreateArrowAndUp( 0.01,step)
-            --print(BoPeeBo[i])
+            print(BoPeeBo[i])
             DestroyTimer(GetExpiredTimer())
         end)
     end
