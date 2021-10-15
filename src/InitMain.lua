@@ -16,7 +16,7 @@ do
             HideEverything()
 
         end)
-        TimerStart(CreateTimer(), 1, false, function()
+        TimerStart(CreateTimer(), 2.5, false, function()
             StarAllSound()
 
             DestroyTimer(GetExpiredTimer())
@@ -28,7 +28,8 @@ TIMER_PERIOD = 1 / 32
 TIMER_PERIOD64 = 1 / 64
 function StarAllSound()
     local x, y = GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0))
-    normal_sound("All", x, y)
+    --normal_sound("All", x, y)
+    normal_sound("321GO", x, y)
     TimerStart(CreateTimer(), 0.011, false, function()
         --normal_sound("Voices", x, y)
         -- print("голос")
@@ -41,26 +42,169 @@ function StarAllSound()
     StartArrow()
 end
 
+arrows = {
+    static = {
+        [1] = "Arrows/left.dds",
+        [2] = "Arrows/down.dds",
+        [3] = "Arrows/up.dds",
+        [4] = "Arrows/right.dds"
+    },
+    lighted = {
+        [1] = "Arrows/5.dds",
+        [2] = "Arrows/1.dds",
+        [3] = "Arrows/3.dds",
+        [4] = "Arrows/8.dds"
+    },
+    standart = {
+        [1] = "Arrows/7.dds",
+        [2] = "Arrows/2.dds",
+        [3] = "Arrows/4.dds",
+        [4] = "Arrows/6.dds"
+    },
+    up = {},
+    list = {},
+    x = 0.08,
+    y = 0.55
+
+}
+
 function StartArrow()
-    for i = 1, #BoPeeBo do
-        TimerStart(CreateTimer(), BoPeeBo[i]*.6, false, function()
-            local step=nil
-            if ArroPos[i] then
-                step=ArroPos[i]
+    for i = 1,10 do
+        if i < 5 or i > 6 then
+            pos = 0
+            if i < 5 then
+                pos = i
             else
-                --print("таблица не заполнена, рандомимся ")
-                step={1,2,3,4,6,8,9,10}
-                step=step[GetRandomInt(1,#step)] --никогда так не делайте
+                pos = i - 6
             end
-            CreateArrowAndUp( 0.01,step)
-            print(BoPeeBo[i])
-            DestroyTimer(GetExpiredTimer())
+            local texture = arrows.static[pos]--"ReplaceableTextures\\CommandButtons\\BTNCryptFiendUnBurrow.blp"
+            local x, y = arrows.x, arrows.y
+            local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
+            local step = 0.08
+            local r=GetRandomInt(0,3)
+            local randomStep=(step*i)-x
+            
+            arrows.up[i] = image
+
+            BlzFrameSetAlpha(image, 0)
+            BlzFrameSetTexture(image, texture, 0, true)
+            BlzFrameSetSize(image, 0.08, 0.08)
+            BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+            BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
+        
+        end
+    end
+
+    TimerStart(CreateTimer(), 0.4, false, function()
+
+        for i = 1, #BoPeeBo do
+            TimerStart(CreateTimer(), BoPeeBo[i]*.6, false, function()
+                local step=nil
+                if ArroPos[i] then
+                    step=ArroPos[i]
+                else
+                    --print("таблица не заполнена, рандомимся ")
+                    step={1,2,3,4,6,8,9,10}
+                    step=step[GetRandomInt(1,#step)] --никогда так не делайте
+                end
+                CreateArrow( 0.01,step)
+                
+                DestroyTimer(GetExpiredTimer())
+            end)
+        end
+    end)
+
+    
+    local keys = {
+        left ={
+            key = {
+                OSKEY_LEFT,
+                OSKEY_A
+                },            
+        },
+        right = {
+            key = {
+                OSKEY_RIGHT,
+                OSKEY_D
+                },  
+        },
+        up = {
+            key = {
+                OSKEY_UP,
+                OSKEY_W
+                },  
+        },
+        down = {
+            key = {
+                OSKEY_DOWN,
+                OSKEY_S
+                },  
+        }
+    }
+
+    for v,k in pairs(keys) do
+        local trigger = CreateTrigger()
+        local key = k.key
+        TriggerAddAction(trigger, function()
+            KeyPressed(v) 
         end)
+        for v,k in pairs(key) do
+            BlzTriggerRegisterPlayerKeyEvent(trigger, Player(0), k, 0, false)
+        end
+    end
+
+end
+
+musicStart = false
+
+function getFirstArrow()
+    for v,k in ipairs(arrows.list) do
+        if not k.used then
+            return k
+        end
+    end
+    return null
+end
+
+function KeyPressed(key)
+    local arrow = getFirstArrow()
+    if arrow == null then
+        return
+    end
+    local types = {
+        ["up"] = 3,
+        ["down"] = 2,
+        ["left"] = 1,
+        ["right"] = 4,
+    }
+    local type = types[key]
+    if arrow.type == type and not arrow.swaped then
+        local delta = math.abs(arrows.y - arrow.y)
+        print(delta)
+        if delta < 0.08 then
+            BlzFrameSetTexture(arrows.up[type+6], arrows.lighted[type], 0, true)
+            TimerStart(CreateTimer(), 0.25, false, function() 
+                BlzFrameSetTexture(arrows.up[type+6], arrows.static[type], 0, true)
+    
+            end)
+            arrow.swaped = true
+        end
+    else
+        normal_sound("Mistake", arrows.x, arrows.y)
     end
 end
 
-function CreateArrowAndUp(speed, pozX)
-    local texture = "ReplaceableTextures\\CommandButtons\\BTNCryptFiendUnBurrow.blp"
+function CreateArrow(speed, pozX)
+    local type = 0
+    local isPlayer = false
+    if pozX < 5 then
+        type = pozX
+    else
+        type = pozX - 6
+        isPlayer = true
+    end
+
+    local texture = arrows.standart[type]
     local x, y = 0.08, 0
     local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
     local step = 0.08
@@ -69,17 +213,53 @@ function CreateArrowAndUp(speed, pozX)
 
     BlzFrameSetAlpha(image, 0)
     BlzFrameSetTexture(image, texture, 0, true)
-    BlzFrameSetSize(image, 0.04, 0.04)
+    BlzFrameSetSize(image, 0.08, 0.08)
     BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
 
-    TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+    local swapScale = 0
+    local arrow = {
+        frame = image,
+        type = type,
+        y = 0,
+        swaped = false
+    }
+    if isPlayer then
+         arrow = {
+            frame = image,
+            type = type,
+            y = 0,
+            swaped = false
+        }
+        arrows.list[#arrows.list+1] = arrow
+    end
+    TimerStart(CreateTimer(), TIMER_PERIOD, true, function() 
         y = y + speed
+        arrow.y = y
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-        if y >= 0.6 then
+        if y >= 0.4475 and not musicStart then
+            normal_sound("All", x, y)
+            musicStart = true
+        end
+        if y >= 0.53 and pozX < 5 and arrow.swaped==false then    
+            BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
+            TimerStart(CreateTimer(), 0.2, false, function() 
+                BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
+
+            end)
+                
+            arrow.swaped = true            
+        end
+        
+        if y >= 0.6  then
+            if not arrow.swaped then
+                normal_sound("Mistake",x,y)
+            end
             DestroyTimer(GetExpiredTimer())
             BlzFrameSetVisible(image, false)
-
+            if isPlayer then
+                table.remove(arrows.list, 1)
+            end
         end
     end)
 end
