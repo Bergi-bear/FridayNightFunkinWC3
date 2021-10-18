@@ -339,7 +339,7 @@ function CreateArrow(speed, pozX,number)
     }
     if number>1 then
         durations=BoPeeBo[number+1]-BoPeeBo[number] --попытка автопросчёта длительности звука
-        if durations > 2 then
+        if durations > 1 then
             arrow.isline = true
             last = CreateLine(speed, pozX, type, (durations-0.5)/0.5)
             arrow.line = last

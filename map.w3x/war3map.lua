@@ -13,7 +13,7 @@ function CreateUnitsForPlayer0()
     local unitID
     local t
     local life
-    gg_unit_Hart_0002 = BlzCreateUnitWithSkin(p, FourCC("Hart"), -123.4, -104.5, 351.734, FourCC("Hart"))
+    gg_unit_Hart_0002 = BlzCreateUnitWithSkin(p, FourCC("Hart"), -119.2, -99.7, 351.734, FourCC("Hart"))
 end
 
 function CreateUnitsForPlayer1()
@@ -22,7 +22,7 @@ function CreateUnitsForPlayer1()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("Hjai"), -3.5, 55.5, 272.160, FourCC("Hjai"))
+    u = BlzCreateUnitWithSkin(p, FourCC("Hjai"), -6.6, 36.0, -82.797, FourCC("Hjai"))
 end
 
 function CreateUnitsForPlayer6()
@@ -32,6 +32,20 @@ function CreateUnitsForPlayer6()
     local t
     local life
     gg_unit_opeo_0003 = BlzCreateUnitWithSkin(p, FourCC("opeo"), 101.0, -89.5, 175.620, FourCC("opeo"))
+end
+
+function CreateNeutralPassive()
+    local p = Player(PLAYER_NEUTRAL_PASSIVE)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("ogru"), -357.7, 349.7, -66.336, FourCC("ogru"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ogru"), -416.3, 296.8, -56.874, FourCC("ogru"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ogru"), 413.1, 289.5, 212.191, FourCC("ogru"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ogru"), 438.6, 228.2, 212.191, FourCC("ogru"))
+    u = BlzCreateUnitWithSkin(p, FourCC("ohun"), 233.7, 290.4, 234.860, FourCC("ohun"))
+    u = BlzCreateUnitWithSkin(p, FourCC("odoc"), -200.7, 321.3, 290.700, FourCC("odoc"))
 end
 
 function CreatePlayerBuildings()
@@ -45,6 +59,7 @@ end
 
 function CreateAllUnits()
     CreatePlayerBuildings()
+    CreateNeutralPassive()
     CreatePlayerUnits()
 end
 
@@ -124,8 +139,8 @@ function main()
     SetCameraBounds(-1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
     SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
     NewSoundEnvironment("Default")
-    SetAmbientDaySound("LordaeronSummerDay")
-    SetAmbientNightSound("LordaeronSummerNight")
+    SetAmbientDaySound("BarrensDay")
+    SetAmbientNightSound("BarrensNight")
     SetMapMusic("Music", true, 0)
     CreateRegions()
     CreateCameras()
@@ -146,69 +161,6 @@ function config()
     SetPlayerSlotAvailable(Player(0), MAP_CONTROL_USER)
     InitGenericPlayerSlots()
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 --CUSTOM_CODE
 ---
@@ -696,6 +648,12 @@ function KeyPressed(key)
                                     normal_sound("Mistake", arrows.x, arrows.y)
                                     SetUnitAnimation(gg_unit_opeo_0003,"death")
                                     DestroyTimer(GetExpiredTimer())
+
+                                    for k,v in pairs(arrow.line.all) do
+                                        if v.y >= 0.53 then
+                                            BlzFrameSetVisible(v.frame, false)
+                                        end
+                                    end
                                 end
                             end
                             for k,v in pairs(arrow.line.all) do
@@ -794,7 +752,7 @@ function CreateArrow(speed, pozX,number)
     }
     if number>1 then
         durations=BoPeeBo[number+1]-BoPeeBo[number] --попытка автопросчёта длительности звука
-        if durations > 2 then
+        if durations > 1 then
             arrow.isline = true
             last = CreateLine(speed, pozX, type, (durations-0.5)/0.5)
             arrow.line = last

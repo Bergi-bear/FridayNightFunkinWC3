@@ -1,25 +1,33 @@
 ﻿STRING 1
 {
-FridayNightFunkinWC3
+Здание
 }
 
 STRING 2
 {
-Any
+Здание
 }
 
 STRING 3
 {
-Nondescript
+Здание
 }
 
 STRING 4
+// Декорации: D000 (Здание), Name (Название)
 {
-Player 1
+Здание
 }
 
 STRING 5
+// Декорации: D001 (Здание), Name (Название)
 {
-Force 1
+Здание
+}
+
+STRING 6
+// Декорации: D002 (Здание), Name (Название)
+{
+Здание
 }
 
