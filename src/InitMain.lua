@@ -43,31 +43,41 @@ function StarAllSound()
         -- --print("фон")
     end)
     StartArrow()
-    CreateHPBar("06")
-    CreateHPBar("00")
-    CreateVSIcons()
     if not ready then
+        CreateHPBar("06")
+        CreateHPBar("00")
+        CreateVSIcons()
         PlayUnitAnimationFromChat()
         ready = true
     end
 end
-
+restartReady = true
 function RestartInit()
     CreateSimpleFrameGlue(0.4,0.55,"ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function() 
-        GHP = 50
-        for k,v in pairs(musics) do
-            print(k,v)
-            StopSound(v,true,false)
-        end
-        for k,v in pairs(arrows.timers) do
-            DestroyTimer(v)
-        end
-        for k,v in pairs(arrows.allArrows) do
-            v.removed = true
-        end
-        TimerStart(CreateTimer(), 1, false, function()
+        if not restartReady then
+            return
+        else
+            restartReady = false
+            GHP = 50
+            for k,v in pairs(musics) do
+                print(k,v)
+                StopSound(v,true,false)
+            end
+            for k,v in pairs(arrows.timers) do
+                DestroyTimer(v)
+            end
+            for k,v in pairs(arrows.allArrows) do
+                v.removed = true
+            end
+            for k,v in pairs(arrows.up) do
+                BlzFrameSetVisible(v, false)
+
+            end
             StarAllSound()
-        end)
+            TimerStart(CreateTimer(), 1, false, function()
+                restartReady = true
+            end)
+        end
     end)
 end
 
@@ -435,7 +445,6 @@ function CreateArrow(speed, pozX,number)
             isMusicStart = true
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
-
             PlayArthasAnimation(type)
             if not arrow.line then
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)

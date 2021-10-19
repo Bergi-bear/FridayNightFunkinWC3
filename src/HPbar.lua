@@ -53,6 +53,7 @@ function CreateHPBar(colorID)
 end
 
 function CreateVSIcons()
+    ICO_FLEX()
     local x, y = 0.04, 0.1
     PEON_ICO = nil
     ARTHAS_ICO = nil
@@ -68,5 +69,32 @@ function CreateVSIcons()
     BlzFrameSetAbsPoint(ARTHAS_ICO, FRAMEPOINT_CENTER, x, y)
     BlzFrameSetTexture(ARTHAS_ICO, "ReplaceableTextures\\CommandButtons\\BTNArthas.blp", 0, true)
     BlzFrameSetParent(ARTHAS_ICO, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+
+end
+function ICO_FLEX()
+    TimerStart(CreateTimer(), 1/2, true, function()
+
+        local min = -2.2
+        local max = 2.2
+        local i = min
+        local delta = 0.05
+        local scale = 0.002
+        TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+            local f = -(i^2)+5
+            if i <= max then
+                i = i + delta
+            else
+                BlzFrameSetSize(PEON_ICO, 0.04, 0.04)
+                BlzFrameSetSize(ARTHAS_ICO, 0.04, 0.04)
+                DestroyTimer(GetExpiredTimer())
+                isFLEX = false
+                return
+            end
+            
+            BlzFrameSetSize(PEON_ICO, 0.04+f*scale, 0.04+f*scale)
+            BlzFrameSetSize(ARTHAS_ICO, 0.04+f*scale, 0.04+f*scale)
+
+        end)
+    end)    
 
 end
