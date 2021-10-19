@@ -1,11 +1,11 @@
 gg_rct_Region_000 = nil
 gg_cam_Camera_001 = nil
 gg_trg_SetCam = nil
+gg_trg_Jaina = nil
 gg_trg_PeriodCam = nil
 gg_unit_opeo_0003 = nil
-gg_unit_Hart_0002 = nil
-gg_trg_Jaina = nil
 gg_unit_Hjai_0001 = nil
+gg_unit_Hart_0002 = nil
 function InitGlobals()
 end
 
@@ -42,11 +42,8 @@ function CreateNeutralPassive()
     local unitID
     local t
     local life
-    u = BlzCreateUnitWithSkin(p, FourCC("ogru"), -357.7, 349.7, 293.664, FourCC("ogru"))
-    u = BlzCreateUnitWithSkin(p, FourCC("ogru"), -416.3, 296.8, 303.126, FourCC("ogru"))
     u = BlzCreateUnitWithSkin(p, FourCC("ogru"), 413.1, 289.5, 212.191, FourCC("ogru"))
     u = BlzCreateUnitWithSkin(p, FourCC("ogru"), 438.6, 228.2, 212.191, FourCC("ogru"))
-    u = BlzCreateUnitWithSkin(p, FourCC("ohun"), 233.7, 290.4, 234.860, FourCC("ohun"))
     u = BlzCreateUnitWithSkin(p, FourCC("odoc"), -200.7, 321.3, 290.700, FourCC("odoc"))
     u = BlzCreateUnitWithSkin(p, FourCC("ndr2"), 656.8, 82.9, 110.097, FourCC("ndr2"))
 end
@@ -86,234 +83,6 @@ function CreateCameras()
     CameraSetupSetField(gg_cam_Camera_001, CAMERA_FIELD_LOCAL_ROLL, 0.0, 0.0)
     CameraSetupSetDestPosition(gg_cam_Camera_001, -9.8, 318.0, 0.0)
 end
-
-function Trig_SetCam_Func008A()
-    PauseUnitBJ(true, GetEnumUnit())
-        UnitAddAbility(GetEnumUnit(),FourCC("Aloc"))
-end
-
-function Trig_SetCam_Actions()
-    ResetUnitAnimation(gg_unit_Hart_0002)
-    ResetUnitAnimation(gg_unit_opeo_0003)
-    SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
-    EnablePreSelect(false, false)
-    CameraSetupApplyForPlayer(true, gg_cam_Camera_001, Player(0), 0)
-    EndThematicMusicBJ()
-    StopMusicBJ(true)
-    ForGroupBJ(GetUnitsInRectAll(GetPlayableMapRect()), Trig_SetCam_Func008A)
-end
-
-function InitTrig_SetCam()
-    gg_trg_SetCam = CreateTrigger()
-    TriggerRegisterTimerEventSingle(gg_trg_SetCam, 0.10)
-    TriggerAddAction(gg_trg_SetCam, Trig_SetCam_Actions)
-end
-
-function Trig_PeriodCam_Actions()
-    CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
-    SetAllyColorFilterState(0)
-end
-
-function InitTrig_PeriodCam()
-    gg_trg_PeriodCam = CreateTrigger()
-    TriggerRegisterTimerEventPeriodic(gg_trg_PeriodCam, 0.01)
-    TriggerAddAction(gg_trg_PeriodCam, Trig_PeriodCam_Actions)
-end
-
-function InitCustomTriggers()
-    InitTrig_SetCam()
-    InitTrig_PeriodCam()
-end
-
-function InitCustomPlayerSlots()
-    SetPlayerStartLocation(Player(0), 0)
-    SetPlayerColor(Player(0), ConvertPlayerColor(0))
-    SetPlayerRacePreference(Player(0), RACE_PREF_HUMAN)
-    SetPlayerRaceSelectable(Player(0), true)
-    SetPlayerController(Player(0), MAP_CONTROL_USER)
-end
-
-function InitCustomTeams()
-    SetPlayerTeam(Player(0), 0)
-end
-
-function main()
-    SetCameraBounds(-1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
-    SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
-    NewSoundEnvironment("Default")
-    SetAmbientDaySound("BarrensDay")
-    SetAmbientNightSound("BarrensNight")
-    SetMapMusic("Music", true, 0)
-    CreateRegions()
-    CreateCameras()
-    CreateAllUnits()
-    InitBlizzard()
-    InitGlobals()
-    InitCustomTriggers()
-end
-
-function config()
-    SetMapName("TRIGSTR_001")
-    SetMapDescription("TRIGSTR_003")
-    SetPlayers(1)
-    SetTeams(1)
-    SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
-    DefineStartLocation(0, 0.0, 448.0)
-    InitCustomPlayerSlots()
-    SetPlayerSlotAvailable(Player(0), MAP_CONTROL_USER)
-    InitGenericPlayerSlots()
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function Trig_SetCam_Func008A()
-    PauseUnitBJ(true, GetEnumUnit())
-        UnitAddAbility(GetEnumUnit(),FourCC("Aloc"))
-end
-
-function Trig_SetCam_Actions()
-    ResetUnitAnimation(gg_unit_Hart_0002)
-    ResetUnitAnimation(gg_unit_opeo_0003)
-    SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
-    EnablePreSelect(false, false)
-    CameraSetupApplyForPlayer(true, gg_cam_Camera_001, Player(0), 0)
-    EndThematicMusicBJ()
-    StopMusicBJ(true)
-    ForGroupBJ(GetUnitsInRectAll(GetPlayableMapRect()), Trig_SetCam_Func008A)
-end
-
-function InitTrig_SetCam()
-    gg_trg_SetCam = CreateTrigger()
-    TriggerRegisterTimerEventSingle(gg_trg_SetCam, 0.10)
-    TriggerAddAction(gg_trg_SetCam, Trig_SetCam_Actions)
-end
-
-function Trig_Jaina_Actions()
-    SetUnitAnimation(gg_unit_Hjai_0001, "stand")
-        SetUnitAnimationByIndex(gg_unit_Hjai_0001,30)
-        UnitAddAbility(gg_unit_Hjai_0001, FourCC('Aave'))
-    SetUnitFlyHeightBJ(gg_unit_Hjai_0001, 10.00, 0.00)
-end
-
-function InitTrig_Jaina()
-    gg_trg_Jaina = CreateTrigger()
-    TriggerRegisterTimerEventSingle(gg_trg_Jaina, 0.01)
-    TriggerAddAction(gg_trg_Jaina, Trig_Jaina_Actions)
-end
-
-function Trig_PeriodCam_Actions()
-    CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
-    SetAllyColorFilterState(0)
-end
-
-function InitTrig_PeriodCam()
-    gg_trg_PeriodCam = CreateTrigger()
-    TriggerRegisterTimerEventPeriodic(gg_trg_PeriodCam, 0.01)
-    TriggerAddAction(gg_trg_PeriodCam, Trig_PeriodCam_Actions)
-end
-
-function InitCustomTriggers()
-    InitTrig_SetCam()
-    InitTrig_Jaina()
-    InitTrig_PeriodCam()
-end
-
-function InitCustomPlayerSlots()
-    SetPlayerStartLocation(Player(0), 0)
-    SetPlayerColor(Player(0), ConvertPlayerColor(0))
-    SetPlayerRacePreference(Player(0), RACE_PREF_HUMAN)
-    SetPlayerRaceSelectable(Player(0), true)
-    SetPlayerController(Player(0), MAP_CONTROL_USER)
-end
-
-function InitCustomTeams()
-    SetPlayerTeam(Player(0), 0)
-end
-
-function main()
-    SetCameraBounds(-1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
-    SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
-    NewSoundEnvironment("Default")
-    SetAmbientDaySound("BarrensDay")
-    SetAmbientNightSound("BarrensNight")
-    SetMapMusic("Music", true, 0)
-    CreateRegions()
-    CreateCameras()
-    CreateAllUnits()
-    InitBlizzard()
-    InitGlobals()
-    InitCustomTriggers()
-end
-
-function config()
-    SetMapName("TRIGSTR_001")
-    SetMapDescription("TRIGSTR_003")
-    SetPlayers(1)
-    SetTeams(1)
-    SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
-    DefineStartLocation(0, 0.0, 448.0)
-    InitCustomPlayerSlots()
-    SetPlayerSlotAvailable(Player(0), MAP_CONTROL_USER)
-    InitGenericPlayerSlots()
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 --CUSTOM_CODE
 ---
@@ -389,89 +158,6 @@ ArroPos = { 4, 3,
             
 }
 
----
---- Generated by EmmyLua(https://github.com/EmmyLua)
---- Created by Bergi.
---- DateTime: 06.10.2021 0:00
----
-function ReturnFPS()
-    local fps = BlzGetFrameByName("ResourceBarFrame", 0)
-    BlzFrameSetVisible(fps, true)
-    BlzFrameClearAllPoints(fps)
-    BlzFrameSetAbsPoint(fps, FRAMEPOINT_CENTER, 0.95, 0.62)
-end
-
-function HideEverything()
-    --BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
-    BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUIBackdrop", 0), FRAMEPOINT_TOPRIGHT, 0, -0, 8)
-    --BlzFrameSetSize(BlzGetFrameByName("CommandButton_" .. 0, 0), 0, 0)-- M в позиции 0,0
-    for i = 0, 11 do
-        BlzFrameSetVisible(BlzGetFrameByName("CommandButton_" .. i, 0), false) --отключить
-        --BlzFrameSetSize(BlzGetFrameByName("CommandButton_" .. i, 0), 0, 0)--скрыть, но работать будут по хоткеям
-    end
-    BlzHideOriginFrames(true)--скрыть всё
-    BlzFrameSetScale(BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5), 0.001) --рамка мёртвой зоны отключение
-end
----
---- Generated by EmmyLua(https://github.com/EmmyLua)
---- Created by Bergi.
---- DateTime: 27.05.2020 23:15
----
----
----
---[[
-do
-    local DestroyTimerOrigin = DestroyTimer -- записываем DestroyTimer в переменную
-    local PauseTimerCached = PauseTimer -- локальная переменная используется для более быстрого вызова функции в дальнейшем
-    function DestroyTimer(t)
-        PauseTimerCached(t)  -- вызываем PauseTimer из переменной
-        DestroyTimerOrigin(t) -- вызываем DestroyTimer из переменной
-    end
-end]]
-local origDestroyTimer = DestroyTimer
-function DestroyTimer(t)
-
-    if t == nil then
-        t = GetExpiredTimer()
-        if t == nil then
-            --print("в функцию разрушения таймера передано что-то нето")
-            return
-        end
-
-    end
-    PauseTimer(t)
-    GCountTimers = GCountTimers - 1
-    origDestroyTimer(t)
-end
-
-local realTimerStart = TimerStart
-GCountTimers = 0
-TimerStart = function(timer, duration, repeating, callback)
-    local pcallback = function()
-        if callback == nil then
-            return
-        end
-        local status, err = pcall(callback)
-        if not status then
-            print(err)
-        end
-    end
-    GCountTimers = GCountTimers + 1
-    --print("Запущено таймеров", GCountTimers)
-    realTimerStart(timer, duration, repeating, pcallback)
-end
-
-local realTriggerAddAction = TriggerAddAction
-TriggerAddAction = function(trig, callback)
-    local pcallback = function()
-        local status, err = pcall(callback)
-        if not status then
-            print(err)
-        end
-    end
-    realTriggerAddAction(trig, pcallback)
-end
-
 function CreateSimpleFrameGlue(posX, PosY, texture, call)
     local NextPoint = 0.039
     if not texture then
@@ -517,22 +203,25 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
---- DateTime: 02.08.2021 19:03
+--- DateTime: 06.10.2021 0:00
 ---
-function normal_sound (s,x,y,volume)
-    local  snd = CreateSound(s, false, true, true, 10, 10, "CombatSoundsEAX")
-    if not volume then volume=127 end
-    SetSoundChannel(snd, 40)
-    SetSoundVolume(snd, volume)
-    SetSoundPitch(snd, 1)
-    SetSoundDistances(snd, 600, 10000)
-    SetSoundDistanceCutoff(snd, 2100)
-    SetSoundConeAngles(snd, 0.0, 0.0, 127)
-    SetSoundConeOrientation(snd, 0.0, 0.0, 0.0)
-    SetSoundPosition(snd, x, y, 50)
-    StartSound(snd)
-    --KillSoundWhenDone(snd)
-    return snd
+function ReturnFPS()
+    local fps = BlzGetFrameByName("ResourceBarFrame", 0)
+    BlzFrameSetVisible(fps, true)
+    BlzFrameClearAllPoints(fps)
+    BlzFrameSetAbsPoint(fps, FRAMEPOINT_CENTER, 0.95, 0.62)
+end
+
+function HideEverything()
+    --BlzFrameSetVisible(BlzGetFrameByName("ConsoleUIBackdrop", 0), false)
+    BlzFrameSetAbsPoint(BlzGetFrameByName("ConsoleUIBackdrop", 0), FRAMEPOINT_TOPRIGHT, 0, -0, 8)
+    --BlzFrameSetSize(BlzGetFrameByName("CommandButton_" .. 0, 0), 0, 0)-- M в позиции 0,0
+    for i = 0, 11 do
+        BlzFrameSetVisible(BlzGetFrameByName("CommandButton_" .. i, 0), false) --отключить
+        --BlzFrameSetSize(BlzGetFrameByName("CommandButton_" .. i, 0), 0, 0)--скрыть, но работать будут по хоткеям
+    end
+    BlzHideOriginFrames(true)--скрыть всё
+    BlzFrameSetScale(BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5), 0.001) --рамка мёртвой зоны отключение
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -608,7 +297,7 @@ function CreateVSIcons()
 
 end
 function ICO_FLEX()
-    TimerStart(CreateTimer(), 1/2, true, function()
+    TimerStart(CreateTimer(), 1, true, function()
 
         local min = -2.2
         local max = 2.2
@@ -696,7 +385,6 @@ function RestartInit()
             restartReady = false
             GHP = 50
             for k,v in pairs(musics) do
-                print(k,v)
                 StopSound(v,true,false)
             end
             for k,v in pairs(arrows.timers) do
@@ -1149,4 +837,175 @@ function PlayUnitAnimationFromChat()
         ----print(GetUnitName(gg_unit_Hart_0002).." "..s)
     end)
 end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 02.08.2021 19:03
+---
+function normal_sound (s,x,y,volume)
+    local  snd = CreateSound(s, false, true, true, 10, 10, "CombatSoundsEAX")
+    if not volume then volume=127 end
+    SetSoundChannel(snd, 40)
+    SetSoundVolume(snd, volume)
+    SetSoundPitch(snd, 1)
+    SetSoundDistances(snd, 600, 10000)
+    SetSoundDistanceCutoff(snd, 2100)
+    SetSoundConeAngles(snd, 0.0, 0.0, 127)
+    SetSoundConeOrientation(snd, 0.0, 0.0, 0.0)
+    SetSoundPosition(snd, x, y, 50)
+    StartSound(snd)
+    --KillSoundWhenDone(snd)
+    return snd
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 27.05.2020 23:15
+---
+---
+---
+--[[
+do
+    local DestroyTimerOrigin = DestroyTimer -- записываем DestroyTimer в переменную
+    local PauseTimerCached = PauseTimer -- локальная переменная используется для более быстрого вызова функции в дальнейшем
+    function DestroyTimer(t)
+        PauseTimerCached(t)  -- вызываем PauseTimer из переменной
+        DestroyTimerOrigin(t) -- вызываем DestroyTimer из переменной
+    end
+end]]
+local origDestroyTimer = DestroyTimer
+function DestroyTimer(t)
+
+    if t == nil then
+        t = GetExpiredTimer()
+        if t == nil then
+            --print("в функцию разрушения таймера передано что-то нето")
+            return
+        end
+
+    end
+    PauseTimer(t)
+    GCountTimers = GCountTimers - 1
+    origDestroyTimer(t)
+end
+
+local realTimerStart = TimerStart
+GCountTimers = 0
+TimerStart = function(timer, duration, repeating, callback)
+    local pcallback = function()
+        if callback == nil then
+            return
+        end
+        local status, err = pcall(callback)
+        if not status then
+            print(err)
+        end
+    end
+    GCountTimers = GCountTimers + 1
+    --print("Запущено таймеров", GCountTimers)
+    realTimerStart(timer, duration, repeating, pcallback)
+end
+
+local realTriggerAddAction = TriggerAddAction
+TriggerAddAction = function(trig, callback)
+    local pcallback = function()
+        local status, err = pcall(callback)
+        if not status then
+            print(err)
+        end
+    end
+    realTriggerAddAction(trig, pcallback)
+end
+
 --CUSTOM_CODE
+function Trig_SetCam_Func008A()
+    PauseUnitBJ(true, GetEnumUnit())
+        UnitAddAbility(GetEnumUnit(),FourCC("Aloc"))
+end
+
+function Trig_SetCam_Actions()
+    ResetUnitAnimation(gg_unit_Hart_0002)
+    ResetUnitAnimation(gg_unit_opeo_0003)
+    SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
+    EnablePreSelect(false, false)
+    CameraSetupApplyForPlayer(true, gg_cam_Camera_001, Player(0), 0)
+    EndThematicMusicBJ()
+    StopMusicBJ(true)
+    ForGroupBJ(GetUnitsInRectAll(GetPlayableMapRect()), Trig_SetCam_Func008A)
+end
+
+function InitTrig_SetCam()
+    gg_trg_SetCam = CreateTrigger()
+    TriggerRegisterTimerEventSingle(gg_trg_SetCam, 0.10)
+    TriggerAddAction(gg_trg_SetCam, Trig_SetCam_Actions)
+end
+
+function Trig_Jaina_Actions()
+    SetUnitAnimation(gg_unit_Hjai_0001, "stand")
+        SetUnitAnimationByIndex(gg_unit_Hjai_0001,30)
+        UnitAddAbility(gg_unit_Hjai_0001, FourCC('Aave'))
+    SetUnitFlyHeightBJ(gg_unit_Hjai_0001, 10.00, 0.00)
+end
+
+function InitTrig_Jaina()
+    gg_trg_Jaina = CreateTrigger()
+    TriggerRegisterTimerEventSingle(gg_trg_Jaina, 0.01)
+    TriggerAddAction(gg_trg_Jaina, Trig_Jaina_Actions)
+end
+
+function Trig_PeriodCam_Actions()
+    CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
+    SetAllyColorFilterState(0)
+end
+
+function InitTrig_PeriodCam()
+    gg_trg_PeriodCam = CreateTrigger()
+    TriggerRegisterTimerEventPeriodic(gg_trg_PeriodCam, 0.01)
+    TriggerAddAction(gg_trg_PeriodCam, Trig_PeriodCam_Actions)
+end
+
+function InitCustomTriggers()
+    InitTrig_SetCam()
+    InitTrig_Jaina()
+    InitTrig_PeriodCam()
+end
+
+function InitCustomPlayerSlots()
+    SetPlayerStartLocation(Player(0), 0)
+    SetPlayerColor(Player(0), ConvertPlayerColor(0))
+    SetPlayerRacePreference(Player(0), RACE_PREF_HUMAN)
+    SetPlayerRaceSelectable(Player(0), true)
+    SetPlayerController(Player(0), MAP_CONTROL_USER)
+end
+
+function InitCustomTeams()
+    SetPlayerTeam(Player(0), 0)
+end
+
+function main()
+    SetCameraBounds(-1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), -1280.0 + GetCameraMargin(CAMERA_MARGIN_LEFT), 1024.0 - GetCameraMargin(CAMERA_MARGIN_TOP), 1280.0 - GetCameraMargin(CAMERA_MARGIN_RIGHT), -1536.0 + GetCameraMargin(CAMERA_MARGIN_BOTTOM))
+    SetDayNightModels("Environment\\DNC\\DNCLordaeron\\DNCLordaeronTerrain\\DNCLordaeronTerrain.mdl", "Environment\\DNC\\DNCLordaeron\\DNCLordaeronUnit\\DNCLordaeronUnit.mdl")
+    NewSoundEnvironment("Default")
+    SetAmbientDaySound("BarrensDay")
+    SetAmbientNightSound("BarrensNight")
+    SetMapMusic("Music", true, 0)
+    CreateRegions()
+    CreateCameras()
+    CreateAllUnits()
+    InitBlizzard()
+    InitGlobals()
+    InitCustomTriggers()
+end
+
+function config()
+    SetMapName("TRIGSTR_001")
+    SetMapDescription("TRIGSTR_003")
+    SetPlayers(1)
+    SetTeams(1)
+    SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
+    DefineStartLocation(0, 0.0, 448.0)
+    InitCustomPlayerSlots()
+    SetPlayerSlotAvailable(Player(0), MAP_CONTROL_USER)
+    InitGenericPlayerSlots()
+end
+
