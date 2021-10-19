@@ -18,7 +18,7 @@ do
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
             StarAllSound()
-
+            RestartInit()
             DestroyTimer(GetExpiredTimer())
         end)
     end
@@ -27,9 +27,11 @@ end
 TIMER_PERIOD = 1 / 32
 TIMER_PERIOD64 = 1 / 64
 function StarAllSound()
+    musics = {}
+    isMusicStart = false
     local x, y = GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0))
     --normal_sound("All", x, y)
-    normal_sound("321GO", x, y)
+    musics[#musics+1] = normal_sound("321GO", x, y)
     TimerStart(CreateTimer(), 0.011, false, function()
         --normal_sound("Voices", x, y)
         -- --print("голос")
@@ -45,6 +47,28 @@ function StarAllSound()
     CreateVSIcons()
     PlayUnitAnimationFromChat()
 end
+
+function RestartInit()
+    CreateSimpleFrameGlue(0.4,0.55,"ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function() 
+        GHP = 50
+        for k,v in pairs(musics) do
+            print(k,v)
+            StopSound(v,true,false)
+        end
+        for k,v in pairs(arrows.timers) do
+            DestroyTimer(v)
+        end
+        for k,v in pairs(arrows.allArrows) do
+            v.removed = true
+        end
+        TimerStart(CreateTimer(), 1, false, function()
+            StarAllSound()
+        end)
+    end)
+end
+
+
+function StartArrow()
 
 arrows = {
     static   = {
@@ -78,10 +102,9 @@ arrows = {
     lineTime = 0,
     keyPressed = false,
     lastLine = {},
-
-}
-
-function StartArrow()
+    timers = {},
+    allArrows = {},
+}    
     for i = 1, 10 do
         if i < 5 or i > 6 then
             pos = 0
@@ -111,7 +134,9 @@ function StartArrow()
     TimerStart(CreateTimer(), 0.4, false, function()
 
         for i = 1, #BoPeeBo do
-            TimerStart(CreateTimer(), BoPeeBo[i] * .6, false, function()
+            local t = CreateTimer()
+            arrows.timers[#arrows.timers+1] = t
+            TimerStart(t, BoPeeBo[i] * .6, false, function()
                 local step = nil
                 if ArroPos[i] then
                     step = ArroPos[i]
@@ -174,9 +199,26 @@ function StartArrow()
         end
     end
 
-end
+    --[[TimerStart(CreateTimer(), 5, false, function()
+        GHP = 50
+        for k,v in pairs(musics) do
+            print(k,v)
+            StopSound(v,true,false)
+        end
+        for k,v in pairs(arrows.timers) do
+            DestroyTimer(v)
+        end
+        for k,v in pairs(arrows.allArrows) do
+            v.removed = true
+        end
+        TimerStart(CreateTimer(), 1, false, function()
 
-musicStart = false
+            StarAllSound()
+        end)
+        
+    end)]]
+
+end
 
 function getFirstArrow()
     for _, k in ipairs(arrows.list) do
@@ -267,11 +309,12 @@ function KeyPressed(key)
         arrows.keyPressed = false
         
     end    
+    
 
     
 end
 
-function CreateLine(speed, pozX, type, count)
+function CreateLine(speed, pozX, type, count,arrow)
     local last = {}
     last.all = {}
     for i= 0, count*4-1 do
@@ -305,6 +348,11 @@ function CreateLine(speed, pozX, type, count)
 
     for k,v in pairs(last.all) do
         TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+            if arrow.removed then
+                BlzFrameSetVisible(v.frame, false)
+                DestroyTimer(GetExpiredTimer())
+                return
+            end
             v.y = v.y + speed
             BlzFrameSetAbsPoint(v.frame, FRAMEPOINT_CENTER, v.step, v.y)
             if v.y > 0.7 then
@@ -335,13 +383,14 @@ function CreateArrow(speed, pozX,number)
         isline = false,
         y      = 0,
         swaped = false,
-        line   = nil
+        line   = nil,
+        removed = false,
     }
     if number>1 then
         durations=BoPeeBo[number+1]-BoPeeBo[number] --попытка автопросчёта длительности звука
         if durations > 1 then
             arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations-0.5)/0.5)
+            last = CreateLine(speed, pozX, type, (durations-0.5)/0.5, arrow)
             arrow.line = last
             arrows.lineTime = durations-0.5
         end
@@ -361,18 +410,25 @@ function CreateArrow(speed, pozX,number)
     BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
 
+    arrows.allArrows[#arrows.allArrows+1] = arrow
+
     if isPlayer then
         arrows.list[#arrows.list + 1] = arrow
     end
 
     
     TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+        if arrow.removed then
+            BlzFrameSetVisible(arrow.frame, false)
+            DestroyTimer(GetExpiredTimer())
+            return
+        end
         y = y + speed
         arrow.y = y
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-        if y >= 0.4475 and not musicStart then
-            normal_sound("All", x, y)
-            musicStart = true
+        if y >= 0.4475 and not isMusicStart then
+            musics[#musics+1] = normal_sound("All", x, y)
+            isMusicStart = true
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
 

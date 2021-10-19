@@ -15,6 +15,6 @@ function normal_sound (s,x,y,volume)
     SetSoundConeOrientation(snd, 0.0, 0.0, 0.0)
     SetSoundPosition(snd, x, y, 50)
     StartSound(snd)
-    KillSoundWhenDone(snd)
+    --KillSoundWhenDone(snd)
     return snd
 end
