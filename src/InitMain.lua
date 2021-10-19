@@ -26,6 +26,7 @@ end
 
 TIMER_PERIOD = 1 / 32
 TIMER_PERIOD64 = 1 / 64
+ready = false
 function StarAllSound()
     musics = {}
     isMusicStart = false
@@ -45,7 +46,10 @@ function StarAllSound()
     CreateHPBar("06")
     CreateHPBar("00")
     CreateVSIcons()
-    PlayUnitAnimationFromChat()
+    if not ready then
+        PlayUnitAnimationFromChat()
+        ready = true
+    end
 end
 
 function RestartInit()
