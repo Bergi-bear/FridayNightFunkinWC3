@@ -72,7 +72,7 @@ function CreateVSIcons()
 
 end
 function ICO_FLEX()
-    TimerStart(CreateTimer(), 1/2, true, function()
+    TimerStart(CreateTimer(), 1, true, function()
 
         local min = -2.2
         local max = 2.2

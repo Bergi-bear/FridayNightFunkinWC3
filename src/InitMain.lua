@@ -60,7 +60,6 @@ function RestartInit()
             restartReady = false
             GHP = 50
             for k,v in pairs(musics) do
-                print(k,v)
                 StopSound(v,true,false)
             end
             for k,v in pairs(arrows.timers) do
@@ -73,6 +72,8 @@ function RestartInit()
                 BlzFrameSetVisible(v, false)
 
             end
+            SetUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+            SetUnitAnimation(gg_unit_opeo_0003, "Stand Ready")
             StarAllSound()
             TimerStart(CreateTimer(), 1, false, function()
                 restartReady = true
