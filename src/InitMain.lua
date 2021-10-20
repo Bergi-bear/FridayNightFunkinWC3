@@ -14,7 +14,7 @@ do
             Preloader("Voices")
             ReturnFPS()
             HideEverything()
-
+            CreatePointInterFace()
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
             StarAllSound()
@@ -44,6 +44,7 @@ function StarAllSound()
     end)
     StartArrow()
     if not ready then
+        CreateHPBar("20")
         CreateHPBar("06")
         CreateHPBar("00")
         CreateVSIcons()
@@ -163,7 +164,7 @@ arrows = {
                 CreateArrow(0.01, step,i)
                 if step <= 4 then
                     --SetCameraTargetControllerNoZForPlayer(Player(0), gg_unit_Hart_0002, 10, 10, true)
-                    PanCameraToTimed(GetUnitX(gg_unit_Hart_0002), GetUnitY(gg_unit_Hart_0002), 1)
+
 
                 else
                     -- SetCameraTargetControllerNoZForPlayer(Player(0), gg_unit_opeo_0003, 10, 10, true)
@@ -271,6 +272,7 @@ function KeyPressed(key)
                 if arrow.y < 0.61 and arrow.y > 0.4 then
                     --print("succes", arrow.y)
                     GHP = GHP - 5
+                    AddPoint(100)
                     BlzFrameSetTexture(arrows.up[type + 6], arrows.lighted[type], 0, true)
                     BlzFrameSetVisible(arrow.frame, false)
 
@@ -289,6 +291,7 @@ function KeyPressed(key)
                                 else --отпустил с ошибкой
                                     BlzFrameSetTexture(arrows.up[type + 6], arrows.static[type], 0, true)
                                     GHP = GHP - 5
+                                    AddPoint(100)
                                     normal_sound("Mistake", arrows.x, arrows.y)
                                     SetUnitAnimation(gg_unit_opeo_0003,"death")
                                     DestroyTimer(GetExpiredTimer())
@@ -401,7 +404,7 @@ function CreateArrow(speed, pozX,number)
         line   = nil,
         removed = false,
     }
-    if number>1 then
+    if number>1 and number<#BoPeeBo then
         durations=BoPeeBo[number+1]-BoPeeBo[number] --попытка автопросчёта длительности звука
         if durations > 1 then
             arrow.isline = true
@@ -414,7 +417,7 @@ function CreateArrow(speed, pozX,number)
     local x, y = 0.08, 0
     local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
     local step = 0.08
-    local r = GetRandomInt(0, 3)
+    --local r = GetRandomInt(0, 3)
     local randomStep = (step * pozX) - x
 
     arrow.frame = image
@@ -447,6 +450,7 @@ function CreateArrow(speed, pozX,number)
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
             PlayArthasAnimation(type)
+             PanCameraToTimed(GetUnitX(gg_unit_Hart_0002), GetUnitY(gg_unit_Hart_0002), 1)
             if not arrow.line then
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
                 TimerStart(CreateTimer(), 0.1, false, function()

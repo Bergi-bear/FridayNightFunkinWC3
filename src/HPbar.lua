@@ -9,7 +9,7 @@ GHP = 50
 --ReplaceableTextures\CommandButtons\BTNArthas.blp
 function CreateHPBar(colorID)
     local intoBar = "Replaceabletextures\\Teamcolor\\Teamcolor" .. colorID
-
+    local offset=0.03 --оффсет смешения портретов от точки хп бара
     local into = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
     BlzFrameSetParent(into, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetTexture(into, intoBar, 0, true)
@@ -28,50 +28,66 @@ function CreateHPBar(colorID)
     TimerStart(CreateTimer(), 0.05, true, function()
         --BlzFrameSetText(textCurrent, GHP)
         --BlzFrameSetText(textMax, GHP)
-        if GHP > 100 then
+        if GHP >= 100 then
             GHP = 100
+            print(GHP,"большие глаза у пеона")
+            BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorderEYE", 0, true)
+        else
+            BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorder", 0, true)
         end
         if GHP <= 0 then
             GHP = 0
         end
         if colorID == "06" then
-            BlzFrameSetSize(into, 100 * 0.8 / 100, 0.05)
-            BlzFrameSetAbsPoint(ARTHAS_ICO, FRAMEPOINT_CENTER, (GHP * 0.8 / 100) - 0.02, y)
+            -- зелёный
+            BlzFrameSetSize(into, 100 * 0.8 / 100, 0.02)
+            BlzFrameSetAbsPoint(ARTHAS_ICO, FRAMEPOINT_CENTER, (GHP * 0.8 / 100) -offset, y)
+        elseif colorID == "20" then
+            BlzFrameSetSize(into, 101 * 0.8 / 100, 0.025)
+            BlzFrameSetPoint(into, FRAMEPOINT_LEFT, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_LEFT, -0.004, -0.25)
         else
             --print(GHP * 0.8 / 100)
+            if GHP == 0 then
+                GHP = -5
+            end
+            BlzFrameSetSize(into, GHP * 0.8 / 100, 0.02)
+            if GHP == -5 then
+                GHP = 0
+            end
             if GHP==0 then
-                GHP=-5
+               -- print("глаза")
+                BlzFrameSetTexture(ARTHAS_ICO, "war3mapImported\\ArthasBorderEYE", 0, true)
+            else
+                 BlzFrameSetTexture(ARTHAS_ICO, "war3mapImported\\ArthasBorder", 0, true)
             end
-            BlzFrameSetSize(into, GHP * 0.8 / 100, 0.05)
-            if GHP==-5 then
-                GHP=0
-            end
-            BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, (GHP * 0.8 / 100) + 0.02, y)
+            BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, (GHP * 0.8 / 100) + offset, y)
         end
 
     end)
 end
 
 function CreateVSIcons()
-    ICO_FLEX()
+    local size=0.08
     local x, y = 0.04, 0.1
+
+    ICO_FLEX(size)
     PEON_ICO = nil
     ARTHAS_ICO = nil
 
     PEON_ICO = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
-    BlzFrameSetSize(PEON_ICO, 0.04, 0.04)
+    BlzFrameSetSize(PEON_ICO, size, size)
     BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, x, y)
-    BlzFrameSetTexture(PEON_ICO, "ReplaceableTextures\\CommandButtons\\BTNPeon.blp", 0, true)
+    BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorder", 0, true)
     BlzFrameSetParent(PEON_ICO, BlzGetFrameByName("ConsoleUIBackdrop", 0))
 
     ARTHAS_ICO = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
-    BlzFrameSetSize(ARTHAS_ICO, 0.04, 0.04)
+    BlzFrameSetSize(ARTHAS_ICO, size, size)
     BlzFrameSetAbsPoint(ARTHAS_ICO, FRAMEPOINT_CENTER, x, y)
-    BlzFrameSetTexture(ARTHAS_ICO, "ReplaceableTextures\\CommandButtons\\BTNArthas.blp", 0, true)
+    BlzFrameSetTexture(ARTHAS_ICO, "war3mapImported\\ArthasBorder", 0, true)
     BlzFrameSetParent(ARTHAS_ICO, BlzGetFrameByName("ConsoleUIBackdrop", 0))
 
 end
-function ICO_FLEX()
+function ICO_FLEX(size)
     TimerStart(CreateTimer(), 1, true, function()
 
         local min = -2.2
@@ -80,21 +96,20 @@ function ICO_FLEX()
         local delta = 0.05
         local scale = 0.002
         TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-            local f = -(i^2)+5
+            local f = -(i ^ 2) + 5
             if i <= max then
                 i = i + delta
             else
-                BlzFrameSetSize(PEON_ICO, 0.04, 0.04)
-                BlzFrameSetSize(ARTHAS_ICO, 0.04, 0.04)
+                BlzFrameSetSize(PEON_ICO, size, size)
+                BlzFrameSetSize(ARTHAS_ICO, size, size)
                 DestroyTimer(GetExpiredTimer())
                 isFLEX = false
                 return
             end
-            
-            BlzFrameSetSize(PEON_ICO, 0.04+f*scale, 0.04+f*scale)
-            BlzFrameSetSize(ARTHAS_ICO, 0.04+f*scale, 0.04+f*scale)
+
+            BlzFrameSetSize(PEON_ICO, size + f * scale, size + f * scale)
+            BlzFrameSetSize(ARTHAS_ICO, size + f * scale, size + f * scale)
 
         end)
-    end)    
-
+    end)
 end
