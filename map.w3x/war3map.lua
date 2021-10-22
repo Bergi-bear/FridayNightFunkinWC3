@@ -16,6 +16,7 @@ function CreateUnitsForPlayer0()
     local t
     local life
     gg_unit_Hart_0002 = BlzCreateUnitWithSkin(p, FourCC("Hart"), -119.2, -99.7, 351.734, FourCC("Hart"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -45.5, -223.1, 337.653, FourCC("hpea"))
 end
 
 function CreateUnitsForPlayer1()
@@ -255,7 +256,7 @@ function CreateHPBar(colorID)
         --BlzFrameSetText(textMax, GHP)
         if GHP >= 100 then
             GHP = 100
-            print(GHP,"большие глаза у пеона")
+            --print(GHP,"большие глаза у пеона")
             BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorderEYE", 0, true)
         else
             BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorder", 0, true)
@@ -359,6 +360,8 @@ do
         TimerStart(CreateTimer(), 2.5, false, function()
             StarAllSound()
             RestartInit()
+            PlayUnitAnimationFromChat()
+            StartArthasStateMachine()
             DestroyTimer(GetExpiredTimer())
         end)
     end
@@ -372,7 +375,7 @@ function StarAllSound()
     isMusicStart = false
     local x, y = GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0))
     --normal_sound("All", x, y)
-    musics[#musics+1] = normal_sound("321GO", x, y)
+    musics[#musics + 1] = normal_sound("321GO", x, y)
     TimerStart(CreateTimer(), 0.011, false, function()
         --normal_sound("Voices", x, y)
         -- --print("голос")
@@ -388,28 +391,28 @@ function StarAllSound()
         CreateHPBar("06")
         CreateHPBar("00")
         CreateVSIcons()
-        PlayUnitAnimationFromChat()
+
         ready = true
     end
 end
 restartReady = true
 function RestartInit()
-    CreateSimpleFrameGlue(0.4,0.55,"ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function() 
+    CreateSimpleFrameGlue(0.4, 0.55, "ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function()
         if not restartReady then
             return
         else
             restartReady = false
             GHP = 50
-            for k,v in pairs(musics) do
-                StopSound(v,true,false)
+            for k, v in pairs(musics) do
+                StopSound(v, true, false)
             end
-            for k,v in pairs(arrows.timers) do
+            for k, v in pairs(arrows.timers) do
                 DestroyTimer(v)
             end
-            for k,v in pairs(arrows.allArrows) do
+            for k, v in pairs(arrows.allArrows) do
                 v.removed = true
             end
-            for k,v in pairs(arrows.up) do
+            for k, v in pairs(arrows.up) do
                 BlzFrameSetVisible(v, false)
 
             end
@@ -423,44 +426,43 @@ function RestartInit()
     end)
 end
 
-
 function StartArrow()
 
-arrows = {
-    static   = {
-        [1] = "Arrows/left.dds",
-        [2] = "Arrows/down.dds",
-        [3] = "Arrows/up.dds",
-        [4] = "Arrows/right.dds"
-    },
-    lighted  = {
-        [1] = "Arrows/5.dds",
-        [2] = "Arrows/1.dds",
-        [3] = "Arrows/3.dds",
-        [4] = "Arrows/8.dds"
-    },
-    standart = {
-        [1] = "Arrows/7.dds",
-        [2] = "Arrows/2.dds",
-        [3] = "Arrows/4.dds",
-        [4] = "Arrows/6.dds"
-    },
-    line = {
-        [1] = "Arrows/e3",
-        [2] = "Arrows/e1",
-        [3] = "Arrows/e2",
-        [4] = "Arrows/e4",
-    },
-    up       = {},
-    list     = {},
-    x        = 0.08,
-    y        = 0.55,
-    lineTime = 0,
-    keyPressed = false,
-    lastLine = {},
-    timers = {},
-    allArrows = {},
-}    
+    arrows = {
+        static     = {
+            [1] = "Arrows/left.dds",
+            [2] = "Arrows/down.dds",
+            [3] = "Arrows/up.dds",
+            [4] = "Arrows/right.dds"
+        },
+        lighted    = {
+            [1] = "Arrows/5.dds",
+            [2] = "Arrows/1.dds",
+            [3] = "Arrows/3.dds",
+            [4] = "Arrows/8.dds"
+        },
+        standart   = {
+            [1] = "Arrows/7.dds",
+            [2] = "Arrows/2.dds",
+            [3] = "Arrows/4.dds",
+            [4] = "Arrows/6.dds"
+        },
+        line       = {
+            [1] = "Arrows/e3",
+            [2] = "Arrows/e1",
+            [3] = "Arrows/e2",
+            [4] = "Arrows/e4",
+        },
+        up         = {},
+        list       = {},
+        x          = 0.08,
+        y          = 0.55,
+        lineTime   = 0,
+        keyPressed = false,
+        lastLine   = {},
+        timers     = {},
+        allArrows  = {},
+    }
     for i = 1, 10 do
         if i < 5 or i > 6 then
             pos = 0
@@ -491,7 +493,7 @@ arrows = {
 
         for i = 1, #BoPeeBo do
             local t = CreateTimer()
-            arrows.timers[#arrows.timers+1] = t
+            arrows.timers[#arrows.timers + 1] = t
             TimerStart(t, BoPeeBo[i] * .6, false, function()
                 local step = nil
                 if ArroPos[i] then
@@ -501,7 +503,7 @@ arrows = {
                     step = { 1, 2, 3, 4, 6, 8, 9, 10 }
                     step = step[GetRandomInt(1, #step)] --никогда так не делайте
                 end
-                CreateArrow(0.01, step,i)
+                CreateArrow(0.01, step, i)
                 if step <= 4 then
                     --SetCameraTargetControllerNoZForPlayer(Player(0), gg_unit_Hart_0002, 10, 10, true)
 
@@ -619,31 +621,33 @@ function KeyPressed(key)
                     if not arrow.isline then
                         TimerStart(CreateTimer(), 0.1, false, function()
                             BlzFrameSetTexture(arrows.up[type + 6], arrows.static[type], 0, true)
-                            
+
                         end)
-                    else                        
+                    else
                         TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
                             if not arrows.keyPressed then
-                                if arrow.line.all[#arrow.line.all].y < 0.61 and arrow.line.all[#arrow.line.all].y > 0.4 then -- отпестил во время хвост
+                                if arrow.line.all[#arrow.line.all].y < 0.61 and arrow.line.all[#arrow.line.all].y > 0.4 then
+                                    -- отпестил во время хвост
                                     BlzFrameSetTexture(arrows.up[type + 6], arrows.static[type], 0, true)
                                     DestroyTimer(GetExpiredTimer())
 
-                                else --отпустил с ошибкой
+                                else
+                                    --отпустил с ошибкой
                                     BlzFrameSetTexture(arrows.up[type + 6], arrows.static[type], 0, true)
                                     GHP = GHP - 5
                                     AddPoint(100)
                                     normal_sound("Mistake", arrows.x, arrows.y)
-                                    SetUnitAnimation(gg_unit_opeo_0003,"death")
+                                    SetUnitAnimation(gg_unit_opeo_0003, "death")
                                     DestroyTimer(GetExpiredTimer())
 
-                                    for k,v in pairs(arrow.line.all) do
+                                    for k, v in pairs(arrow.line.all) do
                                         if v.y >= 0.53 then
                                             BlzFrameSetVisible(v.frame, false)
                                         end
                                     end
                                 end
                             end
-                            for k,v in pairs(arrow.line.all) do
+                            for k, v in pairs(arrow.line.all) do
                                 if v.y >= 0.53 then
                                     BlzFrameSetVisible(v.frame, false)
                                 end
@@ -656,7 +660,7 @@ function KeyPressed(key)
                     --print("Miss", arrow.y)
                     GHP = GHP + 5
                     normal_sound("Mistake", arrows.x, arrows.y)
-                    SetUnitAnimation(gg_unit_opeo_0003,"death")
+                    SetUnitAnimation(gg_unit_opeo_0003, "death")
                 end
             else
 
@@ -665,46 +669,45 @@ function KeyPressed(key)
     end
     if arrows.keyPressed and not BlzGetTriggerPlayerIsKeyDown() then
         arrows.keyPressed = false
-        
-    end    
-    
 
-    
+    end
+
+
 end
 
-function CreateLine(speed, pozX, type, count,arrow)
+function CreateLine(speed, pozX, type, count, arrow)
     local last = {}
     last.all = {}
-    for i= 0, count*4-1 do
+    for i = 0, count * 4 - 1 do
         local texture = arrows.line[type]
-        local x, y = 0.08, -0.04/4-0.08/4*i
-        local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)        
-       
+        local x, y = 0.08, -0.04 / 4 - 0.08 / 4 * i
+        local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
+
         local step = 0.08
         local r = GetRandomInt(0, 3)
         local randomStep = (step * pozX) - x
 
         BlzFrameSetAlpha(image, 0)
         BlzFrameSetTexture(image, texture, 0, true)
-        BlzFrameSetSize(image, 0.02, 0.08/4)
+        BlzFrameSetSize(image, 0.02, 0.08 / 4)
         BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-        last.all[#last.all+1] = {
+        last.all[#last.all + 1] = {
             frame = image,
-            y = y,
-            step = randomStep
+            y     = y,
+            step  = randomStep
         }
-            --[[TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-                y = y + speed
-                BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-                if y > 0.7 then
-                    DestroyTimer(GetExpiredTimer())
-                end
-            end)]]
-        
+        --[[TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+            y = y + speed
+            BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
+            if y > 0.7 then
+                DestroyTimer(GetExpiredTimer())
+            end
+        end)]]
+
     end
 
-    for k,v in pairs(last.all) do
+    for k, v in pairs(last.all) do
         TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
             if arrow.removed then
                 BlzFrameSetVisible(v.frame, false)
@@ -722,7 +725,7 @@ function CreateLine(speed, pozX, type, count,arrow)
 
 end
 
-function CreateArrow(speed, pozX,number)
+function CreateArrow(speed, pozX, number)
     local type = 0
     local isPlayer = false
     if pozX < 5 then
@@ -731,26 +734,26 @@ function CreateArrow(speed, pozX,number)
         type = pozX - 6
         isPlayer = true
     end
-    local durations=0
+    local durations = 0
 
     local last = nil
     local swapScale = 0
     local arrow = {
-        frame  = nil,
-        type   = type,
-        isline = false,
-        y      = 0,
-        swaped = false,
-        line   = nil,
+        frame   = nil,
+        type    = type,
+        isline  = false,
+        y       = 0,
+        swaped  = false,
+        line    = nil,
         removed = false,
     }
-    if number>1 and number<#BoPeeBo then
-        durations=BoPeeBo[number+1]-BoPeeBo[number] --попытка автопросчёта длительности звука
+    if number > 1 and number < #BoPeeBo then
+        durations = BoPeeBo[number + 1] - BoPeeBo[number] --попытка автопросчёта длительности звука
         if durations > 1 then
             arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations-0.5)/0.5, arrow)
+            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
             arrow.line = last
-            arrows.lineTime = durations-0.5
+            arrows.lineTime = durations - 0.5
         end
     end
     local texture = arrows.standart[type]
@@ -768,13 +771,12 @@ function CreateArrow(speed, pozX,number)
     BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
 
-    arrows.allArrows[#arrows.allArrows+1] = arrow
+    arrows.allArrows[#arrows.allArrows + 1] = arrow
 
     if isPlayer then
         arrows.list[#arrows.list + 1] = arrow
     end
 
-    
     TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
         if arrow.removed then
             BlzFrameSetVisible(arrow.frame, false)
@@ -785,12 +787,12 @@ function CreateArrow(speed, pozX,number)
         arrow.y = y
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         if y >= 0.4475 and not isMusicStart then
-            musics[#musics+1] = normal_sound("All", x, y)
+            musics[#musics + 1] = normal_sound("All", x, y)
             isMusicStart = true
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
-            PlayArthasAnimation(type)
-             PanCameraToTimed(GetUnitX(gg_unit_Hart_0002), GetUnitY(gg_unit_Hart_0002), 1)
+            PlayArthasAnimation(type, durations)
+            PanCameraToTimed(GetUnitX(gg_unit_Hart_0002), GetUnitY(gg_unit_Hart_0002), 1)
             if not arrow.line then
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
                 TimerStart(CreateTimer(), 0.1, false, function()
@@ -806,7 +808,7 @@ function CreateArrow(speed, pozX,number)
                         BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
                         DestroyTimer(GetExpiredTimer())
                     end
-                    for k,v in pairs(arrow.line.all) do
+                    for k, v in pairs(arrow.line.all) do
                         if v.y >= 0.53 then
                             BlzFrameSetVisible(v.frame, false)
                         end
@@ -838,11 +840,14 @@ function PlayPeonAnimation(type)
     QueueUnitAnimation(gg_unit_opeo_0003, "Stand Ready")
 end
 
-function PlayArthasAnimation(type)
+function PlayArthasAnimation(type, durations)
     ----print(type)
-    local anim = { 22, 7, 17, 5 }
+    --local anim = { 22, 7, 17, 5 }
+    --print(durations)
+    local anim = { 46, 47, 49, 27 }
     SetUnitAnimationByIndex(gg_unit_Hart_0002, anim[type])
-    QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+    ArthasIdle = ArthasIdle + durations*0.6
+    -- QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
 
 end
 
@@ -852,8 +857,20 @@ function PlayUnitAnimationFromChat()
     TriggerRegisterPlayerChatEvent(this, Player(1), "", true)
     TriggerAddAction(this, function()
         local s = S2I(GetEventPlayerChatString())
-        SetUnitAnimationByIndex(gg_unit_opeo_0003, s)
+        SetUnitAnimationByIndex(gg_unit_Hart_0002, s)
         ----print(GetUnitName(gg_unit_Hart_0002).." "..s)
+    end)
+end
+
+function StartArthasStateMachine()
+    ArthasIdle = 0
+    TimerStart(CreateTimer(), 0.25, true, function()
+        ArthasIdle = ArthasIdle - 0.25
+        if ArthasIdle <= 0 then
+            ArthasIdle=0
+            --print("сброс")
+            QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+        end
     end)
 end
 ---
@@ -1025,11 +1042,12 @@ function Trig_Jaina_Actions()
         SetUnitAnimationByIndex(gg_unit_Hjai_0001,30)
         UnitAddAbility(gg_unit_Hjai_0001, FourCC('Aave'))
     SetUnitFlyHeightBJ(gg_unit_Hjai_0001, 10.00, 0.00)
+    SetTimeOfDay(12)
+    SetTimeOfDayScalePercentBJ(0.00)
 end
 
 function InitTrig_Jaina()
     gg_trg_Jaina = CreateTrigger()
-    TriggerRegisterTimerEventSingle(gg_trg_Jaina, 0.01)
     TriggerAddAction(gg_trg_Jaina, Trig_Jaina_Actions)
 end
 
@@ -1048,6 +1066,10 @@ function InitCustomTriggers()
     InitTrig_SetCam()
     InitTrig_Jaina()
     InitTrig_PeriodCam()
+end
+
+function RunInitializationTriggers()
+    ConditionalTriggerExecute(gg_trg_Jaina)
 end
 
 function InitCustomPlayerSlots()
@@ -1075,6 +1097,7 @@ function main()
     InitBlizzard()
     InitGlobals()
     InitCustomTriggers()
+    RunInitializationTriggers()
 end
 
 function config()

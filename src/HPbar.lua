@@ -30,7 +30,7 @@ function CreateHPBar(colorID)
         --BlzFrameSetText(textMax, GHP)
         if GHP >= 100 then
             GHP = 100
-            print(GHP,"большие глаза у пеона")
+            --print(GHP,"большие глаза у пеона")
             BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorderEYE", 0, true)
         else
             BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorder", 0, true)
