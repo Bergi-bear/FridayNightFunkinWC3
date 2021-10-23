@@ -142,8 +142,8 @@ ArroPos = { 4, 3,
             8,8,10,9,
             3,2,1,
             9,8,7,
-            2,2,2,2,2,2,
-            8,8,8,8,8,8,
+            2,4,2,2,2,4,
+            8,10,8,8,8,10,
             4,2,1,
             10,8,7,
             4,
@@ -637,7 +637,7 @@ function KeyPressed(key)
                                     GHP = GHP - 5
                                     AddPoint(100)
                                     normal_sound("Mistake", arrows.x, arrows.y)
-                                    SetUnitAnimation(gg_unit_opeo_0003, "death")
+                                    SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
                                     DestroyTimer(GetExpiredTimer())
 
                                     for k, v in pairs(arrow.line.all) do
@@ -660,7 +660,7 @@ function KeyPressed(key)
                     --print("Miss", arrow.y)
                     GHP = GHP + 5
                     normal_sound("Mistake", arrows.x, arrows.y)
-                    SetUnitAnimation(gg_unit_opeo_0003, "death")
+                    SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
                 end
             else
 
@@ -868,6 +868,7 @@ function StartArthasStateMachine()
         ArthasIdle = ArthasIdle - 0.25
         if ArthasIdle <= 0 then
             ArthasIdle=0
+            --print("сброс")
             --print("сброс")
             QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
         end
