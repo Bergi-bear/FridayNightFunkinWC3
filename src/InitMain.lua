@@ -19,8 +19,9 @@ do
         TimerStart(CreateTimer(), 2.5, false, function()
             StarAllSound()
             RestartInit()
-            PlayUnitAnimationFromChat()
             StartArthasStateMachine()
+            PlayUnitAnimationFromChat()
+
             DestroyTimer(GetExpiredTimer())
         end)
     end
@@ -296,7 +297,9 @@ function KeyPressed(key)
                                     GHP = GHP - 5
                                     AddPoint(100)
                                     normal_sound("Mistake", arrows.x, arrows.y)
-                                    SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
+                                    SetUnitAnimationByIndex(gg_unit_opeo_0003, 23)
+                                    --print("Mistake")
+                                    -- SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
                                     DestroyTimer(GetExpiredTimer())
 
                                     for k, v in pairs(arrow.line.all) do
@@ -319,7 +322,9 @@ function KeyPressed(key)
                     --print("Miss", arrow.y)
                     GHP = GHP + 5
                     normal_sound("Mistake", arrows.x, arrows.y)
-                    SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
+                    SetUnitAnimationByIndex(gg_unit_opeo_0003, 23)
+                   -- print("Mistake")
+                    --SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
                 end
             else
 
@@ -480,7 +485,9 @@ function CreateArrow(speed, pozX, number)
         if y >= 0.65 then
             if not arrow.swaped then
                 normal_sound("Mistake", x, y)
-                --print("Too late", arrow.y)
+                SetUnitAnimationByIndex(gg_unit_opeo_0003, 24)
+                QueueUnitAnimationBJ(gg_unit_opeo_0003, "stand ready")
+               -- print("Too late", arrow.y)
                 GHP = GHP + 5
             end
             DestroyTimer(GetExpiredTimer())
@@ -505,7 +512,7 @@ function PlayArthasAnimation(type, durations)
     --print(durations)
     local anim = { 46, 47, 49, 27 }
     SetUnitAnimationByIndex(gg_unit_Hart_0002, anim[type])
-    ArthasIdle = ArthasIdle + durations*0.6
+    ArthasIdle = ArthasIdle + durations * 0.6
     -- QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
 
 end
@@ -517,6 +524,7 @@ function PlayUnitAnimationFromChat()
     TriggerAddAction(this, function()
         local s = S2I(GetEventPlayerChatString())
         SetUnitAnimationByIndex(gg_unit_Hart_0002, s)
+        SetUnitAnimationByIndex(gg_unit_opeo_0003, s)
         ----print(GetUnitName(gg_unit_Hart_0002).." "..s)
     end)
 end
@@ -526,7 +534,7 @@ function StartArthasStateMachine()
     TimerStart(CreateTimer(), 0.25, true, function()
         ArthasIdle = ArthasIdle - 0.25
         if ArthasIdle <= 0 then
-            ArthasIdle=0
+            ArthasIdle = 0
             --print("сброс")
             --print("сброс")
             QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
