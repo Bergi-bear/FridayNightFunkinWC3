@@ -638,7 +638,8 @@ function KeyPressed(key)
                                     AddPoint(100)
                                     normal_sound("Mistake", arrows.x, arrows.y)
                                     SetUnitAnimationByIndex(gg_unit_opeo_0003, 23)
-                                    print("Mistake")
+                                    QueueUnitAnimationBJ(gg_unit_opeo_0003, "stand ready")
+                                    --print("Mistake")
                                     -- SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
                                     DestroyTimer(GetExpiredTimer())
 
@@ -663,7 +664,8 @@ function KeyPressed(key)
                     GHP = GHP + 5
                     normal_sound("Mistake", arrows.x, arrows.y)
                     SetUnitAnimationByIndex(gg_unit_opeo_0003, 23)
-                    print("Mistake")
+                    QueueUnitAnimationBJ(gg_unit_opeo_0003, "stand ready")
+                   -- print("Mistake")
                     --SetUnitAnimation(gg_unit_opeo_0003, "stand hit")
                 end
             else
@@ -827,7 +829,7 @@ function CreateArrow(speed, pozX, number)
                 normal_sound("Mistake", x, y)
                 SetUnitAnimationByIndex(gg_unit_opeo_0003, 24)
                 QueueUnitAnimationBJ(gg_unit_opeo_0003, "stand ready")
-                print("Too late", arrow.y)
+               -- print("Too late", arrow.y)
                 GHP = GHP + 5
             end
             DestroyTimer(GetExpiredTimer())
