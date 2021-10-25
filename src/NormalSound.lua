@@ -3,9 +3,17 @@
 --- Created by Bergi.
 --- DateTime: 02.08.2021 19:03
 ---
-function normal_sound (s,x,y,volume)
-    local  snd = CreateSound(s, false, true, true, 10, 10, "CombatSoundsEAX")
-    if not volume then volume=127 end
+function normal_sound (s, x, y, volume)
+    local snd = CreateSound(s, false, true, true, 10, 10, "CombatSoundsEAX")
+    if not volume then
+        volume = 127
+    end
+    if not x then
+        x = 0
+    end
+      if not y then
+        y = 0
+    end
     SetSoundChannel(snd, 40)
     SetSoundVolume(snd, volume)
     SetSoundPitch(snd, 1)
