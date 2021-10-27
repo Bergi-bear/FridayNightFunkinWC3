@@ -78,19 +78,22 @@ end
 
 function RestartInit()
     CreateSimpleFrameGlue(0.4, 0.55, "ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function()
-        if not restartReady then
-            return
-        else
-            restartReady = false
-            GameIsDefeat = false
-            GHP = 50
-            BreakCurrentLevel()
-            SetUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
-            SetUnitAnimation(GPlayer, "Stand Ready")
-            StarAllSound()
-            TimerStart(CreateTimer(), 1, false, function()
-                restartReady = true
-            end)
+        if not MUDA then
+            if not restartReady then
+                return
+            else
+                restartReady = false
+                GameIsDefeat = false
+                GHP = 50
+                BreakCurrentLevel()
+                SetUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+                SetUnitAnimation(GPlayer, "Stand Ready")
+                StarAllSound()
+                TimerStart(CreateTimer(), 1, false, function()
+                    restartReady = true
+                end)
+            end
+
         end
     end)
 end
@@ -132,6 +135,8 @@ function StartArrow()
         lastLine   = {},
         timers     = {},
         allArrows  = {},
+        X          = { },
+        Y          = { },
     }
     for i = 1, 10 do
         if i < 5 or i > 6 then
@@ -155,6 +160,8 @@ function StartArrow()
             BlzFrameSetSize(image, 0.08, 0.08)
             BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
             BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, nextStep, y)
+            arrows.X[i]=nextStep
+            arrows.Y[i]=y
 
         end
     end
@@ -173,6 +180,7 @@ function StartArrow()
                     step = { 1, 2, 3, 4, 6, 8, 9, 10 }
                     step = step[GetRandomInt(1, #step)] --никогда так не делайте
                 end
+                --print(i)
                 CreateArrow(0.01, step, i)
                 if step <= 4 then
                     --SetCameraTargetControllerNoZForPlayer(Player(0), gg_unit_Hart_0002, 10, 10, true)
@@ -273,6 +281,7 @@ function KeyPressed(key)
                         AddPoint(100)
                         BlzFrameSetTexture(arrows.up[type + 6], arrows.lighted[type], 0, true)
                         BlzFrameSetVisible(arrow.frame, false)
+                        CreateSquack(arrows.X[type+6],arrows.Y[type])
 
                         if not arrow.isline then
                             TimerStart(CreateTimer(), 0.1, false, function()
@@ -290,12 +299,8 @@ function KeyPressed(key)
                                     else
 
                                         BlzFrameSetTexture(arrows.up[type + 6], arrows.static[type], 0, true)
-                                        GHP = GHP - 5
-                                        AddPoint(100)
-                                        normal_sound("Mistake", arrows.x, arrows.y)
-                                        SetUnitAnimationByIndex(GPlayer, 23)
-                                        QueueUnitAnimationBJ(GPlayer, "stand ready")
-                                        print("Mistake", "Почему тут ошибка?")
+                                        Damage(10)
+                                        --print("Mistake", "Почему тут ошибка?")
                                         DestroyTimer(GetExpiredTimer())
 
                                         for k, v in pairs(arrow.line.all) do
@@ -460,7 +465,7 @@ function CreateArrow(speed, pozX, number)
             isMusicStart = true
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
-            PlayArthasAnimation(type, durations)
+            PlayArthasAnimation(type, durations, number)
             --Camera2Right = false
             --Camera2Left = true
             --PanCameraToTimed(GetUnitX(gg_unit_Hart_0002), GetUnitY(gg_unit_Hart_0002), 1)
@@ -512,11 +517,16 @@ function PlayPeonAnimation(type)
     QueueUnitAnimation(GPlayer, "Stand Ready")
 end
 
-function PlayArthasAnimation(type, durations)
+function PlayArthasAnimation(type, durations, number)
     ----print(type)
     --local anim = { 22, 7, 17, 5 }
     --print(durations)
     local anim = { 46, 47, 49, 27 }
+    if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 then
+        anim[type] = 3
+        ArthasDamage()
+        --print("удар",number)
+    end
     SetUnitAnimationByIndex(gg_unit_Hart_0002, anim[type])
     ArthasIdle = ArthasIdle + durations * 0.6
     -- QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
@@ -531,6 +541,7 @@ function PlayUnitAnimationFromChat()
         local s = S2I(GetEventPlayerChatString())
         SetUnitAnimationByIndex(gg_unit_Hart_0002, s)
         SetUnitAnimationByIndex(GPlayer, s)
+        -- CreateSquack()
         ----print(GetUnitName(gg_unit_Hart_0002).." "..s)
     end)
 end
