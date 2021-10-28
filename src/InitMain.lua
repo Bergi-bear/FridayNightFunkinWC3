@@ -17,11 +17,13 @@ do
             ReturnFPS()
             HideEverything()
             CreatePointInterFace()
+            CreateSongMenus()
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
-            StarAllSound()
+            StarAllSound(1) --Автостарт Первой песни
             RestartInit()
             StartArthasStateMachine()
+            StartPeonStateMachine()
             PlayUnitAnimationFromChat()
 
             DestroyTimer(GetExpiredTimer())
@@ -34,22 +36,19 @@ TIMER_PERIOD64 = 1 / 64
 ready = false
 Camera2Left = true
 
-function StarAllSound()
+function StarAllSound(numberSong)
     musics = {}
     isMusicStart = false
     local x, y = GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0))
     --normal_sound("All", x, y)
     musics[#musics + 1] = normal_sound("321GO", x, y)
-    TimerStart(CreateTimer(), 0.011, false, function()
-        --normal_sound("Voices", x, y)
-        -- --print("голос")
-    end)
-
-    TimerStart(CreateTimer(), 0.01, false, function()
-        --normal_sound("Inst", x, y)
-        -- --print("фон")
-    end)
-    StartArrow()
+    if numberSong == 1 then
+        StartArrow(BoPeeBo, ArroPos, "All")
+    elseif numberSong == 2 then
+        print("Второй песни ещё не существует")
+    elseif numberSong == 3 then
+        print("И третьей тоже")
+    end
     if not ready then
         CreateHPBar("20")
         CreateHPBar("06")
@@ -77,28 +76,12 @@ function BreakCurrentLevel()
 end
 
 function RestartInit()
-    CreateSimpleFrameGlue(0.4, 0.55, "ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function()
-        if not MUDA then
-            if not restartReady then
-                return
-            else
-                restartReady = false
-                GameIsDefeat = false
-                GHP = 50
-                BreakCurrentLevel()
-                SetUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
-                SetUnitAnimation(GPlayer, "Stand Ready")
-                StarAllSound()
-                TimerStart(CreateTimer(), 1, false, function()
-                    restartReady = true
-                end)
-            end
+    -- CreateSimpleFrameGlue(0.4, 0.55, "ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function()
 
-        end
-    end)
+    --end)
 end
 
-function StartArrow()
+function StartArrow(notes, arrowPos, music)
 
     arrows = {
         static     = {
@@ -160,28 +143,29 @@ function StartArrow()
             BlzFrameSetSize(image, 0.08, 0.08)
             BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
             BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, nextStep, y)
-            arrows.X[i]=nextStep
-            arrows.Y[i]=y
+            arrows.X[i] = nextStep
+            arrows.Y[i] = y
 
         end
     end
 
     TimerStart(CreateTimer(), 0.4, false, function()
-
-        for i = 1, #BoPeeBo do
+        --print(1)
+        for i = 1, #notes do
+            --print(2)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
-            TimerStart(t, BoPeeBo[i] * .6, false, function()
+            TimerStart(t, notes[i] * .6, false, function()
                 local step = nil
-                if ArroPos[i] then
-                    step = ArroPos[i]
+                if arrowPos[i] then
+                    step = arrowPos[i]
                 else
                     ----print("таблица не заполнена, рандомимся ")
                     step = { 1, 2, 3, 4, 6, 8, 9, 10 }
                     step = step[GetRandomInt(1, #step)] --никогда так не делайте
                 end
                 --print(i)
-                CreateArrow(0.01, step, i)
+                CreateArrow(0.01, step, i, notes, music)
                 if step <= 4 then
                     --SetCameraTargetControllerNoZForPlayer(Player(0), gg_unit_Hart_0002, 10, 10, true)
                     TimerStart(CreateTimer(), 1, false, function()
@@ -281,7 +265,7 @@ function KeyPressed(key)
                         AddPoint(100)
                         BlzFrameSetTexture(arrows.up[type + 6], arrows.lighted[type], 0, true)
                         BlzFrameSetVisible(arrow.frame, false)
-                        CreateSquack(arrows.X[type+6],arrows.Y[type])
+                        CreateSquack(arrows.X[type + 6], arrows.Y[type])
 
                         if not arrow.isline then
                             TimerStart(CreateTimer(), 0.1, false, function()
@@ -321,7 +305,7 @@ function KeyPressed(key)
                             end)
                         end
                         arrow.swaped = true
-                        PlayPeonAnimation(type)
+                        PlayPeonAnimation(type, 1.5)
                     else
                         --print("Miss", arrow.y)
 
@@ -397,7 +381,7 @@ function CreateLine(speed, pozX, type, count, arrow)
 
 end
 
-function CreateArrow(speed, pozX, number)
+function CreateArrow(speed, pozX, number, notes, music)
     local type = 0
     local isPlayer = false
     if pozX < 5 then
@@ -420,8 +404,8 @@ function CreateArrow(speed, pozX, number)
         removed = false,
         mistake = false, -- первый приоритет у обработки ошибки при наверном нажатии
     }
-    if number > 1 and number < #BoPeeBo then
-        durations = BoPeeBo[number + 1] - BoPeeBo[number] --попытка автопросчёта длительности звука
+    if number > 1 and number < #notes then
+        durations = notes[number + 1] - notes[number] --попытка автопросчёта длительности звука
         if durations > 1 then
             arrow.isline = true
             last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
@@ -461,7 +445,7 @@ function CreateArrow(speed, pozX, number)
         arrow.y = y
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         if y >= 0.4475 and not isMusicStart then
-            musics[#musics + 1] = normal_sound("All", x, y)
+            musics[#musics + 1] = normal_sound(music, x, y)
             isMusicStart = true
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
@@ -510,11 +494,13 @@ function CreateArrow(speed, pozX, number)
     end)
 end
 
-function PlayPeonAnimation(type)
+function PlayPeonAnimation(type, durations)
     ----print(type)
-    local anim = { 2, 8, 12, 3 }
+    local anim = { 26, 28, 29, 30 }
     SetUnitAnimationByIndex(GPlayer, anim[type])
-    QueueUnitAnimation(GPlayer, "Stand Ready")
+    PeonIdle = PeonIdle + durations * 0.6
+    --print(PeonIdle, "прибавление")
+    --QueueUnitAnimation(GPlayer, "Stand Ready")
 end
 
 function PlayArthasAnimation(type, durations, number)
@@ -555,6 +541,33 @@ function StartArthasStateMachine()
             --print("сброс")
             --print("сброс")
             QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+        end
+    end)
+end
+
+function StartPeonStateMachine()
+    PeonIdle = 0
+    local resetON = false
+    TimerStart(CreateTimer(), 0.25, true, function()
+        if not GameIsDefeat then
+            PeonIdle = PeonIdle - 0.25
+
+            if PeonIdle < 0 then
+                PeonIdle = 0
+                --print("сброс")
+                --print("сброс")
+
+                if resetON then
+                    --print("сброс анмации пеона", PeonIdle)
+                    resetON = false
+                    QueueUnitAnimation(gg_unit_opeo_0003, "Stand Ready")
+
+                end
+            else
+                resetON = true
+            end
+        else
+            --print("отмена сброса")
         end
     end)
 end

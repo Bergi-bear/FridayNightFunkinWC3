@@ -5,6 +5,11 @@ function CreateSimpleFrameGlue(posX, PosY, texture, call)
     end
     local SelfFrame = BlzCreateFrameByType('GLUEBUTTON', 'FaceButton', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 'ScoreScreenTabButtonTemplate', 0)
     local buttonIconFrame = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', SelfFrame, '', 0)
+
+    BlzFrameSetParent(SelfFrame, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+    BlzFrameSetParent(buttonIconFrame, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+
+
     --BlzFrameSetVisible(SelfFrame, false)
    -- BlzFrameSetVisible(SelfFrame, GetLocalPlayer() == player)
     BlzFrameSetAllPoints(buttonIconFrame, SelfFrame)
@@ -25,7 +30,8 @@ function CreateSimpleFrameGlue(posX, PosY, texture, call)
     BlzTriggerRegisterFrameEvent(TrigMOUSE_ENTER, SelfFrame, FRAMEEVENT_MOUSE_ENTER)
 
     TriggerAddAction(TrigMOUSE_ENTER, function()
-        --print("показать подсказку "..flag)
+        --print("показать подсказку ",flag)
+        GHandY=PosY
         mouseOnFrame=true
         --BlzFrameSetVisible(tt[1],true)
         --SetTooltipText(tt[3],"Очистить экран от сообщений")
