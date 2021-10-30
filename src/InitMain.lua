@@ -20,7 +20,7 @@ do
             CreateSongMenus()
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
-            StarAllSound(1) --Автостарт Первой песни
+            StarAllSound(2) --Автостарт Первой песни
             RestartInit()
             StartArthasStateMachine()
             StartPeonStateMachine()
@@ -35,6 +35,8 @@ TIMER_PERIOD = 1 / 32
 TIMER_PERIOD64 = 1 / 64
 ready = false
 Camera2Left = true
+GameSpeed=0.6
+
 
 function StarAllSound(numberSong)
     musics = {}
@@ -43,9 +45,12 @@ function StarAllSound(numberSong)
     --normal_sound("All", x, y)
     musics[#musics + 1] = normal_sound("321GO", x, y)
     if numberSong == 1 then
+        GameSpeed=0.6
         StartArrow(BoPeeBo, ArroPos, "All")
     elseif numberSong == 2 then
-        print("Второй песни ещё не существует")
+        GameSpeed=0.45
+        StartArrow(Zavodila, ZavodilaPOS, "zavodila")
+        --print("Второй песни ещё не существует")
     elseif numberSong == 3 then
         print("И третьей тоже")
     end
@@ -155,7 +160,7 @@ function StartArrow(notes, arrowPos, music)
             --print(2)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
-            TimerStart(t, notes[i] * .6, false, function()
+            TimerStart(t, notes[i] * GameSpeed, false, function()
                 local step = nil
                 if arrowPos[i] then
                     step = arrowPos[i]
