@@ -8,10 +8,11 @@ do
     function InitGlobals()
         InitGlobalsOrigin()
         TimerStart(CreateTimer(), .5, false, function()
-            --Preload("Inst")
-            --Preload("Voices")
-            --Preloader("Inst")
-            --Preloader("Voices")
+            Preload("All")
+            Preload("zavodila")
+            Preloader("All")
+            Preloader("zavodila")
+
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
             ReturnFPS()
