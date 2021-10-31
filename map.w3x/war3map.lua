@@ -497,7 +497,7 @@ do
             CreateSongMenus()
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
-            StarAllSound(2) --Автостарт Первой песни
+            StarAllSound(1) --Автостарт Первой песни
             RestartInit()
             StartArthasStateMachine()
             StartPeonStateMachine()
@@ -512,8 +512,8 @@ TIMER_PERIOD = 1 / 32
 TIMER_PERIOD64 = 1 / 64
 ready = false
 Camera2Left = true
-GameSpeed=0.6
-
+GameSpeed = 0.6
+SONG = 1
 
 function StarAllSound(numberSong)
     musics = {}
@@ -522,13 +522,16 @@ function StarAllSound(numberSong)
     --normal_sound("All", x, y)
     musics[#musics + 1] = normal_sound("321GO", x, y)
     if numberSong == 1 then
-        GameSpeed=0.6
+        SONG = 1
+        GameSpeed = 0.6
         StartArrow(BoPeeBo, ArroPos, "All")
     elseif numberSong == 2 then
-        GameSpeed=0.45
+        SONG = 2
+        GameSpeed = 0.454 -- сдви 0.005 добавил
         StartArrow(Zavodila, ZavodilaPOS, "zavodila")
         --print("Второй песни ещё не существует")
     elseif numberSong == 3 then
+        SONG = 3
         print("И третьей тоже")
     end
     if not ready then
@@ -566,42 +569,42 @@ end
 function StartArrow(notes, arrowPos, music)
 
     arrows = {
-        static     = {
+        static = {
             [1] = "Arrows/left.dds",
             [2] = "Arrows/down.dds",
             [3] = "Arrows/up.dds",
             [4] = "Arrows/right.dds"
         },
-        lighted    = {
+        lighted = {
             [1] = "Arrows/5.dds",
             [2] = "Arrows/1.dds",
             [3] = "Arrows/3.dds",
             [4] = "Arrows/8.dds"
         },
-        standart   = {
+        standart = {
             [1] = "Arrows/7.dds",
             [2] = "Arrows/2.dds",
             [3] = "Arrows/4.dds",
             [4] = "Arrows/6.dds"
         },
-        line       = {
+        line = {
             [1] = "Arrows/e3",
             [2] = "Arrows/e1",
             [3] = "Arrows/e2",
             [4] = "Arrows/e4",
         },
-        up         = {},
-        list       = {},
-        x          = 0.04, -- появление первой стрелки по левому краю
-        y          = 0.55,
-        step       = 0.08,
-        lineTime   = 0,
+        up = {},
+        list = {},
+        x = 0.04, -- появление первой стрелки по левому краю
+        y = 0.55,
+        step = 0.08,
+        lineTime = 0,
         keyPressed = false,
-        lastLine   = {},
-        timers     = {},
-        allArrows  = {},
-        X          = { },
-        Y          = { },
+        lastLine = {},
+        timers = {},
+        allArrows = {},
+        X = { },
+        Y = { },
     }
     for i = 1, 10 do
         if i < 5 or i > 6 then
@@ -666,7 +669,7 @@ function StartArrow(notes, arrowPos, music)
     end)
 
     local keys = {
-        left  = {
+        left = {
             key = {
                 OSKEY_LEFT,
                 OSKEY_A
@@ -678,13 +681,13 @@ function StartArrow(notes, arrowPos, music)
                 OSKEY_D
             },
         },
-        up    = {
+        up = {
             key = {
                 OSKEY_UP,
                 OSKEY_W
             },
         },
-        down  = {
+        down = {
             key = {
                 OSKEY_DOWN,
                 OSKEY_S
@@ -728,9 +731,9 @@ function KeyPressed(key)
             end
 
             local types = {
-                ["up"]    = 3,
-                ["down"]  = 2,
-                ["left"]  = 1,
+                ["up"] = 3,
+                ["down"] = 2,
+                ["left"] = 1,
                 ["right"] = 4,
             }
             local type = types[key]
@@ -794,10 +797,17 @@ function KeyPressed(key)
 
                         --SetUnitAnimation(GPlayer, "stand hit")
                     end
+
                 else
                     if arrow.y < 0.61 and arrow.y > 0.4 then
                         arrow.mistake = true
-                        Damage(5)
+                        local amount = 5
+                        if SONG == 1 then
+                            amount = 5
+                        elseif SONG == 2 and arrow.number>110 and arrow.number<180  then
+                            amount=1
+                        end
+                        Damage(amount)
                         --print("не правильная кнопка")
                     end
                 end
@@ -832,8 +842,8 @@ function CreateLine(speed, pozX, type, count, arrow)
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         last.all[#last.all + 1] = {
             frame = image,
-            y     = y,
-            step  = randomStep
+            y = y,
+            step = randomStep
         }
         --[[TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
             y = y + speed
@@ -877,14 +887,15 @@ function CreateArrow(speed, pozX, number, notes, music)
     local last = nil
     local swapScale = 0
     local arrow = {
-        frame   = nil,
-        type    = type,
-        isline  = false,
-        y       = 0,
-        swaped  = false,
-        line    = nil,
+        frame = nil,
+        type = type,
+        isline = false,
+        y = 0,
+        swaped = false,
+        line = nil,
         removed = false,
         mistake = false, -- первый приоритет у обработки ошибки при наверном нажатии
+        number=number,
     }
     if number > 1 and number < #notes then
         durations = notes[number + 1] - notes[number] --попытка автопросчёта длительности звука
@@ -963,7 +974,14 @@ function CreateArrow(speed, pozX, number, notes, music)
 
         if y >= 0.65 then
             if not arrow.swaped and not arrow.mistake then
-                Damage(5)
+                local amount = 5
+                if SONG == 1 then
+                    amount = 5
+                elseif SONG == 2 and number>110 and number<180 then
+                    --print(number)
+                    amount=1
+                end
+                Damage(amount)
                 --print("Too late", arrow.y)
 
             end
@@ -990,7 +1008,7 @@ function PlayArthasAnimation(type, durations, number)
     --local anim = { 22, 7, 17, 5 }
     --print(durations)
     local anim = { 46, 47, 49, 27 }
-    if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 then
+    if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 and SONG == 1 then
         anim[type] = 3
         ArthasDamage()
         --print("удар",number)
@@ -1482,6 +1500,23 @@ end
 
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bear.
+--- DateTime: 31.10.2021 21:31
+---
+do
+    local InitGlobalsOrigin = InitGlobals
+    function InitGlobals()
+        InitGlobalsOrigin()
+        AllPreload()
+    end
+end
+
+function AllPreload()
+    StopSound(normal_sound("All"), true, false)
+    StopSound(normal_sound("zavodila"), true, false)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
 --- DateTime: 27.10.2021 17:02
 ---
@@ -1625,11 +1660,12 @@ VillageOfFoolsEnemy = {
 --- Created by Bear.
 --- DateTime: 30.10.2021 19:30
 ---
-Zavodila={
+Zavodila={ --613
     0,0.75,1.5,2,2.75,3.5,
     4,4.75,5.5,6,6.75,7.5,
     8,8.75,9.5,10,10.75,11.5,
     12,12.75,13.5,14,14.75,15.5,
+    -----
     16,16.75,17.5,18,18.75,19.5,
     20,20.75,21.5,22,22.75,23.5,
     24,24.75,25.5,26,26.75,27.5,
@@ -1644,9 +1680,81 @@ Zavodila={
     52,52.25,52.5,52.75,53,53.25,53.5,53.75,54,54.25,54.5,54.75,55,55.25,55.5,55.75,
     56,56.25,56.5,56.75,57,57.25,57.5,57.78,58,58.25,58.5,58.75,59,59.25,59.5,59.75,
     60,60.25,60.5,60.75,61,61.25,61.5,61.75,62,62.25,62.5,62.75,63,63.25,63.5,63.75,
+    --бот 7-7-9-10 нот в такте
+    64,64.75,65.5,66,66.5,66.75,67.5,
+    68,68.75,69.5,70,70.5,71,71.5,
+    72,72.5,72.75,73.5,74,74.5,74.75,75.25,75.5,
+    76,76.5,76.75,77,77.25,77.5,78,78.5,79,79.5,
+    --игрок 7-7-9-10
+    80,80.75,81.5,82,82.5,82.75,83.5,
+    84,84.75,85.5,86,86.5,87,87.5,
+    88,88.5,88.75,89.5,90,90.5,90.75,91.25,91.5,
+    92,92.5,92.75,93,93.25,93.5,94,94.5,95,95.5,
+    --- Повтор бот 7 7 9 10
+    96,96.75,97.5,98,98.5,98.75,99.5,
+    100,100.75,101.5,102,102.5,103,103.5,
+    104,104.5,104.75,105.5,106,106.5,106.75,107.25,107.5,
+    108,108.5,108.75,109,109.25,109.5,110,110.5,111,111.5,
+    ---- Повтор игрок 7 7 9 10
+    112,112.75,113.5,114,114.5,114.75,115.5,
+    116,116.75,117.5,118,118.5,119,119.5,
+    120,120.5,120.75,121.5,122,122.5,122.75,123.25,123.5,
+    124,124.5,124.75,125,125.25,125.5,126,126.5,127,127.5,
+    --Бот момент из начала
+    128,128.75,129.5,130,130.75,131.5,
+    132,132.75,133.5,134,134.75,135.5,
+    --игрок
+    136,136.75,137.5,138,138.75,139.5,140,
+    140.75,141.5,142,142.75,143.5,
+    --бот
+    144,144.75,145.5,146,146.75,147.5,
+    148,148.75,149.5,150,150.75,151.5,
+    --игрок
+    152,152.75,153.5,154,154.75,155.5,
+    156,156.75,157.5,158,158.75,159.5,
+    ---Замедленный бит бот
+    160,160.5,161,161.5,162,162.5,163,163.5,
+    164,164.5,165,165.5,166,166.5,167,167.5,
+    168,168.5,169,169.5,170,170.5,171,171.5,
+    172,172.5,173,173.5,174,174.5,175,175.5,
+    176,176.5,177,177.5,178,178.5,179,179.5,
+    180,180.5,181,181.5,182,182.5,183,183.5,
+    184,184.5,185,185.5,186,186.5,187,187.5,
+    188,188.5,189,189.5,190,190.5,191,191.5,
+    192,192.5,193,193.5,194,194.5,195,195.5,
+    196,196.5,197,197.5,198,198.5,199,199.5,
+    200,200.5,201,201.5,202,202.5,203,203.5,
+    204,204.5,205,205.5,206,206.5,207,207.5,
+    208,208.5,209,209.5,210,210.5,211,211.5,
+    212,212.5,213,213.5,214,214.5,215,215.5,
+    216,216.5,217,217.5,218,218.5,219,219.5,
+    220,220.5,221,221.5,222,222.5,223,223.5,
+    --Повтор 7 7 9 10
+    224,224.75,225.5,226,226.5,226.75,227.5,
+    228,228.75,229.5,230,230.5,231,231.5,
+    232,232.5,232.75,233.5,234,234.5,234.75,235.25,235.5,
+    236,236.5,236.75,237,237.25,237.5,238,238.5,239,239.5,
+
+    240,240.75,241.5,242,242.5,242.75,243.5,
+    244,244.75,245.5,246,246.5,247,247.5,
+    248,248.5,248.75,249.5,250,250.5,250.75,251.25,251.5,
+    252,252.5,252.75,253,253.25,253.5,254,254.5,255,255.5,
+
+    256,256.75,257.5,258,258.5,258.75,259.5,260,
+    260.75,261.5,262,262.5,263,263.5,
+    264,264.5,264.75,265.5,266,266.5,266.75,267.25,267.5,
+    268,268.5,268.75,269,269.25,269.5,270,270.5,271,271.5,
+
+    272,272.75,273.5,274,274.5,274.75,275.5,
+    276,276.75,277.5,278,278.5,279,279.5,
+    280,280.5,280.75,281.5,282,282.5,282.75,283.25,283.5,
+    284,284.5,284.75,285,285.25,285.5,286,286.5,287,287.5,
+
+    288,-- КОНЕЦ
+
 }
 
-ZavodilaPOS={
+ZavodilaPOS={ --613
     1,4,4,3,2,1,
     1,4,4,3,2,1,
     7,10,10,9,8,7,
@@ -1665,6 +1773,31 @@ ZavodilaPOS={
     8,7,8,9,10,9,8,7,7,10,7,10,7,10,7,9,
     8,7,8,9,10,9,8,7,8,7,8,9,10,9,10,9,
     10,9,8,9,10,9,8,9,10,9,7,8,9,10,8,7,
+    --бот 77910 64 такт
+    2,3,2,1,3,4,2,3,4,3,1,2,4,3,3,3,4,3,2,2,1,1,2,4,4,4,3,2,3,1,2,3,4,
+    8,9,8,7,9,10,8,9,10,9,7,8,10,9,9,9,10,9,8,8,7,7,8,10,10,10,9,8,9,7,8,9,10,
+    2,3,2,1,3,4,2,3,4,3,1,2,4,3,3,3,4,3,2,2,1,1,2,4,4,4,3,2,3,1,2,3,4,
+    8,9,8,7,9,10,8,9,10,9,7,8,10,9,9,9,10,9,8,8,7,7,8,10,10,10,9,8,9,7,8,9,10,
+    --128 бот
+    1,4,4,3,2,1,1,4,4,3,2,1,
+    7,10,10,9,8,7,7,10,10,9,8,7,
+    1,4,4,3,2,1,1,4,4,3,2,1,
+    7,10,10,9,8,7,7,10,10,9,8,7,
+    --160 замедленный бит
+    4,3,2,4,3,2,1,4,3,1,2,3,4,3,2,3,
+    10,9,8,10,9,8,7,10,9,7,8,9,10,9,8,9,
+    4,3,2,4,3,2,1,4,3,1,2,3,4,3,2,3,
+    10,9,8,10,9,8,7,10,9,7,8,9,10,9,8,9,
+    4,3,2,4,3,2,1,4,3,1,2,3,4,3,2,3,
+    10,9,8,10,9,8,7,10,9,7,8,9,10,9,8,9,
+    4,3,2,4,3,2,1,4,3,1,2,3,4,3,2,3,
+    10,9,8,10,9,8,7,10,9,7,8,9,10,9,8,9,
+    --224
+    2,3,2,1,3,4,2,3,4,3,1,2,4,3,3,3,4,3,2,2,1,1,2,4,4,4,3,2,3,1,2,3,4,
+    8,9,8,7,9,10,8,9,10,9,7,8,10,9,9,9,10,9,8,8,7,7,8,10,10,10,9,8,9,7,8,9,10,
+    2,3,2,1,3,4,2,3,4,3,1,2,4,3,3,3,4,3,2,2,1,1,2,4,4,4,3,2,3,1,2,3,4,
+    8,9,8,7,9,10,8,9,10,9,7,8,10,9,9,9,10,9,8,8,7,7,8,10,10,10,9,8,9,7,8,9,10,
+    9,-- Конец
 }
 --CUSTOM_CODE
 function Trig_SetCam_Func008A()

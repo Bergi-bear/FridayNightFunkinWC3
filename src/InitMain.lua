@@ -21,7 +21,7 @@ do
             CreateSongMenus()
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
-            StarAllSound(2) --Автостарт Первой песни
+            StarAllSound(1) --Автостарт Первой песни
             RestartInit()
             StartArthasStateMachine()
             StartPeonStateMachine()
@@ -36,8 +36,8 @@ TIMER_PERIOD = 1 / 32
 TIMER_PERIOD64 = 1 / 64
 ready = false
 Camera2Left = true
-GameSpeed=0.6
-
+GameSpeed = 0.6
+SONG = 1
 
 function StarAllSound(numberSong)
     musics = {}
@@ -46,13 +46,16 @@ function StarAllSound(numberSong)
     --normal_sound("All", x, y)
     musics[#musics + 1] = normal_sound("321GO", x, y)
     if numberSong == 1 then
-        GameSpeed=0.6
+        SONG = 1
+        GameSpeed = 0.6
         StartArrow(BoPeeBo, ArroPos, "All")
     elseif numberSong == 2 then
-        GameSpeed=0.45
+        SONG = 2
+        GameSpeed = 0.454 -- сдви 0.005 добавил
         StartArrow(Zavodila, ZavodilaPOS, "zavodila")
         --print("Второй песни ещё не существует")
     elseif numberSong == 3 then
+        SONG = 3
         print("И третьей тоже")
     end
     if not ready then
@@ -90,42 +93,42 @@ end
 function StartArrow(notes, arrowPos, music)
 
     arrows = {
-        static     = {
+        static = {
             [1] = "Arrows/left.dds",
             [2] = "Arrows/down.dds",
             [3] = "Arrows/up.dds",
             [4] = "Arrows/right.dds"
         },
-        lighted    = {
+        lighted = {
             [1] = "Arrows/5.dds",
             [2] = "Arrows/1.dds",
             [3] = "Arrows/3.dds",
             [4] = "Arrows/8.dds"
         },
-        standart   = {
+        standart = {
             [1] = "Arrows/7.dds",
             [2] = "Arrows/2.dds",
             [3] = "Arrows/4.dds",
             [4] = "Arrows/6.dds"
         },
-        line       = {
+        line = {
             [1] = "Arrows/e3",
             [2] = "Arrows/e1",
             [3] = "Arrows/e2",
             [4] = "Arrows/e4",
         },
-        up         = {},
-        list       = {},
-        x          = 0.04, -- появление первой стрелки по левому краю
-        y          = 0.55,
-        step       = 0.08,
-        lineTime   = 0,
+        up = {},
+        list = {},
+        x = 0.04, -- появление первой стрелки по левому краю
+        y = 0.55,
+        step = 0.08,
+        lineTime = 0,
         keyPressed = false,
-        lastLine   = {},
-        timers     = {},
-        allArrows  = {},
-        X          = { },
-        Y          = { },
+        lastLine = {},
+        timers = {},
+        allArrows = {},
+        X = { },
+        Y = { },
     }
     for i = 1, 10 do
         if i < 5 or i > 6 then
@@ -190,7 +193,7 @@ function StartArrow(notes, arrowPos, music)
     end)
 
     local keys = {
-        left  = {
+        left = {
             key = {
                 OSKEY_LEFT,
                 OSKEY_A
@@ -202,13 +205,13 @@ function StartArrow(notes, arrowPos, music)
                 OSKEY_D
             },
         },
-        up    = {
+        up = {
             key = {
                 OSKEY_UP,
                 OSKEY_W
             },
         },
-        down  = {
+        down = {
             key = {
                 OSKEY_DOWN,
                 OSKEY_S
@@ -252,9 +255,9 @@ function KeyPressed(key)
             end
 
             local types = {
-                ["up"]    = 3,
-                ["down"]  = 2,
-                ["left"]  = 1,
+                ["up"] = 3,
+                ["down"] = 2,
+                ["left"] = 1,
                 ["right"] = 4,
             }
             local type = types[key]
@@ -318,10 +321,17 @@ function KeyPressed(key)
 
                         --SetUnitAnimation(GPlayer, "stand hit")
                     end
+
                 else
                     if arrow.y < 0.61 and arrow.y > 0.4 then
                         arrow.mistake = true
-                        Damage(5)
+                        local amount = 5
+                        if SONG == 1 then
+                            amount = 5
+                        elseif SONG == 2 and arrow.number>110 and arrow.number<180  then
+                            amount=1
+                        end
+                        Damage(amount)
                         --print("не правильная кнопка")
                     end
                 end
@@ -356,8 +366,8 @@ function CreateLine(speed, pozX, type, count, arrow)
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         last.all[#last.all + 1] = {
             frame = image,
-            y     = y,
-            step  = randomStep
+            y = y,
+            step = randomStep
         }
         --[[TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
             y = y + speed
@@ -401,14 +411,15 @@ function CreateArrow(speed, pozX, number, notes, music)
     local last = nil
     local swapScale = 0
     local arrow = {
-        frame   = nil,
-        type    = type,
-        isline  = false,
-        y       = 0,
-        swaped  = false,
-        line    = nil,
+        frame = nil,
+        type = type,
+        isline = false,
+        y = 0,
+        swaped = false,
+        line = nil,
         removed = false,
         mistake = false, -- первый приоритет у обработки ошибки при наверном нажатии
+        number=number,
     }
     if number > 1 and number < #notes then
         durations = notes[number + 1] - notes[number] --попытка автопросчёта длительности звука
@@ -487,7 +498,14 @@ function CreateArrow(speed, pozX, number, notes, music)
 
         if y >= 0.65 then
             if not arrow.swaped and not arrow.mistake then
-                Damage(5)
+                local amount = 5
+                if SONG == 1 then
+                    amount = 5
+                elseif SONG == 2 and number>110 and number<180 then
+                    --print(number)
+                    amount=1
+                end
+                Damage(amount)
                 --print("Too late", arrow.y)
 
             end
@@ -514,7 +532,7 @@ function PlayArthasAnimation(type, durations, number)
     --local anim = { 22, 7, 17, 5 }
     --print(durations)
     local anim = { 46, 47, 49, 27 }
-    if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 then
+    if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 and SONG == 1 then
         anim[type] = 3
         ArthasDamage()
         --print("удар",number)
