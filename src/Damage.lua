@@ -14,16 +14,20 @@ function Damage(amount)
         CreateToasty()
     end
     if GHP>=105 then
-        GHP=100
-        BreakCurrentLevel()
-        GameIsDefeat=true
-        SetUnitAnimation(GPlayer,"death")
-        local t={"fnf_loss_sfx","fnf_loss_sfx-pixel"}
-        normal_sound(t[GetRandomInt(1,#t)])
-        TimerStart(CreateTimer(), 2, false, function()
-            if GameIsDefeat then
-                MudaMuda()
-            end
-        end)
+        if not VICTORY then
+            GHP=100
+            BreakCurrentLevel()
+            GameIsDefeat=true
+            SetUnitAnimation(GPlayer,"death")
+            local t={"fnf_loss_sfx","fnf_loss_sfx-pixel"}
+            normal_sound(t[GetRandomInt(1,#t)])
+            TimerStart(CreateTimer(), 2, false, function()
+                if GameIsDefeat then
+                    MudaMuda()
+                end
+            end)
+        else
+
+        end
     end
 end

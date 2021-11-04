@@ -17,7 +17,7 @@ function ArthasDamage()
 end
 MUDA = false
 function MudaMuda()
-    muda = normal_sound("muda")
+    local muda = normal_sound("muda")
     MUDA=true
     TimerStart(CreateTimer(), 3, false, function()
         UnitAddAbility(GEnemy, FourCC("A001"))

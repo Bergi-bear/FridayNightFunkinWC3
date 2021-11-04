@@ -22,7 +22,7 @@ do
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
             StarAllSound(1) --Автостарт Первой песни
-            RestartInit()
+            --RestartInit()
             StartArthasStateMachine()
             StartPeonStateMachine()
             PlayUnitAnimationFromChat()
@@ -56,7 +56,26 @@ function StarAllSound(numberSong)
         --print("Второй песни ещё не существует")
     elseif numberSong == 3 then
         SONG = 3
-        print("Эта песня ещё не готова, спасибо за игру")
+        --print("Эта песня ещё не готова, спасибо за игру")
+        --normal_sound("HankMP3")
+        StartArrow(HankTable, HankTablePOS, "HankMP3")
+        MUDA = true
+        VICTORY = true
+        CreateJojoReference(10, true)
+
+        TimerStart(CreateTimer(), 5, false, function()
+
+            TimerStart(CreateTimer(), 0.15, true, function()
+                Damage(1)
+                if REFERENCE then
+                    DestroyTimer(GetExpiredTimer())
+                end
+            end)
+        end)
+
+        TimerStart(CreateTimer(), 10, false, function()
+            BreakCurrentLevel()
+        end)
     end
     if not ready then
         CreateHPBar("20")
@@ -84,51 +103,45 @@ function BreakCurrentLevel()
     end
 end
 
-function RestartInit()
-    -- CreateSimpleFrameGlue(0.4, 0.55, "ReplaceableTextures\\CommandButtons\\BTNReplay-Loop.blp", function()
-
-    --end)
-end
-
 function StartArrow(notes, arrowPos, music)
 
     arrows = {
-        static = {
+        static     = {
             [1] = "Arrows/left.dds",
             [2] = "Arrows/down.dds",
             [3] = "Arrows/up.dds",
             [4] = "Arrows/right.dds"
         },
-        lighted = {
+        lighted    = {
             [1] = "Arrows/5.dds",
             [2] = "Arrows/1.dds",
             [3] = "Arrows/3.dds",
             [4] = "Arrows/8.dds"
         },
-        standart = {
+        standart   = {
             [1] = "Arrows/7.dds",
             [2] = "Arrows/2.dds",
             [3] = "Arrows/4.dds",
             [4] = "Arrows/6.dds"
         },
-        line = {
+        line       = {
             [1] = "Arrows/e3",
             [2] = "Arrows/e1",
             [3] = "Arrows/e2",
             [4] = "Arrows/e4",
         },
-        up = {},
-        list = {},
-        x = 0.04, -- появление первой стрелки по левому краю
-        y = 0.55,
-        step = 0.08,
-        lineTime = 0,
+        up         = {},
+        list       = {},
+        x          = 0.04, -- появление первой стрелки по левому краю
+        y          = 0.55,
+        step       = 0.08,
+        lineTime   = 0,
         keyPressed = false,
-        lastLine = {},
-        timers = {},
-        allArrows = {},
-        X = { },
-        Y = { },
+        lastLine   = {},
+        timers     = {},
+        allArrows  = {},
+        X          = { },
+        Y          = { },
     }
     for i = 1, 10 do
         if i < 5 or i > 6 then
@@ -177,7 +190,7 @@ function StartArrow(notes, arrowPos, music)
                 CreateArrow(0.01, step, i, notes, music)
                 if step <= 4 then
                     --SetCameraTargetControllerNoZForPlayer(Player(0), gg_unit_Hart_0002, 10, 10, true)
-                    TimerStart(CreateTimer(), 1, false, function()
+                    TimerStart(CreateTimer(), 0.1, false, function()
                         PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
 
                     end)
@@ -193,7 +206,7 @@ function StartArrow(notes, arrowPos, music)
     end)
 
     local keys = {
-        left = {
+        left  = {
             key = {
                 OSKEY_LEFT,
                 OSKEY_A
@@ -205,13 +218,13 @@ function StartArrow(notes, arrowPos, music)
                 OSKEY_D
             },
         },
-        up = {
+        up    = {
             key = {
                 OSKEY_UP,
                 OSKEY_W
             },
         },
-        down = {
+        down  = {
             key = {
                 OSKEY_DOWN,
                 OSKEY_S
@@ -236,11 +249,14 @@ end
 
 function getFirstArrow()
     for _, k in ipairs(arrows.list) do
-        if not k.swaped then
-            return k
+        local delta = math.abs(arrows.y - k.y)
+        if delta < 0.04 then
+            if not k.swaped and not k.mistake then
+                return k
+            end
         end
     end
-    return null
+    return nil
 end
 
 function KeyPressed(key)
@@ -255,9 +271,9 @@ function KeyPressed(key)
             end
 
             local types = {
-                ["up"] = 3,
-                ["down"] = 2,
-                ["left"] = 1,
+                ["up"]    = 3,
+                ["down"]  = 2,
+                ["left"]  = 1,
                 ["right"] = 4,
             }
             local type = types[key]
@@ -328,8 +344,8 @@ function KeyPressed(key)
                         local amount = 5
                         if SONG == 1 then
                             amount = 5
-                        elseif SONG == 2 and arrow.number>110 and arrow.number<180  then
-                            amount=1
+                        elseif SONG == 2 and arrow.number > 110 and arrow.number < 180 then
+                            amount = 1
                         end
                         Damage(amount)
                         --print("не правильная кнопка")
@@ -366,8 +382,8 @@ function CreateLine(speed, pozX, type, count, arrow)
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         last.all[#last.all + 1] = {
             frame = image,
-            y = y,
-            step = randomStep
+            y     = y,
+            step  = randomStep
         }
         --[[TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
             y = y + speed
@@ -411,15 +427,15 @@ function CreateArrow(speed, pozX, number, notes, music)
     local last = nil
     local swapScale = 0
     local arrow = {
-        frame = nil,
-        type = type,
-        isline = false,
-        y = 0,
-        swaped = false,
-        line = nil,
+        frame   = nil,
+        type    = type,
+        isline  = false,
+        y       = 0,
+        swaped  = false,
+        line    = nil,
         removed = false,
         mistake = false, -- первый приоритет у обработки ошибки при наверном нажатии
-        number=number,
+        number  = number,
     }
     if number > 1 and number < #notes then
         durations = notes[number + 1] - notes[number] --попытка автопросчёта длительности звука
@@ -501,9 +517,9 @@ function CreateArrow(speed, pozX, number, notes, music)
                 local amount = 5
                 if SONG == 1 then
                     amount = 5
-                elseif SONG == 2 and number>110 and number<180 then
+                elseif SONG == 2 and number > 110 and number < 180 then
                     --print(number)
-                    amount=1
+                    amount = 1
                 end
                 Damage(amount)
                 --print("Too late", arrow.y)

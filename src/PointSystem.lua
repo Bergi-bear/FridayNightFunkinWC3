@@ -28,11 +28,14 @@ function AddPoint(points)
         CreateFlyPoint(points)
     end
     --print(enc(I2S(GPoint)))
-    SaveResult(enc(I2S(GPoint)))
+    SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
+
     if not LockedState[2] then
         if GPoint >= PointForUnlock[2] then
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
+            CreateSelections(IcoOfSongsLocked[2],5)
             LockedState[2] = true
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
 
     end
@@ -40,6 +43,7 @@ function AddPoint(points)
         if GPoint >= PointForUnlock[3] then
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
+            CreateSelections(IcoOfSongsLocked[3],5)
         end
 
     end
