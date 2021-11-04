@@ -251,7 +251,9 @@ function getFirstArrow()
     for _, k in ipairs(arrows.list) do
         local delta = math.abs(arrows.y - k.y)
         if delta < 0.08 then
+
             if not k.swaped and not k.mistake then
+                State4Key(k.y)
                 return k
             end
         end
@@ -287,7 +289,7 @@ function KeyPressed(key)
                     if arrow.y < 0.61 and arrow.y > 0.4 then
                         --print("succes", arrow.y)
                         GHP = GHP - 5
-                        AddPoint(100)
+                        AddPoint(100*STREAK)
                         BlzFrameSetTexture(arrows.up[type + 6], arrows.lighted[type], 0, true)
                         BlzFrameSetVisible(arrow.frame, false)
                         CreateSquack(arrows.X[type + 6], arrows.Y[type])
@@ -348,6 +350,7 @@ function KeyPressed(key)
                             amount = 3
                         end
                         Damage(amount)
+
                         --print("не правильная кнопка")
                     end
                 end

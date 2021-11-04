@@ -6,6 +6,7 @@
 GameIsDefeat=false
 function Damage(amount)
     normal_sound("Mistake", 0, 0)
+    CreateState("shit")
     SetUnitAnimationByIndex(GPlayer, GetRandomInt(23,24))
     QueueUnitAnimationBJ(GPlayer, "stand ready")
     GHP = GHP + amount
