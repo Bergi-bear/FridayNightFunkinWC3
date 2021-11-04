@@ -56,7 +56,7 @@ function StarAllSound(numberSong)
         --print("Второй песни ещё не существует")
     elseif numberSong == 3 then
         SONG = 3
-        print("И третьей тоже")
+        print("Эта песня ещё не готова, спасибо за игру")
     end
     if not ready then
         CreateHPBar("20")

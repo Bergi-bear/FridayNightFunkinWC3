@@ -44,5 +44,5 @@ function CreateSimpleFrameGlue(posX, PosY, texture, call)
         mouseOnFrame=false
         --BlzFrameSetVisible(tt[1],false)
     end)
-    return SelfFrame
+    return SelfFrame,buttonIconFrame
 end

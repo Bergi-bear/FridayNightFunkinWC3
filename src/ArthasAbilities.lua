@@ -41,6 +41,8 @@ function MudaMuda()
                     end)
                     TimerStart(CreateTimer(), 0.6, false, function()
                         UnitRemoveAbility(GEnemy, FourCC("A001"))
+                        AddSpecialEffect("Objects\\Spawnmodels\\Undead\\UndeadBlood\\UndeadBloodAbomination.mdl",GetUnitXY(GPlayer))
+                        ShowUnit(GPlayer,false)
                         MUDA = false
                     end)
                 end)

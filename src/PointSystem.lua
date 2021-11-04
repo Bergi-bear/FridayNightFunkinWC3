@@ -10,13 +10,13 @@ function CreatePointInterFace()
     BlzFrameSetParent(frame, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetTexture(frame, ico, 0, true)
     BlzFrameSetSize(frame, 0.04, 0.04)
-    BlzFrameSetAbsPoint(frame, FRAMEPOINT_CENTER, 0.85, 0.55)
+    BlzFrameSetAbsPoint(frame, FRAMEPOINT_CENTER, 0.83, 0.55)
 
     local text = BlzCreateFrameByType("TEXT", "ButtonChargesText", frame, "", 0)
     BlzFrameSetParent(text, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetText(text, "0")
     BlzFrameSetScale(text, 2)
-    BlzFrameSetPoint(text, FRAMEPOINT_RIGHT, frame, FRAMEPOINT_RIGHT, 0.02, 0.0)
+    BlzFrameSetPoint(text, FRAMEPOINT_RIGHT, frame, FRAMEPOINT_RIGHT, 0.025, 0.0)
     GPointTextFrame = text
 end
 
@@ -24,7 +24,25 @@ function AddPoint(points)
     GPoint = GPoint + points
     local descriptions = R2I(I2S(GPoint))
     BlzFrameSetText(GPointTextFrame, descriptions)
-    CreateFlyPoint(points)
+    if points > 0 then
+        CreateFlyPoint(points)
+    end
+    --print(enc(I2S(GPoint)))
+    SaveResult(enc(I2S(GPoint)))
+    if not LockedState[2] then
+        if GPoint >= PointForUnlock[2] then
+            BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
+            LockedState[2] = true
+        end
+
+    end
+    if not LockedState[3] then
+        if GPoint >= PointForUnlock[3] then
+            BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
+            LockedState[3] = true
+        end
+
+    end
 end
 
 function CreateFlyPoint(descriptions)
