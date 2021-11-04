@@ -13,7 +13,7 @@ function Damage(amount)
         --print("toasty")
         CreateToasty()
     end
-    if GHP>=105 then
+    if GHP>=101 then
         if not VICTORY then
             GHP=100
             BreakCurrentLevel()

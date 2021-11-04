@@ -250,7 +250,7 @@ end
 function getFirstArrow()
     for _, k in ipairs(arrows.list) do
         local delta = math.abs(arrows.y - k.y)
-        if delta < 0.04 then
+        if delta < 0.08 then
             if not k.swaped and not k.mistake then
                 return k
             end
@@ -345,7 +345,7 @@ function KeyPressed(key)
                         if SONG == 1 then
                             amount = 5
                         elseif SONG == 2 and arrow.number > 110 and arrow.number < 180 then
-                            amount = 1
+                            amount = 3
                         end
                         Damage(amount)
                         --print("не правильная кнопка")
@@ -519,7 +519,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                     amount = 5
                 elseif SONG == 2 and number > 110 and number < 180 then
                     --print(number)
-                    amount = 1
+                    amount = 3
                 end
                 Damage(amount)
                 --print("Too late", arrow.y)

@@ -9,23 +9,27 @@ LockedState = { true, false, false }
 PointForUnlock={0,10000,50000}
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
-    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4, "BTNsos", function()
+    ttBox,_,ttText=CreateToolTipBox()
+
+    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4, "BTNsos",1, function()
         StartNewSong(1)
     end)
 
-    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.04, "lockedicon", function()
+    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.04, "lockedicon",2, function()
         if LockedState[2] then
             StartNewSong(2)
         else
-            print("Необходимо", PointForUnlock[2], "очков")
+            --print("Необходимо", PointForUnlock[2], "очков")
+            normal_sound("Sound\\Interface\\Error")
         end
     end)
 
-    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.08, "lockedicon", function()
+    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.08, "lockedicon",3, function()
         if LockedState[3] then
             StartNewSong(3)
         else
-            print("Необходимо", PointForUnlock[3], "очков")
+            --print("Необходимо", PointForUnlock[3], "очков")
+            normal_sound("Sound\\Interface\\Error")
         end
 
     end)
