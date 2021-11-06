@@ -208,41 +208,36 @@ function StartArrow(notes, arrowPos, music)
     local keys = {
         left  = {
             key = {
+                G_OSKEY_LEFT,
                 OSKEY_LEFT,
-                OSKEY_A
+                --OSKEY_A
             },
         },
         right = {
             key = {
+                G_OSKEY_RIGHT,
                 OSKEY_RIGHT,
-                OSKEY_D
+                --OSKEY_D
             },
         },
         up    = {
             key = {
+                G_OSKEY_UP,
                 OSKEY_UP,
-                OSKEY_W
+                --OSKEY_W
             },
         },
         down  = {
             key = {
-                OSKEY_DOWN,
-                OSKEY_S
+                G_OSKEY_DOWN
+                --OSKEY_DOWN,
+                --OSKEY_S
             },
         }
     }
 
-    for v, k in pairs(keys) do
-        local trigger = CreateTrigger()
-        local key = k.key
-        TriggerAddAction(trigger, function()
-            KeyPressed(v)
-        end)
-        for v, k in pairs(key) do
-            BlzTriggerRegisterPlayerKeyEvent(trigger, Player(0), k, 0, true)
-            BlzTriggerRegisterPlayerKeyEvent(trigger, Player(0), k, 0, false)
-        end
-    end
+    CreateKeyTrigger(keys)
+    --DestroyKeyTrigger()
 
 
 end

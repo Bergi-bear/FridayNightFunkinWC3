@@ -1,16 +1,16 @@
 ﻿STRING 1
 {
-Здание
+WFNF
 }
 
 STRING 2
 {
-Здание
+18+
 }
 
 STRING 3
 {
-Здание
+Use WASD or Arrows
 }
 
 STRING 4
@@ -41,5 +41,10 @@ STRING 9
 // Abilities: A001 (Молот в правой руке), Name (Name)
 {
 Молот в правой руке
+}
+
+STRING 10
+{
+Bergi?
 }
 
