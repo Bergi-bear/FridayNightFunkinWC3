@@ -19,6 +19,9 @@ end
 function AllPreload()
     StopSound(normal_sound("All"), true, false)
     StopSound(normal_sound("zavodila"), true, false)
+    StopSound(normal_sound("HankMP3"), true, false)
+    StopSound(normal_sound("Fresh"), true, false)
+
 end
 
 

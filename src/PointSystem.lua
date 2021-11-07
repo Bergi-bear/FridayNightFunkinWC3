@@ -44,8 +44,16 @@ function AddPoint(points)
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
             CreateSelections(IcoOfSongsLocked[3],5)
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
-
+    end
+    if not LockedState[4] then
+        if GPoint >= PointForUnlock[4] then
+            BlzFrameSetTexture(IcoOfSongsLocked[4], "BTNFresh", 0, true)
+            LockedState[4] = true
+            CreateSelections(IcoOfSongsLocked[4],5)
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
+        end
     end
 end
 

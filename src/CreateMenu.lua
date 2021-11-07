@@ -5,8 +5,8 @@
 ---
 EMPTY = nil
 IcoOfSongsLocked = {}
-LockedState = { true, false, false }
-PointForUnlock={0,10000,50000}
+LockedState = { true, false, false ,false}
+PointForUnlock={0,10000,50000,0}
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
     ttBox,_,ttText=CreateToolTipBox()
@@ -27,6 +27,16 @@ function CreateSongMenus()
     EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.08, "lockedicon",3, function()
         if LockedState[3] then
             StartNewSong(3)
+        else
+            --print("Необходимо", PointForUnlock[3], "очков")
+            normal_sound("Sound\\Interface\\Error")
+        end
+
+    end)
+
+    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.12, "lockedicon",4, function()
+        if LockedState[4] then
+            StartNewSong(4)
         else
             --print("Необходимо", PointForUnlock[3], "очков")
             normal_sound("Sound\\Interface\\Error")

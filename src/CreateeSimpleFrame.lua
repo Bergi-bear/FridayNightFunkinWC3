@@ -35,13 +35,13 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
         mouseOnFrame = true
         BlzFrameSetVisible(ttBox, true)
         if number == 1 then
-            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность:: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
         end
         if number == 2 then
             if not LockedState[number] then
                 BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность:: ") .. " средняя" .. ColorText2("\nЧисло нот:") .. "  603 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот:") .. "  603 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
 
@@ -49,10 +49,16 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
             if not LockedState[number] then
                 BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность:: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  неизвестно \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  неизвестно \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
-        --SetTooltipText(tt[3],"Очистить экран от сообщений")
+        if number == 4 then
+            if not LockedState[number] then
+                BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
+            else
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот:") .. "  167 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            end
+        end
 
     end)
     local TrigMOUSE_LEAVE = CreateTrigger()
@@ -78,7 +84,7 @@ function CreateToolTipBox()
     BlzFrameSetSize(text, 0.2 * .75, 0.15 * .9)
     BlzFrameSetPoint(backdrop, FRAMEPOINT_CENTER, tooltip, FRAMEPOINT_CENTER, 0.0, 0.0)
     BlzFrameSetAlpha(backdrop, 100)
-    BlzFrameSetText(text, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность:: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+    BlzFrameSetText(text, "ОШИБКА Первичное описание ещё не обновлено")
     BlzFrameSetPoint(text, FRAMEPOINT_CENTER, tooltip, FRAMEPOINT_CENTER, 0.04, 0.0)
     BlzFrameSetVisible(tooltip, false)
     return tooltip, backdrop, text

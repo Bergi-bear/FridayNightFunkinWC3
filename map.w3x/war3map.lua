@@ -326,13 +326,13 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
         mouseOnFrame = true
         BlzFrameSetVisible(ttBox, true)
         if number == 1 then
-            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность:: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
         end
         if number == 2 then
             if not LockedState[number] then
                 BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность:: ") .. " средняя" .. ColorText2("\nЧисло нот:") .. "  603 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот:") .. "  603 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
 
@@ -340,10 +340,16 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
             if not LockedState[number] then
                 BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность:: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  неизвестно \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  неизвестно \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
-        --SetTooltipText(tt[3],"Очистить экран от сообщений")
+        if number == 4 then
+            if not LockedState[number] then
+                BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
+            else
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот:") .. "  167 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            end
+        end
 
     end)
     local TrigMOUSE_LEAVE = CreateTrigger()
@@ -369,7 +375,7 @@ function CreateToolTipBox()
     BlzFrameSetSize(text, 0.2 * .75, 0.15 * .9)
     BlzFrameSetPoint(backdrop, FRAMEPOINT_CENTER, tooltip, FRAMEPOINT_CENTER, 0.0, 0.0)
     BlzFrameSetAlpha(backdrop, 100)
-    BlzFrameSetText(text, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность:: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+    BlzFrameSetText(text, "ОШИБКА Первичное описание ещё не обновлено")
     BlzFrameSetPoint(text, FRAMEPOINT_CENTER, tooltip, FRAMEPOINT_CENTER, 0.04, 0.0)
     BlzFrameSetVisible(tooltip, false)
     return tooltip, backdrop, text
@@ -386,8 +392,8 @@ end
 ---
 EMPTY = nil
 IcoOfSongsLocked = {}
-LockedState = { true, false, false }
-PointForUnlock={0,10000,50000}
+LockedState = { true, false, false ,false}
+PointForUnlock={0,10000,50000,0}
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
     ttBox,_,ttText=CreateToolTipBox()
@@ -408,6 +414,16 @@ function CreateSongMenus()
     EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.08, "lockedicon",3, function()
         if LockedState[3] then
             StartNewSong(3)
+        else
+            --print("Необходимо", PointForUnlock[3], "очков")
+            normal_sound("Sound\\Interface\\Error")
+        end
+
+    end)
+
+    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.12, "lockedicon",4, function()
+        if LockedState[4] then
+            StartNewSong(4)
         else
             --print("Необходимо", PointForUnlock[3], "очков")
             normal_sound("Sound\\Interface\\Error")
@@ -721,11 +737,10 @@ do
     function InitGlobals()
         InitGlobalsOrigin()
         TimerStart(CreateTimer(), .5, false, function()
-            Preload("All")
-            Preload("zavodila")
-            Preloader("All")
-            Preloader("zavodila")
-
+            --Preload("All")
+            --Preload("zavodila")
+            --Preloader("All")
+            --Preloader("zavodila")
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
             ReturnFPS()
@@ -767,6 +782,11 @@ function StarAllSound(numberSong)
         GameSpeed = 0.454 -- сдви 0.005 добавил
         StartArrow(Zavodila, ZavodilaPOS, "zavodila")
         --print("Второй песни ещё не существует")
+    elseif numberSong == 4 then
+        SONG = 4
+        GameSpeed = 0.5 -- сдви 0.005 добавил
+        --print("и где музыка из фреша")
+        StartArrow(Fresh, FreshPos, "Fresh")
     elseif numberSong == 3 then
         SONG = 3
         --print("Эта песня ещё не готова, спасибо за игру")
@@ -1764,8 +1784,16 @@ function AddPoint(points)
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
             CreateSelections(IcoOfSongsLocked[3],5)
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
-
+    end
+    if not LockedState[4] then
+        if GPoint >= PointForUnlock[4] then
+            BlzFrameSetTexture(IcoOfSongsLocked[4], "BTNFresh", 0, true)
+            LockedState[4] = true
+            CreateSelections(IcoOfSongsLocked[4],5)
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
+        end
     end
 end
 
@@ -1822,6 +1850,9 @@ end
 function AllPreload()
     StopSound(normal_sound("All"), true, false)
     StopSound(normal_sound("zavodila"), true, false)
+    StopSound(normal_sound("HankMP3"), true, false)
+    StopSound(normal_sound("Fresh"), true, false)
+
 end
 
 
@@ -2162,6 +2193,95 @@ ArroPos = { 4, 3,
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 07.11.2021 3:56
+---
+Fresh = {--167
+    0,
+    16.5, 17, 18,
+    20.5, 21, 22,
+    24.5, 25, 25.5, 26,
+    28.5, 29, 29.5, 30,
+    32.5, 33, 33.5, 34,
+    36.5, 37, 37.5, 38, 39,
+    --подписку
+    40, 40.5, 41.5, 42, 42.5, 43.5,
+    44, 44.5, 45.5, 46, 46.5, 47.5,
+    --та та тата тата
+    48, 49, 50, 50.5, 51,
+    52, 52.5, 53, 53.5, 54, 54.5, 55,
+    56, 57, 58, 58.5, 59,
+    60, 60.5, 61, 61.5, 62, 62.5, 63,
+    -- переход
+    65, 65.5, 66, 66.5, 67, 67.5,
+    68.5, 69, 69.5, 70, 71,
+    73, 73.5, 74, 74.5, 75, 75.5,
+    76.5, 77, 77.5, 78, 79,
+    --80
+    80.5, 81, 82, 83, 83.5,
+    84.5, 85, 86, 87, 87.5,
+    88.5, 89, 89.5, 90, 91.5,
+    92.5, 93, 93.5, 94, 95.5,
+    96.5, 97, 97.5, 98,
+    100.5, 101, 101.5, 102, 103,
+    -- ти та подписку та
+    104, 104.5, 105.5, 106, 106.5, 107.5,
+    108, 108.5, 109.5, 110, 110.5, 111.5,
+    --та та тата тата
+    112, 113, 114, 114.5, 115,
+    116, 116.5, 117, 117.5, 118, 118.5, 119,
+    120, 121, 122, 122.5, 123,
+    124, 124.5, 125, 125.5, 126, 126.5, 127,
+    --финалочка
+    129, 129.5, 130, 130.5, 131, 131.5,
+    132.5, 133, 133.5, 134, 135,
+    137, 137.5, 138, 138.5, 139, 139.5,
+    140.5, 141, 141.5, 142, 143,
+}
+
+FreshPos = { --167
+    1,
+    1, 2, 3,
+    7, 8, 9,
+    4, 3, 2, 1,
+    10, 9, 8, 7,
+    3, 2, 3, 1,
+    9, 8, 9, 7,8,
+    --подписку
+    4, 3, 3, 2, 1, 2,
+    10, 9, 9, 8, 7, 8,
+    --та та тата тата
+    1, 4, 1, 1, 4,
+    1, 1, 4, 1, 2, 3, 4,
+    7, 10, 7, 7, 10,
+    7, 7, 10, 7, 8, 9, 10,
+    --финалочка
+    2, 1, 2, 1, 2, 3, 4, 3, 2, 3, 2, -- 11
+    8, 7, 8, 7, 8, 9, 10, 9, 8, 9, 8,
+    --80
+    2, 1, 2, 2, 2,
+    8, 7, 8, 8, 8,
+    4, 3, 2, 1, 1,
+    10, 9, 8, 7, 7,
+    --96
+    2, 1, 2, 1,
+    8, 7, 8, 7, 8,
+    --подписку
+    4, 3, 3, 2, 1, 2,
+    10, 9, 9, 8, 7, 8,
+    --та та тата тата
+    1, 4, 1, 1, 4,
+    1, 1, 4, 1, 2, 3, 4,
+    7, 10, 7, 7, 10,
+    7, 7, 10, 7, 8, 9, 10,
+    --финалочка
+    2, 1, 2, 1, 2, 3, 4, 3, 2, 3, 2,
+    8, 7, 8, 7, 8, 9, 10, 9, 8, 9, 8
+
+
+}
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 04.11.2021 16:53
 ---
 --Это не настоящие ноты ханка, у меня нет хенка в целом  настоящие
@@ -2174,6 +2294,62 @@ HankTablePOS = {
     2, 1, 2, 3, 4, 3, 2, 1, 1, 4, 1, 4, 1, 4, 1, 3,
     2, 1, 2, 3, 4, 3, 2, 1, 2, 1, 2, 3, 4, 3, 4, 3,
     4, 3, 2, 3, 4, 3, 2, 1, 2, 3, 4, 1,
+}
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bear.
+--- DateTime: 07.11.2021 15:56
+---
+Milf = {
+    --вступление бот
+    0, 1, 2, 2.25,2.5,2.75,3,3.5,
+    4.5,5.5,6,6.5,7,7.5,
+    8,9,10,10.25,10.5,10.75,11,11.5,
+    12.5,13.5,14,14.5,15,15.25,15.5,
+    -- вступление игрок
+    16,17,18,18.25,18.5,18.75,19,19.5,
+    20.5,21.5,22,22.5,23,23.5,
+    24,25,26,26.25,26.5,26.75,27,27.5,
+    28.5,29.5,30,30.5,31,31.25,31.5,
+    --мелодия с длинной ноты
+    32,35,35.5,
+    37.25,37.5,38.5,39.5,
+    40.5,40.75,41,42,43,
+    44,44.5,45,45.5,46,46.5,47,47.5,
+    --игрок
+    48,51,51.5,53.25,53.5,54.5,55.5,56.5,56.75,57,58,59,60,60.5,61,61.5,62,62.5,63,63.5,
+    --66 тайминг 17 такт
+    64.5,64.75,65,65.5,66,66.5,67.5,
+    68.25,68.75,69.25,69.75,70.25,71.5,
+    72.25,72.5,72.75,73,73.75,74,74.75,75.25,
+    76.5,77,77.5,78,78.5,79,79.5,
+    --игрок
+    80.5,80.75,81,81.5,82,82.5,83.5,84.25,84.75,85.25,85.75,86.25,87.5,88.25,88.5,88.75,89,89.75,90,90.75,91.25,92.5,93,93.5,94,94.5,95,95.5,
+    --слоу момент 96
+    96,99,99.5,
+    100,101,102,103,103.25,103.5,
+    104,104.5,105,105.5,106,106.5,107,107.5,
+    108,108.5,109,109.5,110,111,
+    --игрок 112
+    112,115,115.5,116,117,118,119,119.25,119.5,120,120.5,121,121.5,122,122.5,123,123.5,124,124.5,125,125.5,126,127,
+    -- мелодия с длинной ноты - повтор
+    128,131,131.5,133.25,133.5,134.5,135.5,136.5,136.75,137,138,139,140,140.5,141,141.5,142,142.5,143,143.5,
+    144,147,147.5,149.25,149.5,150.5,151.5,152.5,152.75,153,154,155,156,156.5,157,157.5,158,158.5,159,159.5,
+    -- триолли
+    160,160.5,161,161.5,162,162.5,163,163.25,163.5,
+    164,164.5,165,165.5,166,166.5,167,167.25,167.5,
+    168,168.25,168.5,169,169.25,169.5,170,170.25,170.5,171,171.25,171.5,
+    172,172.25,172.5,173,173.25,173.5,174,174.25,174.5,175,175.25,175.5,
+    --триолли игрок
+    176,176.5,177,177.5,178,178.5,179,179.25,179.5,180,180.5,181,181.5,182,182.5,183,183.25,183.5,184,184.25,184.5,185,185.25,185.5,186,186.25,186.5,187,187.25,187.5,188,188.25,188.5,189,189.25,189.5,190,190.25,190.5,191,191.25,191.5,
+    -- повтор 64 сложного момента
+    192.5,192.75,193,193.5,194,194.5,195.5,196.25,196.75,197.25,197.75,198.25,199.5,200.25,200.5,200.75,201,201.75,202,202.75,203.25,204.5,205,205.5,206,206.5,207,207.5,
+    -- а у игрока друга партия написано с ошибкой
+
+    208,208.5,209.25,210.25,210.75,211.25,211.75,
+    --одновременный момент, но будет игрть только бот
+    224
+
 }
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)

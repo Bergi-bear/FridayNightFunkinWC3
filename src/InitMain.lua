@@ -8,11 +8,10 @@ do
     function InitGlobals()
         InitGlobalsOrigin()
         TimerStart(CreateTimer(), .5, false, function()
-            Preload("All")
-            Preload("zavodila")
-            Preloader("All")
-            Preloader("zavodila")
-
+            --Preload("All")
+            --Preload("zavodila")
+            --Preloader("All")
+            --Preloader("zavodila")
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
             ReturnFPS()
@@ -54,6 +53,11 @@ function StarAllSound(numberSong)
         GameSpeed = 0.454 -- сдви 0.005 добавил
         StartArrow(Zavodila, ZavodilaPOS, "zavodila")
         --print("Второй песни ещё не существует")
+    elseif numberSong == 4 then
+        SONG = 4
+        GameSpeed = 0.5 -- сдви 0.005 добавил
+        --print("и где музыка из фреша")
+        StartArrow(Fresh, FreshPos, "Fresh")
     elseif numberSong == 3 then
         SONG = 3
         --print("Эта песня ещё не готова, спасибо за игру")
