@@ -56,13 +56,14 @@ function StartNewSong(number)
         else
             if IsUnitHidden(GPlayer) then
                 AddSpecialEffect("Abilities\\Spells\\Human\\Resurrect\\ResurrectTarget.mdl", GetUnitXY(GPlayer))
+                SetUnitAnimation(GEnemy,"spell")
             end
             ShowUnit(GPlayer, true)
             restartReady = false
             GameIsDefeat = false
             GHP = 50
             BreakCurrentLevel()
-            SetUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+            SetUnitAnimation(GEnemy, "Stand Ready")
             SetUnitAnimation(GPlayer, "Stand Ready")
             StarAllSound(number)
             TimerStart(CreateTimer(), 1, false, function()

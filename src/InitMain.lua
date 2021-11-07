@@ -189,7 +189,7 @@ function StartArrow(notes, arrowPos, music)
                 --print(i)
                 CreateArrow(0.01, step, i, notes, music)
                 if step <= 4 then
-                    --SetCameraTargetControllerNoZForPlayer(Player(0), gg_unit_Hart_0002, 10, 10, true)
+
                     TimerStart(CreateTimer(), 0.1, false, function()
                         PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
 
@@ -284,7 +284,7 @@ function KeyPressed(key)
                     if arrow.y < 0.61 and arrow.y > 0.4 then
                         --print("succes", arrow.y)
                         GHP = GHP - 5
-                        AddPoint(100*STREAK)
+                        AddPoint(100 * STREAK)
                         BlzFrameSetTexture(arrows.up[type + 6], arrows.lighted[type], 0, true)
                         BlzFrameSetVisible(arrow.frame, false)
                         CreateSquack(arrows.X[type + 6], arrows.Y[type])
@@ -342,7 +342,7 @@ function KeyPressed(key)
                         if SONG == 1 then
                             amount = 5
                         elseif SONG == 2 and arrow.number > 110 and arrow.number < 180 then
-                            amount = 3
+                            amount = 1
                         end
                         Damage(amount)
 
@@ -356,6 +356,8 @@ function KeyPressed(key)
     if arrows.keyPressed and not BlzGetTriggerPlayerIsKeyDown() then
         arrows.keyPressed = false
 
+        QueueUnitAnimation(GPlayer, "stand ready")
+        --print("Кнопка отпущена")
     end
 
 
@@ -444,6 +446,24 @@ function CreateArrow(speed, pozX, number, notes, music)
             arrows.lineTime = durations - 0.5
         end
     end
+    if number == #notes then
+        --print("финальная нота должна быть длинной")
+        if SONG==1 then
+            durations = 2
+            arrow.isline = true
+            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
+            arrow.line = last
+            arrows.lineTime = durations - 0.5
+        end
+          if SONG==2 then
+            durations = 4
+            arrow.isline = true
+            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
+            arrow.line = last
+            arrows.lineTime = durations - 0.5
+        end
+
+    end
     local texture = arrows.standart[type]
     local x, y = arrows.x, 0
     local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
@@ -483,7 +503,7 @@ function CreateArrow(speed, pozX, number, notes, music)
             PlayArthasAnimation(type, durations, number)
             --Camera2Right = false
             --Camera2Left = true
-            --PanCameraToTimed(GetUnitX(gg_unit_Hart_0002), GetUnitY(gg_unit_Hart_0002), 1)
+
             --print("камера на артасе",durations)
             if not arrow.line then
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
@@ -517,7 +537,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                     amount = 5
                 elseif SONG == 2 and number > 110 and number < 180 then
                     --print(number)
-                    amount = 3
+                    amount = 1
                 end
                 Damage(amount)
                 --print("Too late", arrow.y)
@@ -551,9 +571,9 @@ function PlayArthasAnimation(type, durations, number)
         ArthasDamage()
         --print("удар",number)
     end
-    SetUnitAnimationByIndex(gg_unit_Hart_0002, anim[type])
+    SetUnitAnimationByIndex(GEnemy, anim[type])
     ArthasIdle = ArthasIdle + durations * 0.6
-    -- QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+
 
 end
 
@@ -563,10 +583,9 @@ function PlayUnitAnimationFromChat()
     TriggerRegisterPlayerChatEvent(this, Player(1), "", true)
     TriggerAddAction(this, function()
         local s = S2I(GetEventPlayerChatString())
-        SetUnitAnimationByIndex(gg_unit_Hart_0002, s)
+        SetUnitAnimationByIndex(GEnemy, s)
         SetUnitAnimationByIndex(GPlayer, s)
         -- CreateSquack()
-        ----print(GetUnitName(gg_unit_Hart_0002).." "..s)
     end)
 end
 
@@ -578,7 +597,7 @@ function StartArthasStateMachine()
             ArthasIdle = 0
             --print("сброс")
             --print("сброс")
-            QueueUnitAnimation(gg_unit_Hart_0002, "Stand Ready")
+            QueueUnitAnimation(GEnemy, "Stand Ready")
         end
     end)
 end
@@ -598,7 +617,7 @@ function StartPeonStateMachine()
                 if resetON then
                     --print("сброс анмации пеона", PeonIdle)
                     resetON = false
-                    QueueUnitAnimation(gg_unit_opeo_0003, "Stand Ready")
+                    QueueUnitAnimation(GPlayer, "Stand Ready")
 
                 end
             else
