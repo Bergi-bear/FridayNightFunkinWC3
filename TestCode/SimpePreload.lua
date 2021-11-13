@@ -10,6 +10,7 @@ do
         InitGlobalsOrigin()
 
         TimerStart(CreateTimer(), 1, false, function()
+            DestroyTimer(GetExpiredTimer())
             InitPreloadStartSimple()
             SaveResult(math.floor(GameStartCount + 1))
         end)

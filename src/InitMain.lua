@@ -8,6 +8,7 @@ do
     function InitGlobals()
         InitGlobalsOrigin()
         TimerStart(CreateTimer(), .5, false, function()
+            DestroyTimer(GetExpiredTimer())
             --Preload("All")
             --Preload("zavodila")
             --Preloader("All")
@@ -60,8 +61,8 @@ function StarAllSound(numberSong)
         StartArrow(Fresh, FreshPos, "Fresh")
     elseif numberSong == 5 then
         SONG = 5
-        GameSpeed = 0.25 -- сдви 0.005 добавил
-        print("старт музыки из милф")
+        GameSpeed = 0.331 --
+        --print("старт музыки из милф")
         StartArrow(Milf, MilfPos, "Milf")
     elseif numberSong == 3 then
         SONG = 3
@@ -74,7 +75,7 @@ function StarAllSound(numberSong)
         CreateJojoReference(10, true)
 
         TimerStart(CreateTimer(), 5, false, function()
-
+            DestroyTimer(GetExpiredTimer())
             TimerStart(CreateTimer(), 0.15, true, function()
                 Damage(1)
                 if REFERENCE then
@@ -84,6 +85,7 @@ function StarAllSound(numberSong)
         end)
 
         TimerStart(CreateTimer(), 10, false, function()
+            DestroyTimer(GetExpiredTimer())
             BreakCurrentLevel()
         end)
     else
@@ -190,6 +192,7 @@ function StartArrow(notes, arrowPos, music)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
             TimerStart(t, notes[i] * GameSpeed, false, function()
+                DestroyTimer(GetExpiredTimer())
                 local step = nil
                 if arrowPos[i] then
                     step = arrowPos[i]
@@ -204,7 +207,7 @@ function StartArrow(notes, arrowPos, music)
 
                     TimerStart(CreateTimer(), 0.1, false, function()
                         PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
-
+                        DestroyTimer(GetExpiredTimer())
                     end)
 
                 else
@@ -304,7 +307,7 @@ function KeyPressed(key)
                         if not arrow.isline then
                             TimerStart(CreateTimer(), 0.1, false, function()
                                 BlzFrameSetTexture(arrows.up[type + 6], arrows.static[type], 0, true)
-
+                                DestroyTimer(GetExpiredTimer())
                             end)
                         else
                             TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
@@ -367,8 +370,9 @@ function KeyPressed(key)
     end
     if arrows.keyPressed and not BlzGetTriggerPlayerIsKeyDown() then
         arrows.keyPressed = false
-
-        QueueUnitAnimation(GPlayer, "stand ready")
+        if not GameIsDefeat then
+            QueueUnitAnimation(GPlayer, "stand ready")
+        end
         --print("Кнопка отпущена")
     end
 
@@ -521,6 +525,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
                 TimerStart(CreateTimer(), 0.1, false, function()
                     BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
+
                 end)
                 BlzFrameSetVisible(image, false)
 

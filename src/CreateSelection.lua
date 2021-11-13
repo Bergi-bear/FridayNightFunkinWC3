@@ -14,6 +14,7 @@ function CreateSelections(frame_relative, timed)
     BlzFrameSetModel(new_Frame, "selecter5.mdx", 0)
 
     TimerStart(CreateTimer(), timed, false, function()
+        DestroyTimer(GetExpiredTimer())
        BlzDestroyFrame(new_Frame)
     end)
 end

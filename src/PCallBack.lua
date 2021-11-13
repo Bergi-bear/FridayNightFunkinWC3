@@ -20,7 +20,7 @@ function DestroyTimer(t)
     if t == nil then
         t = GetExpiredTimer()
         if t == nil then
-            --print("в функцию разрушения таймера передано что-то нето")
+            --print("в функцию разрушения таймера передано что-то не то")
             return
         end
 

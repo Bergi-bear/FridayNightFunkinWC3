@@ -95,10 +95,11 @@ function ArthasDamage()
     TimerStart(CreateTimer(), 0.4, false, function()
         Damage(30)
         DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
+        DestroyTimer(GetExpiredTimer())
     end)
     TimerStart(CreateTimer(), 0.6, false, function()
         UnitRemoveAbility(GEnemy, FourCC("A001"))
-
+        DestroyTimer(GetExpiredTimer())
     end)
 
 end
@@ -108,8 +109,10 @@ function MudaMuda()
     MUDA=true
     TimerStart(CreateTimer(), 3, false, function()
         UnitAddAbility(GEnemy, FourCC("A001"))
+        DestroyTimer(GetExpiredTimer())
     end)
     TimerStart(CreateTimer(), 3.5, false, function()
+        DestroyTimer(GetExpiredTimer())
         local i = 0
         SetUnitTimeScale(GEnemy, 3)
         TimerStart(CreateTimer(), 0.2, true, function()
@@ -122,11 +125,14 @@ function MudaMuda()
                 SetUnitTimeScale(GEnemy, 1)
 
                 TimerStart(CreateTimer(), 0.2, false, function()
+                    DestroyTimer(GetExpiredTimer())
                     SetUnitAnimationByIndex(GEnemy, 3)
                     TimerStart(CreateTimer(), 0.4, false, function()
+                        DestroyTimer(GetExpiredTimer())
                         DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
                     end)
                     TimerStart(CreateTimer(), 0.6, false, function()
+                        DestroyTimer(GetExpiredTimer())
                         UnitRemoveAbility(GEnemy, FourCC("A001"))
                         AddSpecialEffect("Objects\\Spawnmodels\\Undead\\UndeadBlood\\UndeadBloodAbomination.mdl",GetUnitXY(GPlayer))
                         ShowUnit(GPlayer,false)
@@ -480,6 +486,7 @@ function StartNewSong(number)
             SetUnitAnimation(GPlayer, "Stand Ready")
             StarAllSound(number)
             TimerStart(CreateTimer(), 1, false, function()
+                DestroyTimer(GetExpiredTimer())
                 restartReady = true
             end)
         end
@@ -503,6 +510,7 @@ function CreateSelections(frame_relative, timed)
     BlzFrameSetModel(new_Frame, "selecter5.mdx", 0)
 
     TimerStart(CreateTimer(), timed, false, function()
+        DestroyTimer(GetExpiredTimer())
        BlzDestroyFrame(new_Frame)
     end)
 end
@@ -532,6 +540,7 @@ function Damage(amount)
             local t={"fnf_loss_sfx","fnf_loss_sfx-pixel"}
             normal_sound(t[GetRandomInt(1,#t)])
             TimerStart(CreateTimer(), 2, false, function()
+                DestroyTimer(GetExpiredTimer())
                 if GameIsDefeat then
                     MudaMuda()
                 end
@@ -554,6 +563,7 @@ do
         InitGlobalsOrigin()
 
         TimerStart(CreateTimer(), 1, false, function()
+            DestroyTimer(GetExpiredTimer())
             if not BlzLoadTOCFile("war3mapimported\\so.toc") then
                 print("eeloadtoc")
             end
@@ -753,6 +763,7 @@ do
     function InitGlobals()
         InitGlobalsOrigin()
         TimerStart(CreateTimer(), .5, false, function()
+            DestroyTimer(GetExpiredTimer())
             --Preload("All")
             --Preload("zavodila")
             --Preloader("All")
@@ -805,8 +816,8 @@ function StarAllSound(numberSong)
         StartArrow(Fresh, FreshPos, "Fresh")
     elseif numberSong == 5 then
         SONG = 5
-        GameSpeed = 0.25 -- сдви 0.005 добавил
-        print("старт музыки из милф")
+        GameSpeed = 0.331 --
+        --print("старт музыки из милф")
         StartArrow(Milf, MilfPos, "Milf")
     elseif numberSong == 3 then
         SONG = 3
@@ -819,7 +830,7 @@ function StarAllSound(numberSong)
         CreateJojoReference(10, true)
 
         TimerStart(CreateTimer(), 5, false, function()
-
+            DestroyTimer(GetExpiredTimer())
             TimerStart(CreateTimer(), 0.15, true, function()
                 Damage(1)
                 if REFERENCE then
@@ -829,6 +840,7 @@ function StarAllSound(numberSong)
         end)
 
         TimerStart(CreateTimer(), 10, false, function()
+            DestroyTimer(GetExpiredTimer())
             BreakCurrentLevel()
         end)
     else
@@ -935,6 +947,7 @@ function StartArrow(notes, arrowPos, music)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
             TimerStart(t, notes[i] * GameSpeed, false, function()
+                DestroyTimer(GetExpiredTimer())
                 local step = nil
                 if arrowPos[i] then
                     step = arrowPos[i]
@@ -949,7 +962,7 @@ function StartArrow(notes, arrowPos, music)
 
                     TimerStart(CreateTimer(), 0.1, false, function()
                         PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
-
+                        DestroyTimer(GetExpiredTimer())
                     end)
 
                 else
@@ -1049,7 +1062,7 @@ function KeyPressed(key)
                         if not arrow.isline then
                             TimerStart(CreateTimer(), 0.1, false, function()
                                 BlzFrameSetTexture(arrows.up[type + 6], arrows.static[type], 0, true)
-
+                                DestroyTimer(GetExpiredTimer())
                             end)
                         else
                             TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
@@ -1112,8 +1125,9 @@ function KeyPressed(key)
     end
     if arrows.keyPressed and not BlzGetTriggerPlayerIsKeyDown() then
         arrows.keyPressed = false
-
-        QueueUnitAnimation(GPlayer, "stand ready")
+        if not GameIsDefeat then
+            QueueUnitAnimation(GPlayer, "stand ready")
+        end
         --print("Кнопка отпущена")
     end
 
@@ -1266,6 +1280,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
                 TimerStart(CreateTimer(), 0.1, false, function()
                     BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
+
                 end)
                 BlzFrameSetVisible(image, false)
 
@@ -1724,7 +1739,7 @@ function DestroyTimer(t)
     if t == nil then
         t = GetExpiredTimer()
         if t == nil then
-            --print("в функцию разрушения таймера передано что-то нето")
+            --print("в функцию разрушения таймера передано что-то не то")
             return
         end
 
@@ -1874,6 +1889,7 @@ do
         InitTrig_SyncLoadDone()
         TimerStart(CreateTimer(), 1, false, function()
             InitPreloadStart()
+            DestroyTimer(GetExpiredTimer())
             --print(enc("AAAAA"))
         end)
     end
@@ -1951,12 +1967,10 @@ function CreateJojoReference(delay, isVictory)
 
     PlayThematicMusic(endingSound)
 
-    TimerStart(CreateTimer(), delay-0.2, false, function()
-        --CreateEnding(gg_unit_opeo_0000)
-    end)
     TimerStart(CreateTimer(), delay, false, function()
         CreateContinuedAndMove(toBeContinued, 1, 0.1,isVictory)
         REFERENCE=true
+        DestroyTimer(GetExpiredTimer())
     end)
 end
 
@@ -2113,6 +2127,7 @@ function CreateAndMoveToastyFrame(texture, sound)
             local showDuration = 0.5
             TimerStart(CreateTimer(), showDuration, false, function()
                 Left2Right(toasty, x, y)
+                DestroyTimer(GetExpiredTimer())
                 --print("реверс")
             end)
         else

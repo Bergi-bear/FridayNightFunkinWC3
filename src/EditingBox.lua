@@ -11,6 +11,7 @@ do
         InitGlobalsOrigin()
 
         TimerStart(CreateTimer(), 1, false, function()
+            DestroyTimer(GetExpiredTimer())
             if not BlzLoadTOCFile("war3mapimported\\so.toc") then
                 print("eeloadtoc")
             end

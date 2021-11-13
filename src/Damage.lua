@@ -23,6 +23,7 @@ function Damage(amount)
             local t={"fnf_loss_sfx","fnf_loss_sfx-pixel"}
             normal_sound(t[GetRandomInt(1,#t)])
             TimerStart(CreateTimer(), 2, false, function()
+                DestroyTimer(GetExpiredTimer())
                 if GameIsDefeat then
                     MudaMuda()
                 end

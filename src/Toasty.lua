@@ -35,6 +35,7 @@ function CreateAndMoveToastyFrame(texture, sound)
             local showDuration = 0.5
             TimerStart(CreateTimer(), showDuration, false, function()
                 Left2Right(toasty, x, y)
+                DestroyTimer(GetExpiredTimer())
                 --print("реверс")
             end)
         else

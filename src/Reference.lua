@@ -7,12 +7,10 @@ function CreateJojoReference(delay, isVictory)
 
     PlayThematicMusic(endingSound)
 
-    TimerStart(CreateTimer(), delay-0.2, false, function()
-        --CreateEnding(gg_unit_opeo_0000)
-    end)
     TimerStart(CreateTimer(), delay, false, function()
         CreateContinuedAndMove(toBeContinued, 1, 0.1,isVictory)
         REFERENCE=true
+        DestroyTimer(GetExpiredTimer())
     end)
 end
 

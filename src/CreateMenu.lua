@@ -86,6 +86,7 @@ function StartNewSong(number)
             SetUnitAnimation(GPlayer, "Stand Ready")
             StarAllSound(number)
             TimerStart(CreateTimer(), 1, false, function()
+                DestroyTimer(GetExpiredTimer())
                 restartReady = true
             end)
         end
