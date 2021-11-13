@@ -5,17 +5,17 @@
 ---
 EMPTY = nil
 IcoOfSongsLocked = {}
-LockedState = { true, false, false ,false}
-PointForUnlock={0,10000,50000,0}
+LockedState = { true, false, false, false, false }
+PointForUnlock = { 0, 10000, 50000, 0, 0 }
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
-    ttBox,_,ttText=CreateToolTipBox()
+    ttBox, _, ttText = CreateToolTipBox()
 
-    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4, "BTNsos",1, function()
+    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4, "BTNsos", 1, function()
         StartNewSong(1)
     end)
 
-    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.04, "lockedicon",2, function()
+    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.04, "lockedicon", 2, function()
         if LockedState[2] then
             StartNewSong(2)
         else
@@ -24,7 +24,7 @@ function CreateSongMenus()
         end
     end)
 
-    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.08, "lockedicon",3, function()
+    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.08, "lockedicon", 3, function()
         if LockedState[3] then
             StartNewSong(3)
         else
@@ -34,9 +34,18 @@ function CreateSongMenus()
 
     end)
 
-    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.12, "lockedicon",4, function()
+    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.12, "lockedicon", 4, function()
         if LockedState[4] then
             StartNewSong(4)
+        else
+            --print("Необходимо", PointForUnlock[3], "очков")
+            normal_sound("Sound\\Interface\\Error")
+        end
+
+    end)
+    EMPTY, IcoOfSongsLocked[5] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.16, "lockedicon", 5, function()
+        if LockedState[5] then
+            StartNewSong(5)
         else
             --print("Необходимо", PointForUnlock[3], "очков")
             normal_sound("Sound\\Interface\\Error")
@@ -66,7 +75,7 @@ function StartNewSong(number)
         else
             if IsUnitHidden(GPlayer) then
                 AddSpecialEffect("Abilities\\Spells\\Human\\Resurrect\\ResurrectTarget.mdl", GetUnitXY(GPlayer))
-                SetUnitAnimation(GEnemy,"spell")
+                SetUnitAnimation(GEnemy, "spell")
             end
             ShowUnit(GPlayer, true)
             restartReady = false

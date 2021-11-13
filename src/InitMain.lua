@@ -58,6 +58,11 @@ function StarAllSound(numberSong)
         GameSpeed = 0.5 -- сдви 0.005 добавил
         --print("и где музыка из фреша")
         StartArrow(Fresh, FreshPos, "Fresh")
+    elseif numberSong == 5 then
+        SONG = 5
+        GameSpeed = 0.25 -- сдви 0.005 добавил
+        print("старт музыки из милф")
+        StartArrow(Milf, MilfPos, "Milf")
     elseif numberSong == 3 then
         SONG = 3
         --print("Эта песня ещё не готова, спасибо за игру")
@@ -65,6 +70,7 @@ function StarAllSound(numberSong)
         StartArrow(HankTable, HankTablePOS, "HankMP3")
         MUDA = true
         VICTORY = true
+        CreateJojoReference(10, true)
         CreateJojoReference(10, true)
 
         TimerStart(CreateTimer(), 5, false, function()
@@ -80,6 +86,8 @@ function StarAllSound(numberSong)
         TimerStart(CreateTimer(), 10, false, function()
             BreakCurrentLevel()
         end)
+    else
+        print("Ошибка вы попутались запустить песню без кода")
     end
     if not ready then
         CreateHPBar("20")

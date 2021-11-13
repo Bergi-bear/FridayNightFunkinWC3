@@ -55,6 +55,14 @@ function AddPoint(points)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end
+    if not LockedState[5] then
+        if GPoint >= PointForUnlock[5] then
+            BlzFrameSetTexture(IcoOfSongsLocked[5], "BTNMilf", 0, true)
+            LockedState[5] = true
+            CreateSelections(IcoOfSongsLocked[5],5)
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
+        end
+    end
 end
 
 function CreateFlyPoint(descriptions)

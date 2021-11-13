@@ -59,6 +59,13 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
                 BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот:") .. "  167 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
+        if number == 5 then
+            if not LockedState[number] then
+                BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
+            else
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "M.I.L.F" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  587 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            end
+        end
 
     end)
     local TrigMOUSE_LEAVE = CreateTrigger()
