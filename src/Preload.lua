@@ -44,7 +44,7 @@ function InitPreloadStart()
     --print("AAAAAAA "..s)
     BlzSendSyncData("myprefix", s)
     local i = 0
-    if udg_LoadCode[i] then
+    if LoadCode[i] then
         if tonumber(LoadedGold[i]) then
             -- код может быть числом, пока что
         else
@@ -56,7 +56,7 @@ function InitPreloadStart()
 
 end
 
-udg_LoadCode = {}
+LoadCode = {}
 
 function InitTrig_SyncLoadDone ()
     local gg_trg_SyncLoadDone = CreateTrigger()
@@ -71,7 +71,7 @@ function InitTrig_SyncLoadDone ()
 
         if prefix == "myprefix" then
             --print(value,dec(value))
-            udg_LoadCode[i] = dec(value)
+            LoadCode[i] = dec(value)
             AddPoint(S2I(dec(value)))
         end
 
