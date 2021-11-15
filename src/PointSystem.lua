@@ -16,7 +16,7 @@ function CreatePointInterFace()
     BlzFrameSetParent(text, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetText(text, "0")
     BlzFrameSetScale(text, 2)
-    BlzFrameSetPoint(text, FRAMEPOINT_RIGHT, frame, FRAMEPOINT_RIGHT, 0.025, 0.0)
+    BlzFrameSetPoint(text, FRAMEPOINT_LEFT, frame, FRAMEPOINT_LEFT, 0.025, 0.0) --Сдвиг очков относительно эмблемы
     GPointTextFrame = text
 end
 

@@ -35,11 +35,11 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
         mouseOnFrame = true
         BlzFrameSetVisible(ttBox, true)
         if number == 1 then
-            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118"..ColorText2("\nВраг: ").."Артас"..ColorText2("\nСпособности: ").."Случайный удар молотом".." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
         end
         if number == 2 then
             if not LockedState[number] then
-                BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
+                ShowUnlockTips(ttText,PointForUnlock[number])
             else
                 BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот:") .. "  603 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
@@ -47,21 +47,21 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
 
         if number == 3 then
             if not LockedState[number] then
-                BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
+               ShowUnlockTips(ttText,PointForUnlock[number])
             else
                 BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  неизвестно \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
         if number == 4 then
             if not LockedState[number] then
-                BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
+                ShowUnlockTips(ttText,PointForUnlock[number])
             else
                 BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот:") .. "  167 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
         if number == 5 then
             if not LockedState[number] then
-                BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(PointForUnlock[number]).. " очков")
+                ShowUnlockTips(ttText,PointForUnlock[number])
             else
                 BlzFrameSetText(ttText, ColorText2("Название: ") .. "M.I.L.F" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  587 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
@@ -100,4 +100,8 @@ end
 function ColorText2(s)
     s = "|cffffcc00" .. s .. "|r"
     return s
+end
+
+function ShowUnlockTips(ttText,dataUnlock)
+    BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(dataUnlock).. " очков")
 end

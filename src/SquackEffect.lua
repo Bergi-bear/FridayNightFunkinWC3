@@ -26,8 +26,6 @@ function CreateSquack(x,y)
                 else
                     BlzFrameSetAlpha(image, alpha)
                 end
-
-
             end)
         end
     end)

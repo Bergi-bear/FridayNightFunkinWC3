@@ -15,8 +15,10 @@ do
             --Preloader("zavodila")
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
-            ReturnFPS()
             HideEverything()
+            ReturnFPS()
+            MenuFrame()
+            CreateAndStartClock()
             CreatePointInterFace()
             CreateSongMenus()
         end)
@@ -51,12 +53,12 @@ function StarAllSound(numberSong)
         StartArrow(BoPeeBo, ArroPos, "All")
     elseif numberSong == 2 then
         SONG = 2
-        GameSpeed = 0.454 -- сдви 0.005 добавил
+        GameSpeed = 0.454 --
         StartArrow(Zavodila, ZavodilaPOS, "zavodila")
         --print("Второй песни ещё не существует")
     elseif numberSong == 4 then
         SONG = 4
-        GameSpeed = 0.5 -- сдви 0.005 добавил
+        GameSpeed = 0.5 --
         --print("и где музыка из фреша")
         StartArrow(Fresh, FreshPos, "Fresh")
     elseif numberSong == 5 then
@@ -212,7 +214,6 @@ function StartArrow(notes, arrowPos, music)
 
                 else
                     PanCameraToTimed(GetUnitX(GPlayer), GetUnitY(GPlayer), 1)
-
                 end
 
                 DestroyTimer(GetExpiredTimer())
@@ -327,6 +328,7 @@ function KeyPressed(key)
                                         for k, v in pairs(arrow.line.all) do
                                             if v.y >= 0.53 then
                                                 BlzFrameSetVisible(v.frame, false)
+                                                BlzDestroyFrame(v.frame)
                                             end
                                         end
                                     end
@@ -336,7 +338,7 @@ function KeyPressed(key)
                                 for k, v in pairs(arrow.line.all) do
                                     if v.y >= 0.53 then
                                         BlzFrameSetVisible(v.frame, false)
-                                        --BlzDestroyFrame(v.frame)
+                                        BlzDestroyFrame(v.frame)
                                     end
                                 end
                             end)
@@ -401,13 +403,6 @@ function CreateLine(speed, pozX, type, count, arrow)
             y     = y,
             step  = randomStep
         }
-        --[[TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-            y = y + speed
-            BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-            if y > 0.7 then
-                DestroyTimer(GetExpiredTimer())
-            end
-        end)]]
 
     end
 
@@ -415,6 +410,7 @@ function CreateLine(speed, pozX, type, count, arrow)
         TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
             if arrow.removed then
                 BlzFrameSetVisible(v.frame, false)
+                BlzDestroyFrame(v.frame)
                 DestroyTimer(GetExpiredTimer())
                 return
             end
@@ -422,6 +418,7 @@ function CreateLine(speed, pozX, type, count, arrow)
             BlzFrameSetAbsPoint(v.frame, FRAMEPOINT_CENTER, v.step, v.y)
             if v.y > 0.7 then
                 DestroyTimer(GetExpiredTimer())
+                BlzDestroyFrame(v.frame)
             end
         end)
     end
@@ -525,10 +522,10 @@ function CreateArrow(speed, pozX, number, notes, music)
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
                 TimerStart(CreateTimer(), 0.1, false, function()
                     BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
-
+                    DestroyTimer(GetExpiredTimer())
                 end)
                 BlzFrameSetVisible(image, false)
-
+                BlzDestroyFrame(image)
             else
                 BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
                 BlzFrameSetVisible(image, false)
@@ -540,6 +537,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                     for _, v in pairs(arrow.line.all) do
                         if v.y >= 0.53 then
                             BlzFrameSetVisible(v.frame, false)
+                            BlzDestroyFrame(v.frame)
                         end
                     end
                 end)
