@@ -20,6 +20,7 @@ do
             MenuFrame()
             CreateAndStartClock()
             CreatePointInterFace()
+            CreateGameSpeedIndicator()
             CreateSongMenus()
         end)
         TimerStart(CreateTimer(), 2.5, false, function()
@@ -40,6 +41,7 @@ ready = false
 Camera2Left = true
 GameSpeed = 0.6
 SONG = 1
+DelayPerTime=1
 
 function StarAllSound(numberSong)
     musics = {}
@@ -93,12 +95,15 @@ function StarAllSound(numberSong)
     else
         print("Ошибка вы попутались запустить песню без кода")
     end
+    --0 минута 1
+    -- 20 минутв 0.975
+    GameSpeed=GameSpeed*DelayPerTime
+    --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
         CreateHPBar("20")
         CreateHPBar("06")
         CreateHPBar("00")
         CreateVSIcons()
-
         ready = true
     end
 end
@@ -193,20 +198,26 @@ function StartArrow(notes, arrowPos, music)
             --print(2)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
-            TimerStart(t, notes[i] * GameSpeed, false, function()
+            local delay=notes[i] * GameSpeed
+            if i==#notes then
+                --print("задержка последней ноты "..delay)
+            end
+            --DelayAction(delay)
+            TimerStart(t, delay, false, function()
+                PauseTimer(GetExpiredTimer())
                 DestroyTimer(GetExpiredTimer())
+
                 local step = nil
                 if arrowPos[i] then
                     step = arrowPos[i]
                 else
-                    ----print("таблица не заполнена, рандомимся ")
-                    step = { 1, 2, 3, 4, 6, 8, 9, 10 }
-                    step = step[GetRandomInt(1, #step)] --никогда так не делайте
+                    --print("таблица не заполнена, рандомимся ")
+                    --step = { 1, 2, 3, 4, 6, 8, 9, 10 }
+                    --step = step[GetRandomInt(1, #step)] --никогда так не делайте
                 end
                 --print(i)
                 CreateArrow(0.01, step, i, notes, music)
                 if step <= 4 then
-
                     TimerStart(CreateTimer(), 0.1, false, function()
                         PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
                         DestroyTimer(GetExpiredTimer())
@@ -215,8 +226,6 @@ function StartArrow(notes, arrowPos, music)
                 else
                     PanCameraToTimed(GetUnitX(GPlayer), GetUnitY(GPlayer), 1)
                 end
-
-                DestroyTimer(GetExpiredTimer())
             end)
         end
     end)
@@ -600,6 +609,7 @@ function PlayUnitAnimationFromChat()
         local s = S2I(GetEventPlayerChatString())
         SetUnitAnimationByIndex(GEnemy, s)
         SetUnitAnimationByIndex(GPlayer, s)
+        DelayPerTime=S2R(GetEventPlayerChatString())
         -- CreateSquack()
     end)
 end
@@ -642,4 +652,9 @@ function StartPeonStateMachine()
             --print("отмена сброса")
         end
     end)
+end
+
+function DelayAction(delay)
+    TriggerSleepAction(delay)
+    print(delay)
 end
