@@ -41,7 +41,7 @@ ready = false
 Camera2Left = true
 GameSpeed = 0.6
 SONG = 1
-DelayPerTime=1
+DelayPerTime = 1
 
 function StarAllSound(numberSong)
     musics = {}
@@ -97,7 +97,7 @@ function StarAllSound(numberSong)
     end
     --0 минута 1
     -- 20 минутв 0.975
-    GameSpeed=GameSpeed*DelayPerTime
+    GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
         CreateHPBar("20")
@@ -194,30 +194,56 @@ function StartArrow(notes, arrowPos, music)
 
     TimerStart(CreateTimer(), 0.4, false, function()
         --print(1)
+        --Собирательный таймер
+
+        local n16 = 4 / 16 * GameSpeed -- 0.15 для первой песни
+        local k = 0
+        local m = 1
+        TimerStart(CreateTimer(), n16, true, function()
+            if k == notes[m] * 6 * 1000 then
+                --print("есть совпадение тайминга " .. (notes[m] * 6) / 10)
+
+                CreateArrow(0.01, arrowPos[m], m, notes, music)
+                if arrowPos[m] <= 4 then
+                    TimerStart(CreateTimer(), 0.1, false, function()
+                        PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
+                        DestroyTimer(GetExpiredTimer())
+                    end)
+
+                else
+                    PanCameraToTimed(GetUnitX(GPlayer), GetUnitY(GPlayer), 1)
+                end
+
+                m = m + 1
+
+
+            end
+            if not restartReady then
+                --print("таймер уничтожен, так как уровень перезапущен")
+                DestroyTimer(GetExpiredTimer())
+            end
+            k = math.floor(k + n16 * 10000)
+            --print(k/10000 )
+        end)
         for i = 1, #notes do
             --print(2)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
-            local delay=notes[i] * GameSpeed
-            if i==#notes then
+            local delay = notes[i] * GameSpeed
+            if i == #notes then
                 --print("задержка последней ноты "..delay)
             end
             --DelayAction(delay)
-            TimerStart(t, delay, false, function()
+
+
+
+
+            TimerStart(t, 999999, false, function()
                 PauseTimer(GetExpiredTimer())
                 DestroyTimer(GetExpiredTimer())
 
-                local step = nil
-                if arrowPos[i] then
-                    step = arrowPos[i]
-                else
-                    --print("таблица не заполнена, рандомимся ")
-                    --step = { 1, 2, 3, 4, 6, 8, 9, 10 }
-                    --step = step[GetRandomInt(1, #step)] --никогда так не делайте
-                end
-                --print(i)
-                CreateArrow(0.01, step, i, notes, music)
-                if step <= 4 then
+                CreateArrow(0.01, arrowPos[i], i, notes, music)
+                if arrowPos[i] <= 4 then
                     TimerStart(CreateTimer(), 0.1, false, function()
                         PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
                         DestroyTimer(GetExpiredTimer())
@@ -470,14 +496,14 @@ function CreateArrow(speed, pozX, number, notes, music)
     end
     if number == #notes then
         --print("финальная нота должна быть длинной")
-        if SONG==1 then
+        if SONG == 1 then
             durations = 2
             arrow.isline = true
             last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
             arrow.line = last
             arrows.lineTime = durations - 0.5
         end
-          if SONG==2 then
+        if SONG == 2 then
             durations = 4
             arrow.isline = true
             last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
@@ -609,7 +635,7 @@ function PlayUnitAnimationFromChat()
         local s = S2I(GetEventPlayerChatString())
         SetUnitAnimationByIndex(GEnemy, s)
         SetUnitAnimationByIndex(GPlayer, s)
-        DelayPerTime=S2R(GetEventPlayerChatString())
+        DelayPerTime = S2R(GetEventPlayerChatString())
         -- CreateSquack()
     end)
 end
