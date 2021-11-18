@@ -4,7 +4,7 @@
 --- DateTime: 02.08.2021 19:03
 ---
 function normal_sound (s, x, y, volume)
-    local snd = CreateSound(s, false, true, true, 10, 10, "CombatSoundsEAX")
+    local snd = CreateSound(s, false, false, false, 10, 10, "")
     if not volume then
         volume = 127
     end
@@ -14,14 +14,8 @@ function normal_sound (s, x, y, volume)
       if not y then
         y = 0
     end
-    SetSoundChannel(snd, 40)
+    SetSoundChannel(snd, 1)
     SetSoundVolume(snd, volume)
-    SetSoundPitch(snd, 1)
-    SetSoundDistances(snd, 600, 10000)
-    SetSoundDistanceCutoff(snd, 2100)
-    SetSoundConeAngles(snd, 0.0, 0.0, 127)
-    SetSoundConeOrientation(snd, 0.0, 0.0, 0.0)
-    SetSoundPosition(snd, x, y, 50)
     StartSound(snd)
     --KillSoundWhenDone(snd)
     return snd
