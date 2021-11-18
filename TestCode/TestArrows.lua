@@ -12,8 +12,8 @@ function StartSong()
         local delay = BoPeeBoNormal[i]
         TimerStart(CreateTimer(), delay, false, function()
             print(delay)
-            PauseTimer(CreateTimer())
-            DestroyTimer(CreateTimer())
+            PauseTimer(GetExpiredTimer())
+            DestroyTimer(GetExpiredTimer())
         end)
     end
 end

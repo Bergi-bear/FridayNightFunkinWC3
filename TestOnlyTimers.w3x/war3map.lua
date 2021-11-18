@@ -1,5 +1,5 @@
-gg_trg_StartTest = nil
 gg_trg_Init = nil
+gg_trg_StartTest = nil
 function InitGlobals()
 end
 
@@ -15,8 +15,8 @@ function StartSong()
         local delay = BoPeeBoNormal[i]
         TimerStart(CreateTimer(), delay, false, function()
             print(delay)
-            PauseTimer(CreateTimer())
-            DestroyTimer(CreateTimer())
+            PauseTimer(GetExpiredTimer())
+            DestroyTimer(GetExpiredTimer())
         end)
     end
 end
