@@ -3,17 +3,29 @@
 --- Created by Bergi.
 --- DateTime: 18.11.2021 2:06
 ---
+SongTrigger={}
 function StartSong()
     --normal_sound("AllForce") --играем музыку
     ClearMapMusicBJ()
     PlayMusicBJ("AllForce")
     SetMusicVolumeBJ(100)
-    for i = 1, #BoPeeBoNormal do
-        local delay = BoPeeBoNormal[i]
-        TimerStart(CreateTimer(), delay, false, function()
+    for i=1,#BoPeeBoNormal do
+        EnableTrigger(SongTrigger[i])
+        TriggerExecute(SongTrigger[i])
+        print("запускаем", i)
+    end
+end
+
+function InitSonTrigger()
+        for i, delay in ipairs(BoPeeBoNormal) do
+        SongTrigger[i] = CreateTrigger()
+            print("создан триггер",i)
+        DisableTrigger(SongTrigger[i] )
+        TriggerRegisterTimerEventSingle(SongTrigger[i], 0.)
+        TriggerAddAction(SongTrigger[i] , function()
+            TriggerSleepAction(delay)
             print(delay)
-            PauseTimer(GetExpiredTimer())
-            DestroyTimer(GetExpiredTimer())
+            DisableTrigger(GetTriggeringTrigger())
         end)
     end
 end

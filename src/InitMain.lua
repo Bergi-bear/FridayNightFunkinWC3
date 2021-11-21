@@ -22,6 +22,9 @@ do
             CreatePointInterFace()
             CreateGameSpeedIndicator()
             CreateSongMenus()
+            StartGCTracker()
+            BugSpeed() -- функция для увеличения скорости игры авто матически
+            DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
         end)
@@ -29,7 +32,7 @@ do
             musics = {}
             isMusicStart = false
             arrows = {}
-            --StarAllSound(1) --Автостарт Первой песни
+            StarAllSound(1) --Автостарт Первой песни
             --RestartInit()
             StartArthasStateMachine()
             StartPeonStateMachine()
@@ -56,8 +59,8 @@ function StarAllSound(numberSong)
     musics[#musics + 1] = normal_sound("321GO", x, y)
     if numberSong == 1 then
         SONG = 1
-        --GameSpeed = 0.6
-        StartArrow(BoPeeBoNormal, ArroPos, "All")
+        GameSpeed = 0.6
+        StartArrow(BoPeeBo, ArroPos, "AllForce")
     elseif numberSong == 2 then
         SONG = 2
         GameSpeed = 0.454 --
@@ -102,7 +105,7 @@ function StarAllSound(numberSong)
     end
     --0 минута 1
     -- 20 минутв 0.975
-    --GameSpeed = GameSpeed * DelayPerTime
+    GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
         CreateHPBar("20")
@@ -118,18 +121,20 @@ function BreakCurrentLevel()
     for _, v in pairs(musics) do
         StopSound(v, true, false)
     end
-    if arrows[1] then
-        for _, v in pairs(arrows.timers) do
-            DestroyTimer(v)
-        end
-        for _, v in pairs(arrows.allArrows) do
-            v.removed = true
-        end
-        for _, v in pairs(arrows.up) do
-            BlzFrameSetVisible(v, false)
-        end
-
+    --if arrows[1] then
+    -- print("Первый запуск очистки")
+    for i, v in pairs(arrows.timers) do
+        --  print("очистка таймера",i)
+        DestroyTimer(v)
     end
+    for _, v in pairs(arrows.allArrows) do
+        v.removed = true
+    end
+    for _, v in pairs(arrows.up) do
+        BlzFrameSetVisible(v, false)
+    end
+
+    --end
 end
 
 function StartArrow(notes, arrowPos, music)
@@ -234,20 +239,24 @@ function StartArrow(notes, arrowPos, music)
             --print(k/10000 )
         end)]]
         TimerStart(CreateTimer(), 0.0, false, function()
-
+            --[[
+            print("cстарт музыки, старый метод")
             if not isMusicStart then
                 local snd = normal_sound(music)
                 musics[#musics + 1] = snd
                 isMusicStart = true
                 GSound = CreateTimer()
-                TimerStart(GSound, GetSoundDuration(snd) * 1000, false, nil)
+                GSDuration = GetSoundDuration(snd) / 1000,
+                TimerStart(GSound, GetSoundDuration(snd), false, nil)
+                --print(GSDuration, "длительность песни")
             end
+            ]]
         end)
         for i = 1, #notes do
             --print(2)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
-            local delay = notes[i] --- * GameSpeed-- GameSpeed = 1
+            local delay = notes[i] * GameSpeed
             if i == #notes then
                 --print("задержка последней ноты "..delay) -- всегда верная
             end
@@ -549,16 +558,20 @@ function CreateArrow(speed, pozX, number, notes, music)
         arrow.y = y
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         if y >= 0.4475 and not isMusicStart then
-            --local snd=normal_sound(music, x, y)
-            --musics[#musics + 1] = snd
-            --isMusicStart = true
-            --GSound=CreateTimer()
-            --TimerStart(GSound, GetSoundDuration(snd)*1000, false,nil )
+         if not isMusicStart then
+                local snd = normal_sound(music)
+                musics[#musics + 1] = snd
+                isMusicStart = true
+                --GSound = CreateTimer()
+                --GSDuration = GetSoundDuration(snd) / 1000
+                --TimerStart(GSound, GetSoundDuration(snd), false, nil)
+                --print(GSDuration, "длительность песни")
+            end
 
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
             PlayArthasAnimation(type, durations, number)
-            print(TimerGetElapsed(GSound))
+            --print(TimerGetElapsed(GSound),GSDuration)
             --SetSoundPlayPosition(musics[#musics], R2I(TimerGetElapsed(GSound) * 1000))
             --Camera2Right = false
             --Camera2Left = true

@@ -23,7 +23,6 @@ function DestroyTimer(t)
             --print("в функцию разрушения таймера передано что-то не то")
             return
         end
-
     end
     PauseTimer(t)
     GCountTimers = GCountTimers - 1
@@ -57,3 +56,23 @@ TriggerAddAction = function(trig, callback)
     end
     realTriggerAddAction(trig, pcallback)
 end
+
+
+function StartGCTracker()
+    local t = CreateTimer()
+    local track_gc
+    local meta = {
+        __gc = function (self)
+            print('GC is called at ' .. TimerGetElapsed(t))
+            track_gc()
+        end
+    }
+
+    track_gc = function() setmetatable({}, meta) end
+
+    TimerStart(t, 86400, false)
+    track_gc()
+end
+
+
+
