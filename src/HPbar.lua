@@ -16,15 +16,9 @@ function CreateHPBar(colorID)
     BlzFrameClearAllPoints(into)
     BlzFrameSetPoint(into, FRAMEPOINT_LEFT, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_LEFT, 0, -0.25)
     BlzFrameSetParent(into, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-    --BlzFrameSetVisible(into, GetLocalPlayer() == Player(visionData.pid))
-
-
-    -- local textCurrent = BlzCreateFrameByType("TEXT", "ButtonChargesText", into, "", 0)
-    -- BlzFrameSetPoint(textCurrent, FRAMEPOINT_LEFT, into, FRAMEPOINT_LEFT, 0.002, 0)
-    --local textMax = BlzCreateFrameByType("TEXT", "ButtonChargesText", into, "", 0)
-    --BlzFrameSetPoint(textMax, FRAMEPOINT_LEFT, into, FRAMEPOINT_LEFT, 0.082, 0)
     local _, y = 0.04, 0.1
     local fakeHP = 0
+    --GICOEnemy,GICOPlayer
     TimerStart(CreateTimer(), 0.05, true, function()
         --BlzFrameSetText(textCurrent, GHP)
         --BlzFrameSetText(textMax, GHP)
@@ -38,9 +32,9 @@ function CreateHPBar(colorID)
         if GHP >= 100 then
             --GHP = 100
             --print(GHP,"большие глаза у пеона")
-            BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorderEYE", 0, true)
+            BlzFrameSetTexture(PEON_ICO, GICOPlayer[2], 0, true)
         else
-            BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorder", 0, true)
+            BlzFrameSetTexture(PEON_ICO, GICOPlayer[1], 0, true)
         end
         if GHP <= 0 then
             GHP = 0
@@ -71,9 +65,9 @@ function CreateHPBar(colorID)
             end
             if GHP == 0 then
                 -- print("глаза")
-                BlzFrameSetTexture(ARTHAS_ICO, "war3mapImported\\ArthasBorderEYE", 0, true)
+                BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[2], 0, true)
             else
-                BlzFrameSetTexture(ARTHAS_ICO, "war3mapImported\\ArthasBorder", 0, true)
+                BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[1], 0, true)
             end
             BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, (fakeHP * 0.8 / 100) + offset, y)
         end
@@ -127,4 +121,26 @@ function ICO_FLEX(size)
 
         end)
     end)
+end
+
+function ShuffleIcons(first,song)
+
+        local enemy = {
+            [1] = { "war3mapImported\\ArthasBorder", "war3mapImported\\ArthasBorderEYE" },
+            [2] = { "war3mapImported\\Chaming", "war3mapImported\\Chaming" },
+            [3] = { "war3mapImported\\DioOld", "war3mapImported\\DioOld" },
+            [4] = { "war3mapImported\\DioYang", "war3mapImported\\DioYang" },
+        }
+        local player = {
+            [1] = { "war3mapImported\\PeonBorder", "war3mapImported\\PeonBorderEYE" },
+            [2] = { "war3mapImported\\Shrek", "war3mapImported\\Shrek" },
+            [3] = { "war3mapImported\\jojoShrek", "war3mapImported\\jojoShrek" },
+        }
+
+
+    if first then
+        GICOEnemy,GICOPlayer=enemy[1], player[1]
+    else
+        GICOEnemy,GICOPlayer=enemy[GetRandomInt(1, #enemy)], player[GetRandomInt(1, #player)]
+    end
 end

@@ -234,7 +234,7 @@ function BugSpeed()
         t = t + TIMER_PERIOD64
 
         if t >= 60 then
-            print("скорость игры изменена на "..table[k])
+            --print("скорость игры изменена на "..table[k])
             t=0
             DelayPerTime=table[k]
             k=k+1
@@ -397,14 +397,15 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
         GHandY = PosY
         mouseOnFrame = true
         BlzFrameSetVisible(ttBox, true)
+        BlzFrameSetAbsPoint(ttBox, FRAMEPOINT_CENTER, 0, GHandY)
         if number == 1 then
-            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот:") .. "  118"..ColorText2("\nВраг: ").."Артас"..ColorText2("\nСпособности: ").."Случайный удар молотом".." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот: ") ..#BoPeeBo..ColorText2("\nВраг: ").."Артас"..ColorText2("\nСпособности: ").."Случайный \nудар молотом".." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
         end
         if number == 2 then
             if not LockedState[number] then
                 ShowUnlockTips(ttText,PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот:") .. "  603 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот: ") .. #Zavodila.." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
 
@@ -412,21 +413,21 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
             if not LockedState[number] then
                ShowUnlockTips(ttText,PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  неизвестно \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .."Неизвестно".. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
         if number == 4 then
             if not LockedState[number] then
                 ShowUnlockTips(ttText,PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот:") .. "  167 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот: " ) ..#FreshBit.." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
         if number == 5 then
             if not LockedState[number] then
                 ShowUnlockTips(ttText,PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "M.I.L.F" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот:") .. "  587 \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "M.I.L.F" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .. #Milf.." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
 
@@ -441,6 +442,7 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
     return SelfFrame, buttonIconFrame
 end
 
+TTBoxY=0.4
 function CreateToolTipBox()
     local tooltip = BlzCreateFrameByType("FRAME", "TestDialog", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "StandardFrameTemplate", 0)
     local backdrop = BlzCreateFrame("QuestButtonDisabledBackdropTemplate", tooltip, 0, 0)
@@ -448,12 +450,12 @@ function CreateToolTipBox()
     --BlzFrameSetParent(tooltip, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     --BlzFrameSetParent(backdrop, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     --BlzFrameSetParent(text, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-    BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0, 0.4)
+    BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0, TTBoxY)
     BlzFrameSetSize(tooltip, 0.2, 0.15)
     BlzFrameSetSize(backdrop, 0.2, 0.15)
     BlzFrameSetSize(text, 0.2 * .75, 0.15 * .9)
     BlzFrameSetPoint(backdrop, FRAMEPOINT_CENTER, tooltip, FRAMEPOINT_CENTER, 0.0, 0.0)
-    BlzFrameSetAlpha(backdrop, 100)
+    BlzFrameSetAlpha(backdrop, 250)
     BlzFrameSetText(text, "ОШИБКА Первичное описание ещё не обновлено")
     BlzFrameSetPoint(text, FRAMEPOINT_CENTER, tooltip, FRAMEPOINT_CENTER, 0.04, 0.0)
     BlzFrameSetVisible(tooltip, false)
@@ -466,7 +468,7 @@ function ColorText2(s)
 end
 
 function ShowUnlockTips(ttText,dataUnlock)
-    BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(dataUnlock).. " очков")
+    BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(dataUnlock).. " очков и пройти предыдушую песню")
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -494,7 +496,7 @@ function CreateGameSpeedIndicator()
     BlzFrameSetPoint(textGS, FRAMEPOINT_LEFT, frame, FRAMEPOINT_LEFT, 0.01, 0.0) --Сдвиг очков относительно эмблемы
 
     TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-        BlzFrameSetText(textGS, GameSpeed)
+        BlzFrameSetText(textGS, DelayPerTime)
     end)
 
 end
@@ -508,16 +510,18 @@ end
 EMPTY = nil
 IcoOfSongsLocked = {}
 LockedState = { true, false, false, false, false }
-PointForUnlock = { 0, 10000, 50000, 0, 0 }
+PointForUnlock = { 0, 25000, 150000, 10000, 70000 }
+SongCompleteCount=1
+SongCompleted={false,false,false,false,false,}
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
     ttBox, _, ttText = CreateToolTipBox()
-
-    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4, "BTNsos", 1, function()
+    local nextPoint=0.04
+    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4-nextPoint*0, "BTNsos", 1, function()
         StartNewSong(1)
     end)
 
-    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.04, "lockedicon", 2, function()
+    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*2, "lockedicon", 2, function()
         if LockedState[2] then
             StartNewSong(2)
         else
@@ -526,7 +530,7 @@ function CreateSongMenus()
         end
     end)
 
-    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.08, "lockedicon", 3, function()
+    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*4, "lockedicon", 3, function()
         if LockedState[3] then
             StartNewSong(3)
         else
@@ -536,7 +540,7 @@ function CreateSongMenus()
 
     end)
 
-    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.12, "lockedicon", 4, function()
+    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*1, "lockedicon", 4, function()
         if LockedState[4] then
             StartNewSong(4)
         else
@@ -545,7 +549,7 @@ function CreateSongMenus()
         end
 
     end)
-    EMPTY, IcoOfSongsLocked[5] = CreateSimpleFrameGlue(-0.1, 0.4 - 0.16, "lockedicon", 5, function()
+    EMPTY, IcoOfSongsLocked[5] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*3, "lockedicon", 5, function()
         if LockedState[5] then
             StartNewSong(5)
         else
@@ -750,6 +754,7 @@ function MenuFrame()
             BlzFrameSetAbsPoint(f10, FRAMEPOINT_CENTER, 0.65 + (0.08 * i), 0.59)
         end
     end
+    HideToolTips()
 end
 
 function CreateAndStartClock()
@@ -790,6 +795,17 @@ function Zero(s)
 	end
 	return ns
 end
+
+function HideToolTips()
+    BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0))
+    BlzFrameClearAllPoints(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0))
+    BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), false)
+    BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), false)
+    BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), FRAMEPOINT_CENTER, 0.75, 0.55)
+    BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), FRAMEPOINT_CENTER, 0.75, 0.55)
+    BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), 0)
+    BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), 0)
+end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -808,15 +824,9 @@ function CreateHPBar(colorID)
     BlzFrameClearAllPoints(into)
     BlzFrameSetPoint(into, FRAMEPOINT_LEFT, BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), FRAMEPOINT_LEFT, 0, -0.25)
     BlzFrameSetParent(into, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-    --BlzFrameSetVisible(into, GetLocalPlayer() == Player(visionData.pid))
-
-
-    -- local textCurrent = BlzCreateFrameByType("TEXT", "ButtonChargesText", into, "", 0)
-    -- BlzFrameSetPoint(textCurrent, FRAMEPOINT_LEFT, into, FRAMEPOINT_LEFT, 0.002, 0)
-    --local textMax = BlzCreateFrameByType("TEXT", "ButtonChargesText", into, "", 0)
-    --BlzFrameSetPoint(textMax, FRAMEPOINT_LEFT, into, FRAMEPOINT_LEFT, 0.082, 0)
     local _, y = 0.04, 0.1
     local fakeHP = 0
+    --GICOEnemy,GICOPlayer
     TimerStart(CreateTimer(), 0.05, true, function()
         --BlzFrameSetText(textCurrent, GHP)
         --BlzFrameSetText(textMax, GHP)
@@ -830,9 +840,9 @@ function CreateHPBar(colorID)
         if GHP >= 100 then
             --GHP = 100
             --print(GHP,"большие глаза у пеона")
-            BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorderEYE", 0, true)
+            BlzFrameSetTexture(PEON_ICO, GICOPlayer[2], 0, true)
         else
-            BlzFrameSetTexture(PEON_ICO, "war3mapImported\\PeonBorder", 0, true)
+            BlzFrameSetTexture(PEON_ICO, GICOPlayer[1], 0, true)
         end
         if GHP <= 0 then
             GHP = 0
@@ -863,9 +873,9 @@ function CreateHPBar(colorID)
             end
             if GHP == 0 then
                 -- print("глаза")
-                BlzFrameSetTexture(ARTHAS_ICO, "war3mapImported\\ArthasBorderEYE", 0, true)
+                BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[2], 0, true)
             else
-                BlzFrameSetTexture(ARTHAS_ICO, "war3mapImported\\ArthasBorder", 0, true)
+                BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[1], 0, true)
             end
             BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, (fakeHP * 0.8 / 100) + offset, y)
         end
@@ -920,6 +930,28 @@ function ICO_FLEX(size)
         end)
     end)
 end
+
+function ShuffleIcons(first,song)
+
+        local enemy = {
+            [1] = { "war3mapImported\\ArthasBorder", "war3mapImported\\ArthasBorderEYE" },
+            [2] = { "war3mapImported\\Chaming", "war3mapImported\\Chaming" },
+            [3] = { "war3mapImported\\DioOld", "war3mapImported\\DioOld" },
+            [4] = { "war3mapImported\\DioYang", "war3mapImported\\DioYang" },
+        }
+        local player = {
+            [1] = { "war3mapImported\\PeonBorder", "war3mapImported\\PeonBorderEYE" },
+            [2] = { "war3mapImported\\Shrek", "war3mapImported\\Shrek" },
+            [3] = { "war3mapImported\\jojoShrek", "war3mapImported\\jojoShrek" },
+        }
+
+
+    if first then
+        GICOEnemy,GICOPlayer=enemy[1], player[1]
+    else
+        GICOEnemy,GICOPlayer=enemy[GetRandomInt(1, #enemy)], player[GetRandomInt(1, #player)]
+    end
+end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
@@ -937,6 +969,7 @@ do
             --Preloader("zavodila")
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
+            GJaina = gg_unit_Hjai_0001
             HideEverything()
             ReturnFPS()
             MenuFrame()
@@ -944,6 +977,7 @@ do
             CreatePointInterFace()
             CreateGameSpeedIndicator()
             CreateSongMenus()
+            CreateSpaceForRestart()
             StartGCTracker()
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
@@ -983,6 +1017,9 @@ function StarAllSound(numberSong)
         SONG = 1
         GameSpeed = 0.6
         StartArrow(BoPeeBo, ArroPos, "AllForce")
+        if GPoint>=10000 then
+            ShuffleIcons(false)
+        end
     elseif numberSong == 2 then
         SONG = 2
         GameSpeed = 0.454 --
@@ -992,7 +1029,7 @@ function StarAllSound(numberSong)
         SONG = 4
         GameSpeed = 0.5 --
         --print("и где музыка из фреша")
-        StartArrow(Fresh, FreshPos, "Fresh")
+        StartArrow(FreshBit, FreshPos, "Fresh")
     elseif numberSong == 5 then
         SONG = 5
         GameSpeed = 0.331 --
@@ -1030,6 +1067,7 @@ function StarAllSound(numberSong)
     GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
+        ShuffleIcons(true)
         CreateHPBar("20")
         CreateHPBar("06")
         CreateHPBar("00")
@@ -1179,15 +1217,16 @@ function StartArrow(notes, arrowPos, music)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
             local delay = notes[i] * GameSpeed
-            if i == #notes then
-                --print("задержка последней ноты "..delay) -- всегда верная
-            end
+
 
             TimerStart(t, delay, false, function()
                 --print(delay,TimerGetElapsed(t),TimerGetRemaining(t))
                 PauseTimer(t)
                 DestroyTimer(t)
                 CreateArrow(0.01, arrowPos[i], i, notes, music)
+                SongCamera(arrowPos[i])
+
+
             end)
         end
     end)
@@ -1344,7 +1383,12 @@ function KeyPressed(key)
     if arrows.keyPressed and not BlzGetTriggerPlayerIsKeyDown() then
         arrows.keyPressed = false
         if not GameIsDefeat then
-            QueueUnitAnimation(GPlayer, "stand ready")
+            TimerStart(CreateTimer(), 0.18, false, function()
+                if not GameIsDefeat then
+                    QueueUnitAnimation(GPlayer, "stand ready")
+                end
+                DestroyTimer(GetExpiredTimer())
+            end)
         end
         --print("Кнопка отпущена")
     end
@@ -1431,7 +1475,7 @@ function CreateArrow(speed, pozX, number, notes, music)
         end
     end
     if number == #notes then
-        --print("финальная нота должна быть длинной")
+        --print(" последняя финальная нота должна быть длинной")
         if SONG == 1 then
             durations = 2
             arrow.isline = true
@@ -1446,7 +1490,14 @@ function CreateArrow(speed, pozX, number, notes, music)
             arrow.line = last
             arrows.lineTime = durations - 0.5
         end
-
+        TimerStart(CreateTimer(), 1.5, false, function()
+            if not SongCompleted[SONG] then
+                SongCompleted[SONG]=true
+                SongCompleteCount=SongCompleteCount+1
+                SONG=SONG+1
+            end
+            DestroyTimer(GetExpiredTimer())
+        end)
     end
     local texture = arrows.standart[type]
     local x, y = arrows.x, 0
@@ -1480,10 +1531,12 @@ function CreateArrow(speed, pozX, number, notes, music)
         arrow.y = y
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         if y >= 0.4475 and not isMusicStart then
-         if not isMusicStart then
+            if not isMusicStart then
+                --создание музыки по первой стрелке
                 local snd = normal_sound(music)
                 musics[#musics + 1] = snd
                 isMusicStart = true
+                --SetSoundPitch(snd,0.5)
                 --GSound = CreateTimer()
                 --GSDuration = GetSoundDuration(snd) / 1000
                 --TimerStart(GSound, GetSoundDuration(snd), false, nil)
@@ -2006,7 +2059,7 @@ function StartGCTracker()
     local track_gc
     local meta = {
         __gc = function (self)
-            print('GC is called at ' .. TimerGetElapsed(t))
+            --print('GC is called at ' .. TimerGetElapsed(t))
             track_gc()
         end
     }
@@ -2053,7 +2106,7 @@ function AddPoint(points)
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
 
     if not LockedState[2] then
-        if GPoint >= PointForUnlock[2] then
+        if GPoint >= PointForUnlock[2] and SongCompleteCount>=3 then
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
             CreateSelections(IcoOfSongsLocked[2],5)
             LockedState[2] = true
@@ -2062,7 +2115,7 @@ function AddPoint(points)
 
     end
     if not LockedState[3] then
-        if GPoint >= PointForUnlock[3] then
+        if GPoint >= PointForUnlock[3] and SongCompleteCount>=5  then
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
             CreateSelections(IcoOfSongsLocked[3],5)
@@ -2070,7 +2123,7 @@ function AddPoint(points)
         end
     end
     if not LockedState[4] then
-        if GPoint >= PointForUnlock[4] then
+        if GPoint >= PointForUnlock[4] and SongCompleteCount>=2 then
             BlzFrameSetTexture(IcoOfSongsLocked[4], "BTNFresh", 0, true)
             LockedState[4] = true
             CreateSelections(IcoOfSongsLocked[4],5)
@@ -2078,7 +2131,7 @@ function AddPoint(points)
         end
     end
     if not LockedState[5] then
-        if GPoint >= PointForUnlock[5] then
+        if GPoint >= PointForUnlock[5] and SongCompleteCount>=4 then
             BlzFrameSetTexture(IcoOfSongsLocked[5], "BTNMilf", 0, true)
             LockedState[5] = true
             CreateSelections(IcoOfSongsLocked[5],5)
@@ -2140,6 +2193,7 @@ end
 
 function AllPreload()
     StopSound(normal_sound("All"), true, false)
+    StopSound(normal_sound("AllForce"), true, false)
     StopSound(normal_sound("zavodila"), true, false)
     StopSound(normal_sound("HankMP3"), true, false)
     StopSound(normal_sound("Fresh"), true, false)
@@ -2244,6 +2298,70 @@ end
 function CreateEnding(unit)
     local x,y=GetUnitX(unit),GetUnitY(unit)
     AddSpecialEffect("Units\\Demon\\Infernal\\InfernalBirth.mdl",x,y)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 21.11.2021 23:01
+---
+function SongCamera(data)
+    if data <= 4 then
+        --print("на артаса")
+        SetUnitLookAt(GJaina,"bone_head",GEnemy,0,0,120)
+        TimerStart(CreateTimer(), 0.1, false, function()
+            PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
+            DestroyTimer(GetExpiredTimer())
+        end)
+
+    else
+        --print("на пеона")
+        SetUnitLookAt(GJaina,"bone_head",GPlayer,-120,0,120)
+        PanCameraToTimed(GetUnitX(GPlayer), GetUnitY(GPlayer), 1)
+    end
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 22.11.2021 1:46
+---
+function CreateSpaceForRestart()
+    SpaceRegister()
+    local NextPoint = 0.039
+    local texture = "EmptySpace"
+    local SelfFrame = BlzCreateFrameByType('GLUEBUTTON', 'FaceButton', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), 'ScoreScreenTabButtonTemplate', 0)
+    local buttonIconFrame = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', SelfFrame, '', 0)
+    local text = BlzCreateFrameByType("TEXT", "ButtonChargesText", SelfFrame, "", 0)
+
+    BlzFrameSetText(text, "SPACE - перезапуск текущей песни")
+    BlzFrameSetSize(text, NextPoint * 7, 0.01)
+    BlzFrameSetScale(text, 1)
+    BlzFrameSetTextColor(text, BlzConvertColor(255, 0, 0, 0))
+
+    BlzFrameSetPoint(text, FRAMEPOINT_CENTER, SelfFrame, FRAMEPOINT_CENTER, 0.05, 0.0)
+
+    BlzFrameSetAllPoints(buttonIconFrame, SelfFrame)
+    BlzFrameSetTexture(buttonIconFrame, texture, 0, true)
+    BlzFrameSetSize(SelfFrame, NextPoint * 8, NextPoint)
+
+    BlzFrameSetAbsPoint(SelfFrame, FRAMEPOINT_CENTER, 0.4, 0.01)
+    --BlzFrameSetPoint(SelfFrame, FRAMEPOINT_LEFT, parent, FRAMEPOINT_LEFT, x, y)
+
+    local ClickTrig = CreateTrigger()
+    BlzTriggerRegisterFrameEvent(ClickTrig, SelfFrame, FRAMEEVENT_CONTROL_CLICK)
+    TriggerAddAction(ClickTrig, function()
+
+        BlzFrameSetEnable(BlzGetTriggerFrame(), false)
+        BlzFrameSetEnable(BlzGetTriggerFrame(), true)
+        StartNewSong(SONG)
+    end)
+end
+
+function SpaceRegister()
+    local thisTrig = CreateTrigger()
+    BlzTriggerRegisterPlayerKeyEvent(thisTrig, Player(0), OSKEY_SPACE, 0, true)
+    TriggerAddAction(thisTrig, function()
+        StartNewSong(SONG)
+    end)
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -2523,13 +2641,16 @@ Fresh = {--167
 }
 
 FreshPos = { --167
-    1,
+    1, 1, 4, 4, 1, 1, 4, 1,
+    7, 7, 10, 10, 7, 7, 10, 7,
+    1, 1, 4, 4, 1, 1, 4, 1,
+    7, 7, 10, 10, 7, 7, 10, 7,
     1, 2, 3,
     7, 8, 9,
     4, 3, 2, 1,
     10, 9, 8, 7,
     3, 2, 3, 1,
-    9, 8, 9, 7,8,
+    9, 8, 9, 7, 8,
     --подписку
     4, 3, 3, 2, 1, 2,
     10, 9, 9, 8, 7, 8,
@@ -2559,10 +2680,66 @@ FreshPos = { --167
     7, 7, 10, 7, 8, 9, 10,
     --финалочка
     2, 1, 2, 1, 2, 3, 4, 3, 2, 3, 2,
-    8, 7, 8, 7, 8, 9, 10, 9, 8, 9, 8
-
+    8, 7, 8, 7, 8, 9, 10, 9, 8, 9, 8,
+    --
+    1, 1, 4, 4, 1, 1, 4, 1,
+    7, 7, 10, 10, 7, 7, 10, 7,
+    1, 1, 4, 4, 1, 1, 4, 1,
+    7, 7, 10, 10, 7, 7, 10,
 
 }
+
+FreshBit = {--167
+    0, 0.5, 1, 2, 2.5, 2.75, 3, 3.5,
+    4, 4.5, 5, 6, 6.5, 6.75, 7, 7.5,
+    8, 8.5, 9, 10, 10.5, 10.75, 11, 11.5,
+    12, 12.5, 13, 14, 14.5, 14.75, 15, 15.5,
+    16.5, 17, 18,
+    20.5, 21, 22,
+    24.5, 25, 25.5, 26,
+    28.5, 29, 29.5, 30,
+    32.5, 33, 33.5, 34,
+    36.5, 37, 37.5, 38, 39,
+    --подписку
+    40, 40.5, 41.5, 42, 42.5, 43.5,
+    44, 44.5, 45.5, 46, 46.5, 47.5,
+    --та та тата тата
+    48, 49, 50, 50.5, 51,
+    52, 52.5, 53, 53.5, 54, 54.5, 55,
+    56, 57, 58, 58.5, 59,
+    60, 60.5, 61, 61.5, 62, 62.5, 63,
+    -- переход
+    65, 65.5, 66, 66.5, 67, 67.5,
+    68.5, 69, 69.5, 70, 71,
+    73, 73.5, 74, 74.5, 75, 75.5,
+    76.5, 77, 77.5, 78, 79,
+    --80
+    80.5, 81, 82, 83, 83.5,
+    84.5, 85, 86, 87, 87.5,
+    88.5, 89, 89.5, 90, 91.5,
+    92.5, 93, 93.5, 94, 95.5,
+    96.5, 97, 97.5, 98,
+    100.5, 101, 101.5, 102, 103,
+    -- ти та подписку та
+    104, 104.5, 105.5, 106, 106.5, 107.5,
+    108, 108.5, 109.5, 110, 110.5, 111.5,
+    --та та тата тата
+    112, 113, 114, 114.5, 115,
+    116, 116.5, 117, 117.5, 118, 118.5, 119,
+    120, 121, 122, 122.5, 123,
+    124, 124.5, 125, 125.5, 126, 126.5, 127,
+    --финалочка
+    129, 129.5, 130, 130.5, 131, 131.5,
+    132.5, 133, 133.5, 134, 135,
+    137, 137.5, 138, 138.5, 139, 139.5,
+    140.5, 141, 141.5, 142, 143,
+    --0, 0.5, 1, 2, 2.5, 2.75, 3, 3.5,
+    144,144.5,145,146,146.5,146.75,147,147.5,
+    148,148.5,149,150,150.5,150.75,151,151.5,
+    152,152.5,153,154,154.5,154.75,155,155.5,
+    156,156.5,157,158,158.5,158.75,159,
+}
+
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.

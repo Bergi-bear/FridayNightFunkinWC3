@@ -15,6 +15,7 @@ do
             --Preloader("zavodila")
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
+            GJaina = gg_unit_Hjai_0001
             HideEverything()
             ReturnFPS()
             MenuFrame()
@@ -22,6 +23,7 @@ do
             CreatePointInterFace()
             CreateGameSpeedIndicator()
             CreateSongMenus()
+            CreateSpaceForRestart()
             StartGCTracker()
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
@@ -61,6 +63,9 @@ function StarAllSound(numberSong)
         SONG = 1
         GameSpeed = 0.6
         StartArrow(BoPeeBo, ArroPos, "AllForce")
+        if GPoint>=10000 then
+            ShuffleIcons(false)
+        end
     elseif numberSong == 2 then
         SONG = 2
         GameSpeed = 0.454 --
@@ -70,7 +75,7 @@ function StarAllSound(numberSong)
         SONG = 4
         GameSpeed = 0.5 --
         --print("и где музыка из фреша")
-        StartArrow(Fresh, FreshPos, "Fresh")
+        StartArrow(FreshBit, FreshPos, "Fresh")
     elseif numberSong == 5 then
         SONG = 5
         GameSpeed = 0.331 --
@@ -108,6 +113,7 @@ function StarAllSound(numberSong)
     GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
+        ShuffleIcons(true)
         CreateHPBar("20")
         CreateHPBar("06")
         CreateHPBar("00")
@@ -257,15 +263,16 @@ function StartArrow(notes, arrowPos, music)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
             local delay = notes[i] * GameSpeed
-            if i == #notes then
-                --print("задержка последней ноты "..delay) -- всегда верная
-            end
+
 
             TimerStart(t, delay, false, function()
                 --print(delay,TimerGetElapsed(t),TimerGetRemaining(t))
                 PauseTimer(t)
                 DestroyTimer(t)
                 CreateArrow(0.01, arrowPos[i], i, notes, music)
+                SongCamera(arrowPos[i])
+
+
             end)
         end
     end)
@@ -422,7 +429,12 @@ function KeyPressed(key)
     if arrows.keyPressed and not BlzGetTriggerPlayerIsKeyDown() then
         arrows.keyPressed = false
         if not GameIsDefeat then
-            QueueUnitAnimation(GPlayer, "stand ready")
+            TimerStart(CreateTimer(), 0.18, false, function()
+                if not GameIsDefeat then
+                    QueueUnitAnimation(GPlayer, "stand ready")
+                end
+                DestroyTimer(GetExpiredTimer())
+            end)
         end
         --print("Кнопка отпущена")
     end
@@ -509,7 +521,7 @@ function CreateArrow(speed, pozX, number, notes, music)
         end
     end
     if number == #notes then
-        --print("финальная нота должна быть длинной")
+        --print(" последняя финальная нота должна быть длинной")
         if SONG == 1 then
             durations = 2
             arrow.isline = true
@@ -524,7 +536,14 @@ function CreateArrow(speed, pozX, number, notes, music)
             arrow.line = last
             arrows.lineTime = durations - 0.5
         end
-
+        TimerStart(CreateTimer(), 1.5, false, function()
+            if not SongCompleted[SONG] then
+                SongCompleted[SONG]=true
+                SongCompleteCount=SongCompleteCount+1
+                SONG=SONG+1
+            end
+            DestroyTimer(GetExpiredTimer())
+        end)
     end
     local texture = arrows.standart[type]
     local x, y = arrows.x, 0
@@ -558,10 +577,12 @@ function CreateArrow(speed, pozX, number, notes, music)
         arrow.y = y
         BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
         if y >= 0.4475 and not isMusicStart then
-         if not isMusicStart then
+            if not isMusicStart then
+                --создание музыки по первой стрелке
                 local snd = normal_sound(music)
                 musics[#musics + 1] = snd
                 isMusicStart = true
+                --SetSoundPitch(snd,0.5)
                 --GSound = CreateTimer()
                 --GSDuration = GetSoundDuration(snd) / 1000
                 --TimerStart(GSound, GetSoundDuration(snd), false, nil)

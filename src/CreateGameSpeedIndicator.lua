@@ -24,7 +24,7 @@ function CreateGameSpeedIndicator()
     BlzFrameSetPoint(textGS, FRAMEPOINT_LEFT, frame, FRAMEPOINT_LEFT, 0.01, 0.0) --Сдвиг очков относительно эмблемы
 
     TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-        BlzFrameSetText(textGS, GameSpeed)
+        BlzFrameSetText(textGS, DelayPerTime)
     end)
 
 end

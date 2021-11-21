@@ -57,7 +57,7 @@ function BugSpeed()
         t = t + TIMER_PERIOD64
 
         if t >= 60 then
-            print("скорость игры изменена на "..table[k])
+            --print("скорость игры изменена на "..table[k])
             t=0
             DelayPerTime=table[k]
             k=k+1

@@ -31,7 +31,7 @@ function AddPoint(points)
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
 
     if not LockedState[2] then
-        if GPoint >= PointForUnlock[2] then
+        if GPoint >= PointForUnlock[2] and SongCompleteCount>=3 then
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
             CreateSelections(IcoOfSongsLocked[2],5)
             LockedState[2] = true
@@ -40,7 +40,7 @@ function AddPoint(points)
 
     end
     if not LockedState[3] then
-        if GPoint >= PointForUnlock[3] then
+        if GPoint >= PointForUnlock[3] and SongCompleteCount>=5  then
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
             CreateSelections(IcoOfSongsLocked[3],5)
@@ -48,7 +48,7 @@ function AddPoint(points)
         end
     end
     if not LockedState[4] then
-        if GPoint >= PointForUnlock[4] then
+        if GPoint >= PointForUnlock[4] and SongCompleteCount>=2 then
             BlzFrameSetTexture(IcoOfSongsLocked[4], "BTNFresh", 0, true)
             LockedState[4] = true
             CreateSelections(IcoOfSongsLocked[4],5)
@@ -56,7 +56,7 @@ function AddPoint(points)
         end
     end
     if not LockedState[5] then
-        if GPoint >= PointForUnlock[5] then
+        if GPoint >= PointForUnlock[5] and SongCompleteCount>=4 then
             BlzFrameSetTexture(IcoOfSongsLocked[5], "BTNMilf", 0, true)
             LockedState[5] = true
             CreateSelections(IcoOfSongsLocked[5],5)

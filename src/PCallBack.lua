@@ -63,7 +63,7 @@ function StartGCTracker()
     local track_gc
     local meta = {
         __gc = function (self)
-            print('GC is called at ' .. TimerGetElapsed(t))
+            --print('GC is called at ' .. TimerGetElapsed(t))
             track_gc()
         end
     }
