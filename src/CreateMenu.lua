@@ -7,17 +7,17 @@ EMPTY = nil
 IcoOfSongsLocked = {}
 LockedState = { true, false, false, false, false }
 PointForUnlock = { 0, 25000, 150000, 10000, 70000 }
-SongCompleteCount=1
-SongCompleted={false,false,false,false,false,}
+SongCompleteCount = 1
+SongCompleted = { false, false, false, false, false, }
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
     ttBox, _, ttText = CreateToolTipBox()
-    local nextPoint=0.04
-    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4-nextPoint*0, "BTNsos", 1, function()
+    local nextPoint = 0.04
+    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 0, "BTNsos", 1, function()
         StartNewSong(1)
     end)
 
-    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*2, "lockedicon", 2, function()
+    EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 2, "lockedicon", 2, function()
         if LockedState[2] then
             StartNewSong(2)
         else
@@ -26,7 +26,7 @@ function CreateSongMenus()
         end
     end)
 
-    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*4, "lockedicon", 3, function()
+    EMPTY, IcoOfSongsLocked[3] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 4, "lockedicon", 3, function()
         if LockedState[3] then
             StartNewSong(3)
         else
@@ -36,7 +36,7 @@ function CreateSongMenus()
 
     end)
 
-    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*1, "lockedicon", 4, function()
+    EMPTY, IcoOfSongsLocked[4] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 1, "lockedicon", 4, function()
         if LockedState[4] then
             StartNewSong(4)
         else
@@ -45,7 +45,7 @@ function CreateSongMenus()
         end
 
     end)
-    EMPTY, IcoOfSongsLocked[5] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint*3, "lockedicon", 5, function()
+    EMPTY, IcoOfSongsLocked[5] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 3, "lockedicon", 5, function()
         if LockedState[5] then
             StartNewSong(5)
         else
@@ -71,6 +71,13 @@ function CreateHandArrowWPulse(x, y)
 end
 
 function StartNewSong(number)
+    local heroTable = {
+        FourCC("Hart"), --артас
+        nil,-- хенк
+        nil, -- Таурен
+        FourCC("U000"), -- детерок
+        nil, --демонесса
+    }
     if not MUDA then
         if not restartReady then
             return
@@ -83,6 +90,11 @@ function StartNewSong(number)
             restartReady = false
             GameIsDefeat = false
             GHP = 50
+            if heroTable[number] then
+                ReplaceHeroForCurrentSong(number, heroTable[number])
+            else
+                print(number,"Героя нет в базе, будет артас")
+            end
             BreakCurrentLevel()
             SetUnitAnimation(GEnemy, "Stand Ready")
             SetUnitAnimation(GPlayer, "Stand Ready")
@@ -92,6 +104,35 @@ function StartNewSong(number)
                 restartReady = true
             end)
         end
-
     end
+end
+
+function ReplaceHeroForCurrentSong(number, id)
+    if number ~= SONG then
+        local x, y = GetUnitXY(GEnemy)
+        ShowUnit(GEnemy, false)
+        KillUnit(GEnemy)
+        CreateAndFallUnit(id, x, y)
+    else
+        print("замена персонажа не требуется")
+    end
+end
+
+function CreateAndFallUnit(id, x, y)
+    GEnemy = CreateUnit( Player(0),id, x, y, 90)
+    SetUnitFacing(GEnemy,AngleBetweenUnits(GEnemy,GPlayer))
+    SetUnitZ(GEnemy, 1000)
+    SetUnitAnimation(GEnemy, "death")
+    TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
+        local z = GetUnitZ(GEnemy)
+        SetUnitZ(GEnemy, z - 50)
+        --print(z)
+        if z <= 50 then
+            --print("приземлился")
+            --DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", x, y))
+            PlayerSeeNoiseInRangeTimed(1,x,y)
+            DestroyTimer(GetExpiredTimer())
+        end
+    end)
+
 end

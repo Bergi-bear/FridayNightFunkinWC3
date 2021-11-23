@@ -123,24 +123,31 @@ function ICO_FLEX(size)
     end)
 end
 
-function ShuffleIcons(first,song)
+function ShuffleIcons(first, song)
 
-        local enemy = {
-            [1] = { "war3mapImported\\ArthasBorder", "war3mapImported\\ArthasBorderEYE" },
-            [2] = { "war3mapImported\\Chaming", "war3mapImported\\Chaming" },
-            [3] = { "war3mapImported\\DioOld", "war3mapImported\\DioOld" },
-            [4] = { "war3mapImported\\DioYang", "war3mapImported\\DioYang" },
+    local enemy = {
+        [1] = { "war3mapImported\\ArthasBorder", "war3mapImported\\ArthasBorderEYE" },
+        [2] = { "war3mapImported\\Chaming", "war3mapImported\\Chaming" },
+        [3] = { "war3mapImported\\DioOld", "war3mapImported\\DioOld" },
+        [4] = { "war3mapImported\\DioYang", "war3mapImported\\DioYang" },
+    }
+    local player = {
+        [1] = { "war3mapImported\\PeonBorder", "war3mapImported\\PeonBorderEYE" },
+        [2] = { "war3mapImported\\Shrek", "war3mapImported\\Shrek" },
+        [3] = { "war3mapImported\\jojoShrek", "war3mapImported\\jojoShrek" },
+    }
+    if GetUnitTypeId(GEnemy) == FourCC("U000") then
+        enemy = {
+            [1] = { "war3mapImported\\deterrock", "war3mapImported\\deterrock" },
+            [2] = { "war3mapImported\\deterrock2", "war3mapImported\\deterrock2" },
+            [3] = { "war3mapImported\\deterrock3", "war3mapImported\\deterrock3" },
+            [4] = { "war3mapImported\\deterrock4", "war3mapImported\\deterrock4" },
         }
-        local player = {
-            [1] = { "war3mapImported\\PeonBorder", "war3mapImported\\PeonBorderEYE" },
-            [2] = { "war3mapImported\\Shrek", "war3mapImported\\Shrek" },
-            [3] = { "war3mapImported\\jojoShrek", "war3mapImported\\jojoShrek" },
-        }
-
+    end
 
     if first then
-        GICOEnemy,GICOPlayer=enemy[1], player[1]
+        GICOEnemy, GICOPlayer = enemy[1], player[1]
     else
-        GICOEnemy,GICOPlayer=enemy[GetRandomInt(1, #enemy)], player[GetRandomInt(1, #player)]
+        GICOEnemy, GICOPlayer = enemy[GetRandomInt(1, #enemy)], player[GetRandomInt(1, #player)]
     end
 end

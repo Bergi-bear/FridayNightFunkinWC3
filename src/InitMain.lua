@@ -63,9 +63,6 @@ function StarAllSound(numberSong)
         SONG = 1
         GameSpeed = 0.6
         StartArrow(BoPeeBo, ArroPos, "AllForce")
-        if GPoint>=10000 then
-            ShuffleIcons(false)
-        end
     elseif numberSong == 2 then
         SONG = 2
         GameSpeed = 0.454 --
@@ -110,6 +107,9 @@ function StarAllSound(numberSong)
     end
     --0 минута 1
     -- 20 минутв 0.975
+    if GPoint >= 10000 then
+        ShuffleIcons(false)
+    end
     GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
@@ -263,7 +263,6 @@ function StartArrow(notes, arrowPos, music)
             local t = CreateTimer()
             arrows.timers[#arrows.timers + 1] = t
             local delay = notes[i] * GameSpeed
-
 
             TimerStart(t, delay, false, function()
                 --print(delay,TimerGetElapsed(t),TimerGetRemaining(t))
@@ -538,9 +537,11 @@ function CreateArrow(speed, pozX, number, notes, music)
         end
         TimerStart(CreateTimer(), 1.5, false, function()
             if not SongCompleted[SONG] then
-                SongCompleted[SONG]=true
-                SongCompleteCount=SongCompleteCount+1
-                SONG=SONG+1
+                if SONG > 0 then
+                    SongCompleted[SONG] = true
+                    SongCompleteCount = SongCompleteCount + 1
+                    --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
+                end
             end
             DestroyTimer(GetExpiredTimer())
         end)
@@ -661,6 +662,11 @@ function PlayArthasAnimation(type, durations, number)
     --local anim = { 22, 7, 17, 5 }
     --print(durations)
     local anim = { 46, 47, 49, 27 }
+    if GetUnitTypeId(GEnemy) == FourCC("Hart") then
+        anim = { 46, 47, 49, 27 }
+    elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
+        anim = { 19, 20, 21, 22 }
+    end
     if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 and SONG == 1 then
         anim[type] = 3
         ArthasDamage()
@@ -668,8 +674,6 @@ function PlayArthasAnimation(type, durations, number)
     end
     SetUnitAnimationByIndex(GEnemy, anim[type])
     ArthasIdle = ArthasIdle + durations * 0.6
-
-
 end
 
 function PlayUnitAnimationFromChat()
@@ -693,7 +697,12 @@ function StartArthasStateMachine()
             ArthasIdle = 0
             --print("сброс")
             --print("сброс")
-            QueueUnitAnimation(GEnemy, "Stand Ready")
+            if GetUnitTypeId(GEnemy) == FourCC("Hart") then
+                QueueUnitAnimation(GEnemy, "Stand Ready")
+            elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
+                QueueUnitAnimation(GEnemy, "Stand")
+            end
+
         end
     end)
 end
