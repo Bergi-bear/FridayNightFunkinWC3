@@ -19,40 +19,86 @@ end
 MUDA = false
 function MudaMuda()
     local muda = normal_sound("muda")
-    MUDA=true
-    TimerStart(CreateTimer(), 3, false, function()
-        UnitAddAbility(GEnemy, FourCC("A001"))
-        DestroyTimer(GetExpiredTimer())
-    end)
-    TimerStart(CreateTimer(), 3.5, false, function()
-        DestroyTimer(GetExpiredTimer())
-        local i = 0
-        SetUnitTimeScale(GEnemy, 3)
-        TimerStart(CreateTimer(), 0.2, true, function()
-            i = i + 1
-            --print(i)
-            SetUnitAnimationByIndex(GEnemy, 3)
-            DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
-            if i == 18 then
-                DestroyTimer(GetExpiredTimer())
-                SetUnitTimeScale(GEnemy, 1)
-
-                TimerStart(CreateTimer(), 0.2, false, function()
-                    DestroyTimer(GetExpiredTimer())
-                    SetUnitAnimationByIndex(GEnemy, 3)
-                    TimerStart(CreateTimer(), 0.4, false, function()
-                        DestroyTimer(GetExpiredTimer())
-                        DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
-                    end)
-                    TimerStart(CreateTimer(), 0.6, false, function()
-                        DestroyTimer(GetExpiredTimer())
-                        UnitRemoveAbility(GEnemy, FourCC("A001"))
-                        AddSpecialEffect("Objects\\Spawnmodels\\Undead\\UndeadBlood\\UndeadBloodAbomination.mdl",GetUnitXY(GPlayer))
-                        ShowUnit(GPlayer,false)
-                        MUDA = false
-                    end)
-                end)
-            end
+    MUDA = true
+    if GetUnitTypeId(GEnemy) == FourCC("Hart") then
+        TimerStart(CreateTimer(), 3, false, function()
+            UnitAddAbility(GEnemy, FourCC("A001"))
+            DestroyTimer(GetExpiredTimer())
         end)
-    end)
+        TimerStart(CreateTimer(), 3.5, false, function()
+            DestroyTimer(GetExpiredTimer())
+            local i = 0
+            SetUnitTimeScale(GEnemy, 3)
+            TimerStart(CreateTimer(), 0.2, true, function()
+                i = i + 1
+                --print(i)
+                SetUnitAnimationByIndex(GEnemy, 3)
+                DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
+                if i == 18 then
+                    DestroyTimer(GetExpiredTimer())
+                    SetUnitTimeScale(GEnemy, 1)
+
+                    TimerStart(CreateTimer(), 0.2, false, function()
+                        DestroyTimer(GetExpiredTimer())
+                        SetUnitAnimationByIndex(GEnemy, 3)
+                        TimerStart(CreateTimer(), 0.4, false, function()
+                            DestroyTimer(GetExpiredTimer())
+                            DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
+                        end)
+                        TimerStart(CreateTimer(), 0.6, false, function()
+                            DestroyTimer(GetExpiredTimer())
+                            UnitRemoveAbility(GEnemy, FourCC("A001"))
+                            AddSpecialEffect("Objects\\Spawnmodels\\Undead\\UndeadBlood\\UndeadBloodAbomination.mdl", GetUnitXY(GPlayer))
+                            ShowUnit(GPlayer, false)
+                            MUDA = false
+                        end)
+                    end)
+                end
+            end)
+        end)
+    elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
+        local xs, ys = GetUnitXY(GEnemy)
+        SetUnitMoveSpeed(GEnemy, 50)
+        IssuePointOrder(GEnemy, "move", GetUnitX(GPlayer) - 50, GetUnitY(GPlayer))
+        TimerStart(CreateTimer(), 3.5, false, function()
+            DestroyTimer(GetExpiredTimer())
+            local i = 0
+            SetUnitTimeScale(GEnemy, 3)
+            local k = 0
+            TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
+
+                k = k + TIMER_PERIOD64
+                if k > 0.2 then
+                    k = 0
+                    i = i + 1
+                    PlayerSeeNoiseInRangeTimed(1, GetUnitXY(GEnemy))
+                    DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GEnemy)))
+                    if i == 18 then
+                        DestroyTimer(GetExpiredTimer())
+                        SetUnitTimeScale(GEnemy, 1)
+
+                        TimerStart(CreateTimer(), 0.2, false, function()
+                            DestroyTimer(GetExpiredTimer())
+                            --SetUnitAnimationByIndex(GEnemy, 3)
+                            TimerStart(CreateTimer(), 0.4, false, function()
+                                DestroyTimer(GetExpiredTimer())
+                                DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
+                            end)
+                            TimerStart(CreateTimer(), 0.6, false, function()
+                                DestroyTimer(GetExpiredTimer())
+                                --UnitRemoveAbility(GEnemy, FourCC("A001"))
+                                AddSpecialEffect("Objects\\Spawnmodels\\Undead\\UndeadBlood\\UndeadBloodAbomination.mdl", GetUnitXY(GPlayer))
+                                ShowUnit(GPlayer, false)
+                                MUDA = false
+                                SetUnitPosition(GEnemy, xs, ys)
+                            end)
+                        end)
+                    end
+                end
+                --print(i)
+                --SetUnitAnimationByIndex(GEnemy, 3)
+
+            end)
+        end)
+    end
 end
