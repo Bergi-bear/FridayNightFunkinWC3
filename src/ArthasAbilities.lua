@@ -65,32 +65,39 @@ function MudaMuda()
             local i = 0
             SetUnitTimeScale(GEnemy, 3)
             local k = 0
+            local s=0
             TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
-
+                s=s+0.5
                 k = k + TIMER_PERIOD64
+                --print(math.sin(s)*100+100)
+                SetUnitZ(GEnemy,math.sin(s)*100+100)
                 if k > 0.2 then
                     k = 0
                     i = i + 1
                     PlayerSeeNoiseInRangeTimed(1, GetUnitXY(GEnemy))
+
                     DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GEnemy)))
-                    if i == 18 then
+                    if i == 22 then
                         DestroyTimer(GetExpiredTimer())
                         SetUnitTimeScale(GEnemy, 1)
 
-                        TimerStart(CreateTimer(), 0.2, false, function()
+                        TimerStart(CreateTimer(), 0.0, false, function()
                             DestroyTimer(GetExpiredTimer())
-                            --SetUnitAnimationByIndex(GEnemy, 3)
-                            TimerStart(CreateTimer(), 0.4, false, function()
-                                DestroyTimer(GetExpiredTimer())
-                                DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", GetUnitXY(GPlayer)))
-                            end)
-                            TimerStart(CreateTimer(), 0.6, false, function()
+
+                            TimerStart(CreateTimer(), 0.0, false, function()
                                 DestroyTimer(GetExpiredTimer())
                                 --UnitRemoveAbility(GEnemy, FourCC("A001"))
                                 AddSpecialEffect("Objects\\Spawnmodels\\Undead\\UndeadBlood\\UndeadBloodAbomination.mdl", GetUnitXY(GPlayer))
                                 ShowUnit(GPlayer, false)
-                                MUDA = false
-                                SetUnitPosition(GEnemy, xs, ys)
+                                TimerStart(CreateTimer(), 0.1, false, function()
+                                    IssuePointOrder(GEnemy, "move", xs, ys)
+                                    --SetUnitPosition(GEnemy, xs, ys)
+                                    SetUnitZ(GEnemy,0)
+                                    TimerStart(CreateTimer(), 2, false, function()
+                                        SetUnitFacing(GEnemy,AngleBetweenUnits(GEnemy,GPlayer))
+                                        MUDA = false
+                                    end)
+                                end)
                             end)
                         end)
                     end

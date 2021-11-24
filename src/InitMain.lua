@@ -25,6 +25,7 @@ do
             CreateSongMenus()
             CreateSpaceForRestart()
             StartGCTracker()
+            CreateAndPlayGif(0.83,0.49,"gif\\gargoule_page_000")
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
@@ -593,6 +594,20 @@ function CreateArrow(speed, pozX, number, notes, music)
         end
         if y >= 0.53 and pozX < 5 and arrow.swaped == false then
             PlayArthasAnimation(type, durations, number)
+            --print("Бот нажимает кнопку")
+            if GetUnitTypeId(GEnemy) == FourCC("U000") then
+                --print(10*durations)
+                Damage(6 * durations,true)
+                local tempDur=durations/3
+                TimerStart(CreateTimer(), 0.15, true, function()
+                    tempDur = tempDur-0.15
+                    if tempDur <= 0 then
+                        DestroyTimer(GetExpiredTimer())
+                    end
+                    EffectFromPoint2Point("GreenLife", GetUnitX(GPlayer), GetUnitY(GPlayer), GetUnitX(GEnemy), GetUnitY(GEnemy))
+
+                end)
+            end
             --print(TimerGetElapsed(GSound),GSDuration)
             --SetSoundPlayPosition(musics[#musics], R2I(TimerGetElapsed(GSound) * 1000))
             --Camera2Right = false
