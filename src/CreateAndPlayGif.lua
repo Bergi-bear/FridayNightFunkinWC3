@@ -3,24 +3,25 @@
 --- Created by Bergi.
 --- DateTime: 25.11.2021 0:50
 ---
-function CreateAndPlayGif(x, y,path)
-    local gifPath = path--"gif\\gargoule_page_000"
+--CreateAndPlayGif(0.4,0.3,"war3mapImported\\\gargoule_page_000",0.1)
+function CreateAndPlayGif(x, y,path,size)
+    local gifPath = path--"gif\\gargoule_page_000" -- путь до кадров (имя без последнего порядкового символа или нескольких, смотря столько кадров)
     local endFrame = 8
     local s = 1
     local gif = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
     local firstShow = false
-    local size=0.04
+    local fps=1/16
     BlzFrameSetParent(gif, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetTexture(gif, gifPath .. 0, 0, true)
     BlzFrameSetSize(gif, size, size)
     BlzFrameSetAbsPoint(gif, FRAMEPOINT_TOP, x, y)
     BlzFrameSetVisible(gif, false)
-    TimerStart(CreateTimer(), TIMER_PERIOD*2, true, function()
+    TimerStart(CreateTimer(), fps, true, function()
         if not firstShow then
             firstShow = true
             BlzFrameSetVisible(gif, true)
         end
-        BlzFrameSetTexture(gif, gifPath .. I2S(R2I(s)), 0, true)
+        BlzFrameSetTexture(gif, gifPath .. s, 0, true)
         --print(s)
         s=s+1
         if s>endFrame then

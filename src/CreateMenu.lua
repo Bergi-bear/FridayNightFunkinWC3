@@ -93,7 +93,7 @@ function StartNewSong(number)
             if heroTable[number] then
                 ReplaceHeroForCurrentSong(number, heroTable[number])
             else
-                print(number,"Героя нет в базе, будет артас")
+                --print(number,"Героя нет в базе, будет артас")
             end
             BreakCurrentLevel()
             SetUnitAnimation(GEnemy, "Stand Ready")
@@ -114,7 +114,7 @@ function ReplaceHeroForCurrentSong(number, id)
         KillUnit(GEnemy)
         CreateAndFallUnit(id, x, y)
     else
-        print("замена персонажа не требуется")
+        --print("замена персонажа не требуется")
     end
 end
 

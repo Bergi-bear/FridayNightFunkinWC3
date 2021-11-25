@@ -419,24 +419,25 @@ end
 --- Created by Bergi.
 --- DateTime: 25.11.2021 0:50
 ---
-function CreateAndPlayGif(x, y,path)
-    local gifPath = path--"gif\\gargoule_page_000"
+--CreateAndPlayGif(0.4,0.3,"war3mapImported\\\gargoule_page_000",0.1)
+function CreateAndPlayGif(x, y,path,size)
+    local gifPath = path--"gif\\gargoule_page_000" -- путь до кадров (имя без последнего порядкового символа или нескольких, смотря столько кадров)
     local endFrame = 8
     local s = 1
     local gif = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
     local firstShow = false
-    local size=0.04
+    local fps=1/16
     BlzFrameSetParent(gif, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetTexture(gif, gifPath .. 0, 0, true)
     BlzFrameSetSize(gif, size, size)
     BlzFrameSetAbsPoint(gif, FRAMEPOINT_TOP, x, y)
     BlzFrameSetVisible(gif, false)
-    TimerStart(CreateTimer(), TIMER_PERIOD*2, true, function()
+    TimerStart(CreateTimer(), fps, true, function()
         if not firstShow then
             firstShow = true
             BlzFrameSetVisible(gif, true)
         end
-        BlzFrameSetTexture(gif, gifPath .. I2S(R2I(s)), 0, true)
+        BlzFrameSetTexture(gif, gifPath .. s, 0, true)
         --print(s)
         s=s+1
         if s>endFrame then
@@ -681,7 +682,7 @@ function StartNewSong(number)
             if heroTable[number] then
                 ReplaceHeroForCurrentSong(number, heroTable[number])
             else
-                print(number,"Героя нет в базе, будет артас")
+                --print(number,"Героя нет в базе, будет артас")
             end
             BreakCurrentLevel()
             SetUnitAnimation(GEnemy, "Stand Ready")
@@ -702,7 +703,7 @@ function ReplaceHeroForCurrentSong(number, id)
         KillUnit(GEnemy)
         CreateAndFallUnit(id, x, y)
     else
-        print("замена персонажа не требуется")
+        --print("замена персонажа не требуется")
     end
 end
 
@@ -1141,7 +1142,7 @@ do
             CreateSongMenus()
             CreateSpaceForRestart()
             StartGCTracker()
-            CreateAndPlayGif(0.83,0.49,"gif\\gargoule_page_000")
+            CreateAndPlayGif(0.83,0.49,"gif\\gargoule_page_000",0.04)
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
@@ -1657,6 +1658,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                 if SONG > 0 then
                     SongCompleted[SONG] = true
                     SongCompleteCount = SongCompleteCount + 1
+                    print("где разблокировка песни"..SONG+1)
                     --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
                 end
             end
@@ -2279,12 +2281,28 @@ function CreatePointInterFace()
     BlzFrameSetScale(text, 2)
     BlzFrameSetPoint(text, FRAMEPOINT_LEFT, frame, FRAMEPOINT_LEFT, 0.025, 0.0) --Сдвиг очков относительно эмблемы
     GPointTextFrame = text
+    --updatePoint
+    local p=GPoint
+    local PLerp=p
+    TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
+        p = GPoint
+        local speed=1--p-PLerp --8 быстро 1 медленно
+        if p-PLerp<=100 then
+            speed=20
+        else
+            speed=1
+        end
+        PLerp = math.lerp(PLerp, p, TIMER_PERIOD64 * speed)
+        local descriptions = I2S(R2I(PLerp))
+        BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions+1)))
+    end)
 end
 
 function AddPoint(points)
     GPoint = GPoint + points
-    local descriptions = R2I(I2S(GPoint))
-    BlzFrameSetText(GPointTextFrame, descriptions)
+
+    --math.lerp(lerp)
+    --BlzFrameSetText(GPointTextFrame, descriptions)
     if points > 0 then
         CreateFlyPoint(points)
     end
@@ -2292,35 +2310,36 @@ function AddPoint(points)
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
 
     if not LockedState[2] then
-        if GPoint >= PointForUnlock[2] and SongCompleteCount>=3 then
+        if GPoint >= PointForUnlock[2] then
+            --and SongCompleteCount>=3
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
-            CreateSelections(IcoOfSongsLocked[2],5)
+            CreateSelections(IcoOfSongsLocked[2], 5)
             LockedState[2] = true
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
 
     end
     if not LockedState[3] then
-        if GPoint >= PointForUnlock[3] and SongCompleteCount>=5  then
+        if GPoint >= PointForUnlock[3] and SongCompleteCount >= 5 then
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
-            CreateSelections(IcoOfSongsLocked[3],5)
+            CreateSelections(IcoOfSongsLocked[3], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end
     if not LockedState[4] then
-        if GPoint >= PointForUnlock[4]  then --and SongCompleteCount>=2
+        if GPoint >= PointForUnlock[4] and SongCompleteCount >= 2 then
             BlzFrameSetTexture(IcoOfSongsLocked[4], "BTNFresh", 0, true)
             LockedState[4] = true
-            CreateSelections(IcoOfSongsLocked[4],5)
+            CreateSelections(IcoOfSongsLocked[4], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end
     if not LockedState[5] then
-        if GPoint >= PointForUnlock[5] and SongCompleteCount>=4 then
+        if GPoint >= PointForUnlock[5] and SongCompleteCount >= 4 then
             BlzFrameSetTexture(IcoOfSongsLocked[5], "BTNMilf", 0, true)
             LockedState[5] = true
-            CreateSelections(IcoOfSongsLocked[5],5)
+            CreateSelections(IcoOfSongsLocked[5], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end
@@ -2427,7 +2446,9 @@ function InitTrig_SyncLoadDone ()
         if prefix == "myprefix" then
             --print(value,dec(value))
             LoadCode[i] = dec(value)
-            AddPoint(S2I(dec(value)))
+            TimerStart(CreateTimer(), 2, false, function()
+                AddPoint(S2I(dec(value)))
+            end)
         end
 
 

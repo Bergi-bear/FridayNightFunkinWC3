@@ -18,12 +18,28 @@ function CreatePointInterFace()
     BlzFrameSetScale(text, 2)
     BlzFrameSetPoint(text, FRAMEPOINT_LEFT, frame, FRAMEPOINT_LEFT, 0.025, 0.0) --Сдвиг очков относительно эмблемы
     GPointTextFrame = text
+    --updatePoint
+    local p=GPoint
+    local PLerp=p
+    TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
+        p = GPoint
+        local speed=1--p-PLerp --8 быстро 1 медленно
+        if p-PLerp<=100 then
+            speed=20
+        else
+            speed=1
+        end
+        PLerp = math.lerp(PLerp, p, TIMER_PERIOD64 * speed)
+        local descriptions = I2S(R2I(PLerp))
+        BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions+1)))
+    end)
 end
 
 function AddPoint(points)
     GPoint = GPoint + points
-    local descriptions = R2I(I2S(GPoint))
-    BlzFrameSetText(GPointTextFrame, descriptions)
+
+    --math.lerp(lerp)
+    --BlzFrameSetText(GPointTextFrame, descriptions)
     if points > 0 then
         CreateFlyPoint(points)
     end
@@ -31,35 +47,36 @@ function AddPoint(points)
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
 
     if not LockedState[2] then
-        if GPoint >= PointForUnlock[2] and SongCompleteCount>=3 then
+        if GPoint >= PointForUnlock[2] then
+            --and SongCompleteCount>=3
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
-            CreateSelections(IcoOfSongsLocked[2],5)
+            CreateSelections(IcoOfSongsLocked[2], 5)
             LockedState[2] = true
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
 
     end
     if not LockedState[3] then
-        if GPoint >= PointForUnlock[3] and SongCompleteCount>=5  then
+        if GPoint >= PointForUnlock[3] and SongCompleteCount >= 5 then
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
-            CreateSelections(IcoOfSongsLocked[3],5)
+            CreateSelections(IcoOfSongsLocked[3], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end
     if not LockedState[4] then
-        if GPoint >= PointForUnlock[4]  then --and SongCompleteCount>=2
+        if GPoint >= PointForUnlock[4] and SongCompleteCount >= 2 then
             BlzFrameSetTexture(IcoOfSongsLocked[4], "BTNFresh", 0, true)
             LockedState[4] = true
-            CreateSelections(IcoOfSongsLocked[4],5)
+            CreateSelections(IcoOfSongsLocked[4], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end
     if not LockedState[5] then
-        if GPoint >= PointForUnlock[5] and SongCompleteCount>=4 then
+        if GPoint >= PointForUnlock[5] and SongCompleteCount >= 4 then
             BlzFrameSetTexture(IcoOfSongsLocked[5], "BTNMilf", 0, true)
             LockedState[5] = true
-            CreateSelections(IcoOfSongsLocked[5],5)
+            CreateSelections(IcoOfSongsLocked[5], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end

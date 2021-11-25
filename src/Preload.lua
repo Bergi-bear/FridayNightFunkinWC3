@@ -67,7 +67,9 @@ function InitTrig_SyncLoadDone ()
         if prefix == "myprefix" then
             --print(value,dec(value))
             LoadCode[i] = dec(value)
-            AddPoint(S2I(dec(value)))
+            TimerStart(CreateTimer(), 2, false, function()
+                AddPoint(S2I(dec(value)))
+            end)
         end
 
 

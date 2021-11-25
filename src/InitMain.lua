@@ -25,7 +25,7 @@ do
             CreateSongMenus()
             CreateSpaceForRestart()
             StartGCTracker()
-            CreateAndPlayGif(0.83,0.49,"gif\\gargoule_page_000")
+            CreateAndPlayGif(0.83,0.49,"gif\\gargoule_page_000",0.04)
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
@@ -541,6 +541,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                 if SONG > 0 then
                     SongCompleted[SONG] = true
                     SongCompleteCount = SongCompleteCount + 1
+                    --print("где разблокировка песни "..SONG+1)
                     --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
                 end
             end
