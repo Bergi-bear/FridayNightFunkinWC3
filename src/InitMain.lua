@@ -25,7 +25,7 @@ do
             CreateSongMenus()
             CreateSpaceForRestart()
             StartGCTracker()
-            CreateAndPlayGif(0.83,0.49,"gif\\gargoule_page_000",0.04)
+            CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
@@ -415,7 +415,7 @@ function KeyPressed(key)
                         if SONG == 1 then
                             amount = 5
                         elseif SONG == 2 and arrow.number > 110 and arrow.number < 180 then
-                            amount = 1
+                            amount = 1 -- меньше урона
                         end
                         Damage(amount)
 
@@ -598,10 +598,10 @@ function CreateArrow(speed, pozX, number, notes, music)
             --print("Бот нажимает кнопку")
             if GetUnitTypeId(GEnemy) == FourCC("U000") then
                 --print(10*durations)
-                Damage(6 * durations,true)
-                local tempDur=durations/3
+                Damage(6 * durations, true)
+                local tempDur = durations / 3
                 TimerStart(CreateTimer(), 0.15, true, function()
-                    tempDur = tempDur-0.15
+                    tempDur = tempDur - 0.15
                     if tempDur <= 0 then
                         DestroyTimer(GetExpiredTimer())
                     end
@@ -682,6 +682,13 @@ function PlayArthasAnimation(type, durations, number)
         anim = { 46, 47, 49, 27 }
     elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
         anim = { 19, 20, 21, 22 }
+    elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
+        anim = { 26, 27, 30, 29 }
+        print(number)
+        if number > 49 and number < 108 then
+            --print("игра на гитаре")
+            anim={ 25, 25, 25, 25 }
+        end
     end
     if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 and SONG == 1 then
         anim[type] = 3
@@ -717,6 +724,8 @@ function StartArthasStateMachine()
                 QueueUnitAnimation(GEnemy, "Stand Ready")
             elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
                 QueueUnitAnimation(GEnemy, "Stand")
+            elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
+                QueueUnitAnimation(GEnemy, "Stand Ready")
             end
 
         end

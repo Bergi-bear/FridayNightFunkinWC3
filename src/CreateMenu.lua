@@ -73,8 +73,8 @@ end
 function StartNewSong(number)
     local heroTable = {
         FourCC("Hart"), --артас
+        FourCC("O000"), -- Таурен
         nil,-- хенк
-        nil, -- Таурен
         FourCC("U000"), -- детерок
         nil, --демонесса
     }
