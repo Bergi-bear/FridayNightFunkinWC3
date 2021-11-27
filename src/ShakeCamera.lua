@@ -5,7 +5,9 @@
 ---
 function PlayerSeeNoiseInRangeTimed(duration, x, y)
     CameraSetEQNoiseForPlayer(Player(0), 3)
-    DestroyEffect(AddSpecialEffect("Objects\\Spawnmodels\\Undead\\ImpaleTargetDust\\ImpaleTargetDust.mdl", x, y))
+    if x then
+        DestroyEffect(AddSpecialEffect("Objects\\Spawnmodels\\Undead\\ImpaleTargetDust\\ImpaleTargetDust.mdl", x, y))
+    end
     TimerStart(CreateTimer(), duration, false, function()
         CameraClearNoiseForPlayer(Player(0))
         DestroyTimer(GetExpiredTimer())

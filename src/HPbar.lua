@@ -66,8 +66,14 @@ function CreateHPBar(colorID)
             if GHP == 0 then
                 -- print("глаза")
                 BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[2], 0, true)
+                if GPoint>=50000 then
+                    if not BlzFrameIsVisible(GifCat) then
+                        BlzFrameSetVisible(GifCat,true)
+                    end
+                end
             else
                 BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[1], 0, true)
+                BlzFrameSetVisible(GifCat,false)
             end
             BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, (fakeHP * 0.8 / 100) + offset, y)
         end
@@ -142,6 +148,13 @@ function ShuffleIcons(first, song)
             [2] = { "war3mapImported\\deterrock2", "war3mapImported\\deterrock2" },
             [3] = { "war3mapImported\\deterrock3", "war3mapImported\\deterrock3" },
             [4] = { "war3mapImported\\deterrock4", "war3mapImported\\deterrock4" },
+        }
+    end
+    if GetUnitTypeId(GEnemy) == FourCC("O000") then
+        enemy = {
+            [1] = { "war3mapImported\\kern1", "war3mapImported\\kern1" },
+            [2] = { "war3mapImported\\kern2", "war3mapImported\\kern2" },
+            [3] = { "war3mapImported\\kern3", "war3mapImported\\kern3" },
         }
     end
 

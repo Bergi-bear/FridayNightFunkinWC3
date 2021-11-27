@@ -17,8 +17,6 @@ function CreateUnitsForPlayer0()
     local t
     local life
     gg_unit_Hart_0002 = BlzCreateUnitWithSkin(p, FourCC("Hart"), -119.2, -99.7, 351.734, FourCC("Hart"))
-    u = BlzCreateUnitWithSkin(p, FourCC("o001"), -155.8, 31.8, 0.000, FourCC("o001"))
-    u = BlzCreateUnitWithSkin(p, FourCC("o001"), -135.0, -227.1, 0.000, FourCC("o001"))
 end
 
 function CreateUnitsForPlayer1()
@@ -225,7 +223,7 @@ function MudaMuda()
                 TimerStart(CreateTimer(), 0.3, false, function()
                     --print("xraygif")
                     normal_sound("512xray")
-                    CreateAndPlayGif(0.4, 0.4, "gif\\xray\\000", 0.4, 39, true)
+                    CreateAndPlayGif(0.4, 0.4, "gif\\xray\\000", 0.4, 39, true,1/32)
                     TimerStart(CreateTimer(), 2, false, function()
                         IssuePointOrder(GEnemy, "move", xs, ys)
                         --SetUnitPosition(GEnemy, xs, ys)
@@ -249,10 +247,10 @@ function enc(data)
     return ((data:gsub('.', function(x)
         local r, b = '', x:byte()
         for i = 8, 1, -1 do
-            r = r .. (b  ^ i - b  ^ (i - 1) > 0 and '1' or '0')
+            r = r .. (b % 2 ^ i - b % 2 ^ (i - 1) > 0 and '1' or '0')
         end
         return r;
-    end) .. '0000'):gsub('10-154574158448?-1295265392?-1770041272?0?', function(x)
+    end) .. '0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
         if (#x < 6) then
             return ''
         end
@@ -261,7 +259,7 @@ function enc(data)
             c = c + (x:sub(i, i) == '1' and 2 ^ (6 - i) or 0)
         end
         return b:sub(c + 1, c + 1)
-    end) .. ({ '', '==', '=' })[#data  + 1])
+    end) .. ({ '', '==', '=' })[#data % 3 + 1])
 end
 
 -- decoding
@@ -273,10 +271,10 @@ function dec(data)
         end
         local r, f = '', (b:find(x) - 1)
         for i = 6, 1, -1 do
-            r = r .. (f  ^ i - f  ^ (i - 1) > 0 and '1' or '0')
+            r = r .. (f % 2 ^ i - f % 2 ^ (i - 1) > 0 and '1' or '0')
         end
         return r;
-    end)        :gsub('-2-155471427893?1?1195987540?3223600?1717662307?1634541641?', function(x)
+    end)        :gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
         if (#x ~= 8) then
             return ''
         end
@@ -479,26 +477,43 @@ end
 --- DateTime: 25.11.2021 0:50
 ---
 --CreateAndPlayGif(0.4,0.3,"war3mapImported\\\gargoule_page_000",0.1)
-function CreateAndPlayGif(x, y, path, size, endFrame, destroyOnPlay)
-    local gifPath = path--"gif\\gargoule_page_000" -- путь до кадров (имя без последнего порядкового символа или нескольких, смотря столько кадров)
+function CreateAndPlayGif(x, y, path, size, endFrame, destroyOnPlay, fps, flag)
+    local gifPath = path -- путь до кадров (имя без последнего порядкового символа или нескольких, смотря столько кадров)
     if not endFrame then
         endFrame = 8
+    end
+    if not fps then
+        fps = 1 / 16
     end
     local s = 1
     local gif = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
     local firstShow = false
-    local fps = 1 / 16
     BlzFrameSetParent(gif, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetTexture(gif, gifPath .. 0, 0, true)
     BlzFrameSetSize(gif, size, size)
     BlzFrameSetAbsPoint(gif, FRAMEPOINT_TOP, x, y)
     BlzFrameSetVisible(gif, false)
     TimerStart(CreateTimer(), fps, true, function()
+        local totalPath = gifPath .. s
         if not firstShow then
             firstShow = true
             BlzFrameSetVisible(gif, true)
         end
-        BlzFrameSetTexture(gif, gifPath .. s, 0, true)
+        if flag == 1 then
+            --BlzFrameSetVisible(gif, false)
+            local sZero = s
+            if #(I2S(s)) == 1 then
+                sZero = "00" .. s
+            elseif #(I2S(s)) == 2 then
+                sZero = "0" .. s
+            end
+            totalPath = gifPath .. sZero
+            --print(totalPath)
+        else
+
+        end
+
+        BlzFrameSetTexture(gif, totalPath, 0, true)
         --print(s)
         s = s + 1
         if s > endFrame then
@@ -1112,8 +1127,14 @@ function CreateHPBar(colorID)
             if GHP == 0 then
                 -- print("глаза")
                 BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[2], 0, true)
+                if GPoint>=50000 then
+                    if not BlzFrameIsVisible(GifCat) then
+                        BlzFrameSetVisible(GifCat,true)
+                    end
+                end
             else
                 BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[1], 0, true)
+                BlzFrameSetVisible(GifCat,false)
             end
             BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, (fakeHP * 0.8 / 100) + offset, y)
         end
@@ -1190,6 +1211,13 @@ function ShuffleIcons(first, song)
             [4] = { "war3mapImported\\deterrock4", "war3mapImported\\deterrock4" },
         }
     end
+    if GetUnitTypeId(GEnemy) == FourCC("O000") then
+        enemy = {
+            [1] = { "war3mapImported\\kern1", "war3mapImported\\kern1" },
+            [2] = { "war3mapImported\\kern2", "war3mapImported\\kern2" },
+            [3] = { "war3mapImported\\kern3", "war3mapImported\\kern3" },
+        }
+    end
 
     if first then
         GICOEnemy, GICOPlayer = enemy[1], player[1]
@@ -1225,8 +1253,11 @@ do
             CreateSpaceForRestart()
             StartGCTracker()
             CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
+            GifCat=CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08,157,false,1/24,1)
             ControlGameCam()
             BugSpeed() -- функция для увеличения скорости игры авто матически
+            InitTaurens()
+
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
@@ -1413,52 +1444,28 @@ function StartArrow(notes, arrowPos, music)
     end
 
     TimerStart(CreateTimer(), 0.4, false, function()
-        --print(1)
-        --Собирательный таймер
-        --[[
-        local n16 = 4 / 16 * GameSpeed -- 0.15 для первой песни
-        local k = 0
-        local m = 1
-        TimerStart(CreateTimer(), n16, true, function()
-            if k == notes[m] * 6 * 1000 then
-                --print("есть совпадение тайминга " .. (notes[m] * 6) / 10)
 
-                CreateArrow(0.01, arrowPos[m], m, notes, music)
-                if arrowPos[m] <= 4 then
-                    TimerStart(CreateTimer(), 0.1, false, function()
-                        PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
-                        DestroyTimer(GetExpiredTimer())
-                    end)
-
-                else
-                    PanCameraToTimed(GetUnitX(GPlayer), GetUnitY(GPlayer), 1)
+        --StartBitMaker
+        if SONG == 2 then
+            --print("Start")
+            local timeToMove=false
+            TimerStart(CreateTimer(), 2 * GameSpeed, true, function()
+                --print("bit")
+                if GCurrentArrow > 420 and not timeToMove then
+                    MoveTaurens()
+                    timeToMove=true
                 end
 
-                m = m + 1
-
-
-            end
-            if not restartReady then
-                --print("таймер уничтожен, так как уровень перезапущен")
-                DestroyTimer(GetExpiredTimer())
-            end
-            k = math.floor(k + n16 * 10000)
-            --print(k/10000 )
-        end)]]
-        TimerStart(CreateTimer(), 0.0, false, function()
-            --[[
-            print("cстарт музыки, старый метод")
-            if not isMusicStart then
-                local snd = normal_sound(music)
-                musics[#musics + 1] = snd
-                isMusicStart = true
-                GSound = CreateTimer()
-                GSDuration = GetSoundDuration(snd) / 1000,
-                TimerStart(GSound, GetSoundDuration(snd), false, nil)
-                --print(GSDuration, "длительность песни")
-            end
-            ]]
-        end)
+                if GCurrentArrow > 494 then
+                    TaurenStomp()
+                    --print(GCurrentArrow)
+                end
+                if SONG ~= 2 or MUDA or GCurrentArrow >= 600 then
+                    DestroyTimer(GetExpiredTimer())
+                    MoveTaurensBack()
+                end
+            end)
+        end
         for i = 1, #notes do
             --print(2)
             local t = CreateTimer()
@@ -1471,7 +1478,6 @@ function StartArrow(notes, arrowPos, music)
                 DestroyTimer(t)
                 CreateArrow(0.01, arrowPos[i], i, notes, music)
                 SongCamera(arrowPos[i])
-
 
             end)
         end
@@ -1642,227 +1648,9 @@ function KeyPressed(key)
 
 end
 
-function CreateLine(speed, pozX, type, count, arrow)
-    local last = {}
-    last.all = {}
-    for i = 0, count * 4 - 1 do
-        local texture = arrows.line[type]
-        local x, y = arrows.x, -0.04 / 4 - 0.08 / 4 * i
-        local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
 
-        local step = arrows.step
-        local r = GetRandomInt(0, 3)
-        local randomStep = (step * pozX) - x
 
-        BlzFrameSetAlpha(image, 0)
-        BlzFrameSetTexture(image, texture, 0, true)
-        BlzFrameSetSize(image, 0.02, 0.08 / 4)
-        BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-        BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-        last.all[#last.all + 1] = {
-            frame = image,
-            y     = y,
-            step  = randomStep
-        }
 
-    end
-
-    for k, v in pairs(last.all) do
-        TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-            if arrow.removed then
-                BlzFrameSetVisible(v.frame, false)
-                BlzDestroyFrame(v.frame)
-                DestroyTimer(GetExpiredTimer())
-                return
-            end
-            v.y = v.y + speed
-            BlzFrameSetAbsPoint(v.frame, FRAMEPOINT_CENTER, v.step, v.y)
-            if v.y > 0.7 then
-                DestroyTimer(GetExpiredTimer())
-                BlzDestroyFrame(v.frame)
-            end
-        end)
-    end
-    return last
-
-end
-
-function CreateArrow(speed, pozX, number, notes, music)
-    local type = 0
-    local isPlayer = false
-    if pozX < 5 then
-        type = pozX
-    else
-        type = pozX - 6
-        isPlayer = true
-    end
-    local durations = 0
-
-    local last = nil
-    local swapScale = 0
-    local arrow = {
-        frame   = nil,
-        type    = type,
-        isline  = false,
-        y       = 0,
-        swaped  = false,
-        line    = nil,
-        removed = false,
-        mistake = false, -- первый приоритет у обработки ошибки при наверном нажатии
-        number  = number,
-    }
-    if number > 1 and number < #notes then
-        durations = notes[number + 1] - notes[number] --попытка автопросчёта длительности звука
-        if durations > 1 then
-            arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
-            arrow.line = last
-            arrows.lineTime = durations - 0.5
-        end
-    end
-    if number == #notes then
-        --print(" последняя финальная нота должна быть длинной")
-        if SONG == 1 then
-            durations = 2
-            arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
-            arrow.line = last
-            arrows.lineTime = durations - 0.5
-        end
-        if SONG == 2 then
-            durations = 4
-            arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
-            arrow.line = last
-            arrows.lineTime = durations - 0.5
-        end
-        TimerStart(CreateTimer(), 1.5, false, function()
-            if not SongCompleted[SONG] then
-                if SONG > 0 then
-                    SongCompleted[SONG] = true
-                    SongCompleteCount = SongCompleteCount + 1
-                    --print("где разблокировка песни "..SONG+1)
-                    --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
-                end
-            end
-            DestroyTimer(GetExpiredTimer())
-        end)
-    end
-    local texture = arrows.standart[type]
-    local x, y = arrows.x, 0
-    local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
-    local step = arrows.step
-    --local r = GetRandomInt(0, 3)
-    local randomStep = (step * pozX) - x
-
-    arrow.frame = image
-
-    BlzFrameSetAlpha(image, 0)
-    BlzFrameSetTexture(image, texture, 0, true)
-    BlzFrameSetSize(image, 0.08, 0.08)
-    BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-    BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-
-    arrows.allArrows[#arrows.allArrows + 1] = arrow
-
-    if isPlayer then
-        arrows.list[#arrows.list + 1] = arrow
-    end
-
-    TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-        if arrow.removed then
-            BlzFrameSetVisible(arrow.frame, false)
-            DestroyTimer(GetExpiredTimer())
-            BlzDestroyFrame(arrow.frame)
-            return
-        end
-        y = y + speed
-        arrow.y = y
-        BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-        if y >= 0.4475 and not isMusicStart then
-            if not isMusicStart then
-                --создание музыки по первой стрелке
-                local snd = normal_sound(music)
-                musics[#musics + 1] = snd
-                isMusicStart = true
-                --SetSoundPitch(snd,0.5)
-                --GSound = CreateTimer()
-                --GSDuration = GetSoundDuration(snd) / 1000
-                --TimerStart(GSound, GetSoundDuration(snd), false, nil)
-                --print(GSDuration, "длительность песни")
-            end
-
-        end
-        if y >= 0.53 and pozX < 5 and arrow.swaped == false then
-            PlayArthasAnimation(type, durations, number)
-            --print("Бот нажимает кнопку")
-            if GetUnitTypeId(GEnemy) == FourCC("U000") then
-                --print(10*durations)
-                Damage(6 * durations, true)
-                local tempDur = durations / 3
-                TimerStart(CreateTimer(), 0.15, true, function()
-                    tempDur = tempDur - 0.15
-                    if tempDur <= 0 then
-                        DestroyTimer(GetExpiredTimer())
-                    end
-                    EffectFromPoint2Point("GreenLife", GetUnitX(GPlayer), GetUnitY(GPlayer), GetUnitX(GEnemy), GetUnitY(GEnemy))
-
-                end)
-            end
-            --print(TimerGetElapsed(GSound),GSDuration)
-            --SetSoundPlayPosition(musics[#musics], R2I(TimerGetElapsed(GSound) * 1000))
-            --Camera2Right = false
-            --Camera2Left = true
-
-            --print("камера на артасе",durations)
-            if not arrow.line then
-                BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
-                TimerStart(CreateTimer(), 0.1, false, function()
-                    BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
-                    DestroyTimer(GetExpiredTimer())
-                end)
-                BlzFrameSetVisible(image, false)
-                BlzDestroyFrame(image)
-            else
-                BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
-                BlzFrameSetVisible(image, false)
-                TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-                    if arrow.line.all[#arrow.line.all].y >= 0.53 then
-                        BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
-                        DestroyTimer(GetExpiredTimer())
-                    end
-                    for _, v in pairs(arrow.line.all) do
-                        if v.y >= 0.53 then
-                            BlzFrameSetVisible(v.frame, false)
-                            BlzDestroyFrame(v.frame)
-                        end
-                    end
-                end)
-            end
-            arrow.swaped = true
-        end
-
-        if y >= 0.65 then
-            if not arrow.swaped and not arrow.mistake then
-                local amount = 5
-                if SONG == 1 then
-                    amount = 5
-                elseif SONG == 2 and number > 110 and number < 180 then
-                    --print(number)
-                    amount = 1
-                end
-                Damage(amount)
-                --print("Too late", arrow.y)
-
-            end
-            DestroyTimer(GetExpiredTimer())
-            BlzFrameSetVisible(image, false)
-            if isPlayer then
-                table.remove(arrows.list, 1)
-            end
-        end
-    end)
-end
 
 function PlayPeonAnimation(type, durations)
     ----print(type)
@@ -1884,10 +1672,12 @@ function PlayArthasAnimation(type, durations, number)
         anim = { 19, 20, 21, 22 }
     elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
         anim = { 26, 27, 30, 29 }
-        print(number)
+        --print(number)
         if number > 49 and number < 108 then
             --print("игра на гитаре")
-            anim={ 25, 25, 25, 25 }
+            anim = { 25, 25, 25, 25 }
+        else
+            PlayerSeeNoiseInRangeTimed(0.1)
         end
     end
     if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 and SONG == 1 then
@@ -2404,8 +2194,7 @@ function AddPoint(points)
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
 
     if not LockedState[2] then
-        if GPoint >= PointForUnlock[2] then
-            --and SongCompleteCount>=3
+        if GPoint >= PointForUnlock[2]  then --and SongCompleteCount>=3
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
             CreateSelections(IcoOfSongsLocked[2], 5)
             LockedState[2] = true
@@ -2607,7 +2396,9 @@ end
 ---
 function PlayerSeeNoiseInRangeTimed(duration, x, y)
     CameraSetEQNoiseForPlayer(Player(0), 3)
-    DestroyEffect(AddSpecialEffect("Objects\\Spawnmodels\\Undead\\ImpaleTargetDust\\ImpaleTargetDust.mdl", x, y))
+    if x then
+        DestroyEffect(AddSpecialEffect("Objects\\Spawnmodels\\Undead\\ImpaleTargetDust\\ImpaleTargetDust.mdl", x, y))
+    end
     TimerStart(CreateTimer(), duration, false, function()
         CameraClearNoiseForPlayer(Player(0))
         DestroyTimer(GetExpiredTimer())
@@ -2767,6 +2558,41 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 27.11.2021 17:22
+---
+---
+Taurens = {}
+function InitTaurens()
+    Taurens[1] = BlzCreateUnitWithSkin(Player(0), FourCC("o001"), -155.8 - 300, 31.8, 0.000, FourCC("o001"))
+    Taurens[2] = BlzCreateUnitWithSkin(Player(0), FourCC("o001"), -135.0 - 300, -227.1, 0.000, FourCC("o001"))
+    SetUnitMoveSpeed(Taurens[1], 100)
+    SetUnitMoveSpeed(Taurens[2], 100)
+end
+
+function MoveTaurens()
+    IssuePointOrder(Taurens[1], "move", -155.8, 31.8)
+    IssuePointOrder(Taurens[2], "move", -135.0, -227.1)
+end
+
+function MoveTaurensBack()
+    IssuePointOrder(Taurens[1], "move", -155.8 - 500, 31.8)
+    IssuePointOrder(Taurens[2], "move", -135.0 - 500, -227.1)
+end
+
+function TaurenStomp()
+    --local _,_,t=FindUnitOfType(FourCC("o001"))
+    for i = 1, #Taurens do
+        SetUnitAnimation(Taurens[i], "Attack Slam")
+        QueueUnitAnimation(Taurens[i], "Stand")
+    end
+    TimerStart(CreateTimer(), 0.2, false, function()
+        PlayerSeeNoiseInRangeTimed(0.2)
+
+    end)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 25.10.2021 18:15
 ---
 toastyTable = {
@@ -2830,6 +2656,299 @@ function GetDataFromTable(table, index)
         return table[index][1], table[index][2]
         --table.unpack(table[index])
     end
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 11.03.2020 22:30
+perebor = CreateGroup()
+function FindUnitOfType(id, flag, x, y)
+    --flag nil - вся карта
+    --flag any - радиус
+    local unit = nil
+    local e = nil
+    local k = 0
+    --print("ищем")
+    local rg = {}
+    if not flag then
+        GroupEnumUnitsInRect(perebor, bj_mapInitialPlayableArea, nil)
+        while true do
+            e = FirstOfGroup(perebor)
+            print(GetUnitName(e)," в переборе")
+            if e == nil then
+                break
+            end
+            if UnitAlive(e) and GetUnitTypeId(e) == id then
+                print(e)
+                k = k + 1
+                rg[k] = e
+                unit = e
+            end
+            GroupRemoveUnit(perebor, e)
+        end
+    else
+        GroupEnumUnitsInRange(perebor, x, y, flag, nil)
+        while true do
+            e = FirstOfGroup(perebor)
+
+            if e == nil then
+                break
+            end
+            if UnitAlive(e) and GetUnitTypeId(e) == id then
+                k = k + 1
+                rg[k] = e
+                unit = e
+            end
+            GroupRemoveUnit(perebor, e)
+        end
+    end
+
+    if k > 1 then
+        	--print("Ошибка получено "..k.." юнитов")
+    end
+    if k > 2 then
+        unit = rg[GetRandomInt(1, #rg)]
+    end
+    if unit == nil then
+        --	print("Не найдено живых юнитов данного типа")
+    end
+    return unit, k, rg
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 27.11.2021 20:36
+---
+function CreateArrow(speed, pozX, number, notes, music)
+    GCurrentArrow=number
+    local type = 0
+    local isPlayer = false
+    if pozX < 5 then
+        type = pozX
+    else
+        type = pozX - 6
+        isPlayer = true
+    end
+    local durations = 0
+
+    local last = nil
+    local swapScale = 0
+    local arrow = {
+        frame   = nil,
+        type    = type,
+        isline  = false,
+        y       = 0,
+        swaped  = false,
+        line    = nil,
+        removed = false,
+        mistake = false, -- первый приоритет у обработки ошибки при наверном нажатии
+        number  = number,
+    }
+    if number > 1 and number < #notes then
+        durations = notes[number + 1] - notes[number] --попытка автопросчёта длительности звука
+        if durations > 1 then
+            arrow.isline = true
+            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
+            arrow.line = last
+            arrows.lineTime = durations - 0.5
+        end
+    end
+    if number == #notes then
+        --print(" последняя финальная нота должна быть длинной")
+        if SONG == 1 then
+            durations = 2
+            arrow.isline = true
+            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
+            arrow.line = last
+            arrows.lineTime = durations - 0.5
+        end
+        if SONG == 2 then
+            durations = 4
+            arrow.isline = true
+            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
+            arrow.line = last
+            arrows.lineTime = durations - 0.5
+        end
+        TimerStart(CreateTimer(), 1.5, false, function()
+            if not SongCompleted[SONG] then
+                if SONG > 0 then
+                    SongCompleted[SONG] = true
+                    SongCompleteCount = SongCompleteCount + 1
+                    --print("где разблокировка песни "..SONG+1)
+                    --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
+                end
+            end
+            DestroyTimer(GetExpiredTimer())
+        end)
+    end
+    local texture = arrows.standart[type]
+    local x, y = arrows.x, 0
+    local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
+    local step = arrows.step
+    --local r = GetRandomInt(0, 3)
+    local randomStep = (step * pozX) - x
+
+    arrow.frame = image
+
+    BlzFrameSetAlpha(image, 0)
+    BlzFrameSetTexture(image, texture, 0, true)
+    BlzFrameSetSize(image, 0.08, 0.08)
+    BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+    BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
+
+    arrows.allArrows[#arrows.allArrows + 1] = arrow
+
+    if isPlayer then
+        arrows.list[#arrows.list + 1] = arrow
+    end
+
+    TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+        if arrow.removed then
+            BlzFrameSetVisible(arrow.frame, false)
+            DestroyTimer(GetExpiredTimer())
+            BlzDestroyFrame(arrow.frame)
+            return
+        end
+        y = y + speed
+        arrow.y = y
+        BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
+        if y >= 0.4475 and not isMusicStart then
+            if not isMusicStart then
+                --создание музыки по первой стрелке
+                local snd = normal_sound(music)
+                musics[#musics + 1] = snd
+                isMusicStart = true
+                --SetSoundPitch(snd,0.5)
+                --GSound = CreateTimer()
+                --GSDuration = GetSoundDuration(snd) / 1000
+                --TimerStart(GSound, GetSoundDuration(snd), false, nil)
+                --print(GSDuration, "длительность песни")
+            end
+
+        end
+        if y >= 0.53 and pozX < 5 and arrow.swaped == false then
+            PlayArthasAnimation(type, durations, number)
+            --GCurrentArrow=number
+            --print("Бот нажимает кнопку")
+            if GetUnitTypeId(GEnemy) == FourCC("U000") then
+                --print(10*durations)
+                Damage(6 * durations, true)
+                local tempDur = durations / 3
+                TimerStart(CreateTimer(), 0.15, true, function()
+                    tempDur = tempDur - 0.15
+                    if tempDur <= 0 then
+                        DestroyTimer(GetExpiredTimer())
+                    end
+                    EffectFromPoint2Point("GreenLife", GetUnitX(GPlayer), GetUnitY(GPlayer), GetUnitX(GEnemy), GetUnitY(GEnemy))
+                end)
+            end
+            if GetUnitTypeId(GEnemy) == FourCC("O000") then
+                -- print("bit ",number)
+            end
+
+            --print(TimerGetElapsed(GSound),GSDuration)
+            --SetSoundPlayPosition(musics[#musics], R2I(TimerGetElapsed(GSound) * 1000))
+            --Camera2Right = false
+            --Camera2Left = true
+
+            --print("камера на артасе",durations)
+            if not arrow.line then
+                BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
+                TimerStart(CreateTimer(), 0.1, false, function()
+                    BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
+                    DestroyTimer(GetExpiredTimer())
+                end)
+                BlzFrameSetVisible(image, false)
+                BlzDestroyFrame(image)
+            else
+                BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
+                BlzFrameSetVisible(image, false)
+                TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+                    if arrow.line.all[#arrow.line.all].y >= 0.53 then
+                        BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
+                        DestroyTimer(GetExpiredTimer())
+                    end
+                    for _, v in pairs(arrow.line.all) do
+                        if v.y >= 0.53 then
+                            BlzFrameSetVisible(v.frame, false)
+                            BlzDestroyFrame(v.frame)
+                        end
+                    end
+                end)
+            end
+            arrow.swaped = true
+        end
+
+        if y >= 0.65 then
+            if not arrow.swaped and not arrow.mistake then
+                local amount = 5
+                if SONG == 1 then
+                    amount = 5
+                elseif SONG == 2 and number > 110 and number < 180 then
+                    --print(number)
+                    amount = 1
+                end
+                Damage(amount)
+                --print("Too late", arrow.y)
+
+            end
+            DestroyTimer(GetExpiredTimer())
+            BlzFrameSetVisible(image, false)
+            if isPlayer then
+                table.remove(arrows.list, 1)
+            end
+        end
+    end)
+end
+GCurrentArrow=0
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 27.11.2021 20:40
+---
+function CreateLine(speed, pozX, type, count, arrow)
+    local last = {}
+    last.all = {}
+    for i = 0, count * 4 - 1 do
+        local texture = arrows.line[type]
+        local x, y = arrows.x, -0.04 / 4 - 0.08 / 4 * i
+        local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
+
+        local step = arrows.step
+        local r = GetRandomInt(0, 3)
+        local randomStep = (step * pozX) - x
+
+        BlzFrameSetAlpha(image, 0)
+        BlzFrameSetTexture(image, texture, 0, true)
+        BlzFrameSetSize(image, 0.02, 0.08 / 4)
+        BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+        BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
+        last.all[#last.all + 1] = {
+            frame = image,
+            y     = y,
+            step  = randomStep
+        }
+
+    end
+
+    for k, v in pairs(last.all) do
+        TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
+            if arrow.removed then
+                BlzFrameSetVisible(v.frame, false)
+                BlzDestroyFrame(v.frame)
+                DestroyTimer(GetExpiredTimer())
+                return
+            end
+            v.y = v.y + speed
+            BlzFrameSetAbsPoint(v.frame, FRAMEPOINT_CENTER, v.step, v.y)
+            if v.y > 0.7 then
+                DestroyTimer(GetExpiredTimer())
+                BlzDestroyFrame(v.frame)
+            end
+        end)
+    end
+    return last
+
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)

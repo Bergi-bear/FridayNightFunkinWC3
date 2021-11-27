@@ -49,8 +49,7 @@ function AddPoint(points)
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
 
     if not LockedState[2] then
-        if GPoint >= PointForUnlock[2] then
-            --and SongCompleteCount>=3
+        if GPoint >= PointForUnlock[2]  then --and SongCompleteCount>=3
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
             CreateSelections(IcoOfSongsLocked[2], 5)
             LockedState[2] = true

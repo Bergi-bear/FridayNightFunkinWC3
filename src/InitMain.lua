@@ -26,8 +26,11 @@ do
             CreateSpaceForRestart()
             StartGCTracker()
             CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
+            GifCat=CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08,157,false,1/24,1)
             ControlGameCam()
             BugSpeed() -- функция для увеличения скорости игры авто матически
+            InitTaurens()
+
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
@@ -214,52 +217,28 @@ function StartArrow(notes, arrowPos, music)
     end
 
     TimerStart(CreateTimer(), 0.4, false, function()
-        --print(1)
-        --Собирательный таймер
-        --[[
-        local n16 = 4 / 16 * GameSpeed -- 0.15 для первой песни
-        local k = 0
-        local m = 1
-        TimerStart(CreateTimer(), n16, true, function()
-            if k == notes[m] * 6 * 1000 then
-                --print("есть совпадение тайминга " .. (notes[m] * 6) / 10)
 
-                CreateArrow(0.01, arrowPos[m], m, notes, music)
-                if arrowPos[m] <= 4 then
-                    TimerStart(CreateTimer(), 0.1, false, function()
-                        PanCameraToTimed(GetUnitX(GEnemy), GetUnitY(GEnemy), 1)
-                        DestroyTimer(GetExpiredTimer())
-                    end)
-
-                else
-                    PanCameraToTimed(GetUnitX(GPlayer), GetUnitY(GPlayer), 1)
+        --StartBitMaker
+        if SONG == 2 then
+            --print("Start")
+            local timeToMove=false
+            TimerStart(CreateTimer(), 2 * GameSpeed, true, function()
+                --print("bit")
+                if GCurrentArrow > 420 and not timeToMove then
+                    MoveTaurens()
+                    timeToMove=true
                 end
 
-                m = m + 1
-
-
-            end
-            if not restartReady then
-                --print("таймер уничтожен, так как уровень перезапущен")
-                DestroyTimer(GetExpiredTimer())
-            end
-            k = math.floor(k + n16 * 10000)
-            --print(k/10000 )
-        end)]]
-        TimerStart(CreateTimer(), 0.0, false, function()
-            --[[
-            print("cстарт музыки, старый метод")
-            if not isMusicStart then
-                local snd = normal_sound(music)
-                musics[#musics + 1] = snd
-                isMusicStart = true
-                GSound = CreateTimer()
-                GSDuration = GetSoundDuration(snd) / 1000,
-                TimerStart(GSound, GetSoundDuration(snd), false, nil)
-                --print(GSDuration, "длительность песни")
-            end
-            ]]
-        end)
+                if GCurrentArrow > 494 then
+                    TaurenStomp()
+                    --print(GCurrentArrow)
+                end
+                if SONG ~= 2 or MUDA or GCurrentArrow >= 600 then
+                    DestroyTimer(GetExpiredTimer())
+                    MoveTaurensBack()
+                end
+            end)
+        end
         for i = 1, #notes do
             --print(2)
             local t = CreateTimer()
@@ -272,7 +251,6 @@ function StartArrow(notes, arrowPos, music)
                 DestroyTimer(t)
                 CreateArrow(0.01, arrowPos[i], i, notes, music)
                 SongCamera(arrowPos[i])
-
 
             end)
         end
@@ -443,227 +421,9 @@ function KeyPressed(key)
 
 end
 
-function CreateLine(speed, pozX, type, count, arrow)
-    local last = {}
-    last.all = {}
-    for i = 0, count * 4 - 1 do
-        local texture = arrows.line[type]
-        local x, y = arrows.x, -0.04 / 4 - 0.08 / 4 * i
-        local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
 
-        local step = arrows.step
-        local r = GetRandomInt(0, 3)
-        local randomStep = (step * pozX) - x
 
-        BlzFrameSetAlpha(image, 0)
-        BlzFrameSetTexture(image, texture, 0, true)
-        BlzFrameSetSize(image, 0.02, 0.08 / 4)
-        BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-        BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-        last.all[#last.all + 1] = {
-            frame = image,
-            y     = y,
-            step  = randomStep
-        }
 
-    end
-
-    for k, v in pairs(last.all) do
-        TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-            if arrow.removed then
-                BlzFrameSetVisible(v.frame, false)
-                BlzDestroyFrame(v.frame)
-                DestroyTimer(GetExpiredTimer())
-                return
-            end
-            v.y = v.y + speed
-            BlzFrameSetAbsPoint(v.frame, FRAMEPOINT_CENTER, v.step, v.y)
-            if v.y > 0.7 then
-                DestroyTimer(GetExpiredTimer())
-                BlzDestroyFrame(v.frame)
-            end
-        end)
-    end
-    return last
-
-end
-
-function CreateArrow(speed, pozX, number, notes, music)
-    local type = 0
-    local isPlayer = false
-    if pozX < 5 then
-        type = pozX
-    else
-        type = pozX - 6
-        isPlayer = true
-    end
-    local durations = 0
-
-    local last = nil
-    local swapScale = 0
-    local arrow = {
-        frame   = nil,
-        type    = type,
-        isline  = false,
-        y       = 0,
-        swaped  = false,
-        line    = nil,
-        removed = false,
-        mistake = false, -- первый приоритет у обработки ошибки при наверном нажатии
-        number  = number,
-    }
-    if number > 1 and number < #notes then
-        durations = notes[number + 1] - notes[number] --попытка автопросчёта длительности звука
-        if durations > 1 then
-            arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
-            arrow.line = last
-            arrows.lineTime = durations - 0.5
-        end
-    end
-    if number == #notes then
-        --print(" последняя финальная нота должна быть длинной")
-        if SONG == 1 then
-            durations = 2
-            arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
-            arrow.line = last
-            arrows.lineTime = durations - 0.5
-        end
-        if SONG == 2 then
-            durations = 4
-            arrow.isline = true
-            last = CreateLine(speed, pozX, type, (durations - 0.5) / 0.5, arrow)
-            arrow.line = last
-            arrows.lineTime = durations - 0.5
-        end
-        TimerStart(CreateTimer(), 1.5, false, function()
-            if not SongCompleted[SONG] then
-                if SONG > 0 then
-                    SongCompleted[SONG] = true
-                    SongCompleteCount = SongCompleteCount + 1
-                    --print("где разблокировка песни "..SONG+1)
-                    --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
-                end
-            end
-            DestroyTimer(GetExpiredTimer())
-        end)
-    end
-    local texture = arrows.standart[type]
-    local x, y = arrows.x, 0
-    local image = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
-    local step = arrows.step
-    --local r = GetRandomInt(0, 3)
-    local randomStep = (step * pozX) - x
-
-    arrow.frame = image
-
-    BlzFrameSetAlpha(image, 0)
-    BlzFrameSetTexture(image, texture, 0, true)
-    BlzFrameSetSize(image, 0.08, 0.08)
-    BlzFrameSetParent(image, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-    BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-
-    arrows.allArrows[#arrows.allArrows + 1] = arrow
-
-    if isPlayer then
-        arrows.list[#arrows.list + 1] = arrow
-    end
-
-    TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-        if arrow.removed then
-            BlzFrameSetVisible(arrow.frame, false)
-            DestroyTimer(GetExpiredTimer())
-            BlzDestroyFrame(arrow.frame)
-            return
-        end
-        y = y + speed
-        arrow.y = y
-        BlzFrameSetAbsPoint(image, FRAMEPOINT_CENTER, randomStep, y)
-        if y >= 0.4475 and not isMusicStart then
-            if not isMusicStart then
-                --создание музыки по первой стрелке
-                local snd = normal_sound(music)
-                musics[#musics + 1] = snd
-                isMusicStart = true
-                --SetSoundPitch(snd,0.5)
-                --GSound = CreateTimer()
-                --GSDuration = GetSoundDuration(snd) / 1000
-                --TimerStart(GSound, GetSoundDuration(snd), false, nil)
-                --print(GSDuration, "длительность песни")
-            end
-
-        end
-        if y >= 0.53 and pozX < 5 and arrow.swaped == false then
-            PlayArthasAnimation(type, durations, number)
-            --print("Бот нажимает кнопку")
-            if GetUnitTypeId(GEnemy) == FourCC("U000") then
-                --print(10*durations)
-                Damage(6 * durations, true)
-                local tempDur = durations / 3
-                TimerStart(CreateTimer(), 0.15, true, function()
-                    tempDur = tempDur - 0.15
-                    if tempDur <= 0 then
-                        DestroyTimer(GetExpiredTimer())
-                    end
-                    EffectFromPoint2Point("GreenLife", GetUnitX(GPlayer), GetUnitY(GPlayer), GetUnitX(GEnemy), GetUnitY(GEnemy))
-
-                end)
-            end
-            --print(TimerGetElapsed(GSound),GSDuration)
-            --SetSoundPlayPosition(musics[#musics], R2I(TimerGetElapsed(GSound) * 1000))
-            --Camera2Right = false
-            --Camera2Left = true
-
-            --print("камера на артасе",durations)
-            if not arrow.line then
-                BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
-                TimerStart(CreateTimer(), 0.1, false, function()
-                    BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
-                    DestroyTimer(GetExpiredTimer())
-                end)
-                BlzFrameSetVisible(image, false)
-                BlzDestroyFrame(image)
-            else
-                BlzFrameSetTexture(arrows.up[pozX], arrows.lighted[type], 0, true)
-                BlzFrameSetVisible(image, false)
-                TimerStart(CreateTimer(), TIMER_PERIOD, true, function()
-                    if arrow.line.all[#arrow.line.all].y >= 0.53 then
-                        BlzFrameSetTexture(arrows.up[pozX], arrows.static[type], 0, true)
-                        DestroyTimer(GetExpiredTimer())
-                    end
-                    for _, v in pairs(arrow.line.all) do
-                        if v.y >= 0.53 then
-                            BlzFrameSetVisible(v.frame, false)
-                            BlzDestroyFrame(v.frame)
-                        end
-                    end
-                end)
-            end
-            arrow.swaped = true
-        end
-
-        if y >= 0.65 then
-            if not arrow.swaped and not arrow.mistake then
-                local amount = 5
-                if SONG == 1 then
-                    amount = 5
-                elseif SONG == 2 and number > 110 and number < 180 then
-                    --print(number)
-                    amount = 1
-                end
-                Damage(amount)
-                --print("Too late", arrow.y)
-
-            end
-            DestroyTimer(GetExpiredTimer())
-            BlzFrameSetVisible(image, false)
-            if isPlayer then
-                table.remove(arrows.list, 1)
-            end
-        end
-    end)
-end
 
 function PlayPeonAnimation(type, durations)
     ----print(type)
@@ -685,10 +445,12 @@ function PlayArthasAnimation(type, durations, number)
         anim = { 19, 20, 21, 22 }
     elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
         anim = { 26, 27, 30, 29 }
-        print(number)
+        --print(number)
         if number > 49 and number < 108 then
             --print("игра на гитаре")
-            anim={ 25, 25, 25, 25 }
+            anim = { 25, 25, 25, 25 }
+        else
+            PlayerSeeNoiseInRangeTimed(0.1)
         end
     end
     if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 and SONG == 1 then
