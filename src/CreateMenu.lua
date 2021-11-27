@@ -122,19 +122,20 @@ function CreateAndFallUnit(id, x, y)
     GEnemy = CreateUnit( Player(0),id, x, y, 90)
     UnitAddAbility(GEnemy,FourCC("Aloc"))
     SetUnitFacing(GEnemy,AngleBetweenUnits(GEnemy,GPlayer))
-    SetUnitZ(GEnemy, 1000)
+    SetUnitZ(GEnemy, 1500)
     SetUnitAnimation(GEnemy, "death")
+    normal_sound("FallSuperHero")
     TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
         local z = GetUnitZ(GEnemy)
         SetUnitZ(GEnemy, z - 50)
         --print(z)
+
         if z <= 50 then
             --print("приземлился")
             --DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", x, y))
-            normal_sound("FallSuperHero")
+
             PlayerSeeNoiseInRangeTimed(1,x,y)
             DestroyTimer(GetExpiredTimer())
         end
     end)
-
 end

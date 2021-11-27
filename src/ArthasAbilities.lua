@@ -18,7 +18,9 @@ function ArthasDamage()
 end
 MUDA = false
 function MudaMuda()
-    local muda = normal_sound("muda")
+    if GetUnitTypeId(GEnemy) ~= FourCC("O000") then
+        normal_sound("muda")
+    end
     MUDA = true
     if GetUnitTypeId(GEnemy) == FourCC("Hart") then
         TimerStart(CreateTimer(), 3, false, function()
@@ -57,6 +59,7 @@ function MudaMuda()
             end)
         end)
     elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
+
         local xs, ys = GetUnitXY(GEnemy)
         SetUnitMoveSpeed(GEnemy, 50)
         IssuePointOrder(GEnemy, "move", GetUnitX(GPlayer) - 50, GetUnitY(GPlayer))
@@ -65,12 +68,12 @@ function MudaMuda()
             local i = 0
             SetUnitTimeScale(GEnemy, 3)
             local k = 0
-            local s=0
+            local s = 0
             TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
-                s=s+0.5
+                s = s + 0.5
                 k = k + TIMER_PERIOD64
                 --print(math.sin(s)*100+100)
-                SetUnitZ(GEnemy,math.sin(s)*100+100)
+                SetUnitZ(GEnemy, math.sin(s) * 100 + 100)
                 if k > 0.2 then
                     k = 0
                     i = i + 1
@@ -92,9 +95,9 @@ function MudaMuda()
                                 TimerStart(CreateTimer(), 0.1, false, function()
                                     IssuePointOrder(GEnemy, "move", xs, ys)
                                     --SetUnitPosition(GEnemy, xs, ys)
-                                    SetUnitZ(GEnemy,0)
+                                    SetUnitZ(GEnemy, 0)
                                     TimerStart(CreateTimer(), 2, false, function()
-                                        SetUnitFacing(GEnemy,AngleBetweenUnits(GEnemy,GPlayer))
+                                        SetUnitFacing(GEnemy, AngleBetweenUnits(GEnemy, GPlayer))
                                         MUDA = false
                                     end)
                                 end)
@@ -102,9 +105,35 @@ function MudaMuda()
                         end)
                     end
                 end
-                --print(i)
-                --SetUnitAnimationByIndex(GEnemy, 3)
-
+            end)
+        end)
+    elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
+        local xs, ys = GetUnitXY(GEnemy)
+        normal_sound("fatalitystart")
+        SetUnitMoveSpeed(GEnemy, 50)
+        IssuePointOrder(GEnemy, "move", GetUnitX(GPlayer) - 50, GetUnitY(GPlayer))
+        TimerStart(CreateTimer(), 2, false, function()
+            SetUnitFacing(GEnemy, GetUnitFacing(GEnemy) - 180)
+            TimerStart(CreateTimer(), 0.5, false, function()
+                --SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
+                SetCameraBoundsToRectForPlayerBJ(Player(0), bj_mapInitialPlayableArea)
+                CameraSetupApplyForPlayer(true, gg_cam_XRayCam, Player(0), 1.00)
+                SetUnitAnimation(GEnemy, "Spell Slam")
+                TimerStart(CreateTimer(), 0.3, false, function()
+                    --print("xraygif")
+                    normal_sound("512xray")
+                    CreateAndPlayGif(0.4, 0.4, "gif\\xray\\000", 0.4, 39, true)
+                    TimerStart(CreateTimer(), 2, false, function()
+                        IssuePointOrder(GEnemy, "move", xs, ys)
+                        --SetUnitPosition(GEnemy, xs, ys)
+                        CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
+                        TimerStart(CreateTimer(), 2, false, function()
+                            SetUnitFacing(GEnemy, AngleBetweenUnits(GEnemy, GPlayer))
+                            MUDA = false
+                            SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
+                        end)
+                    end)
+                end)
             end)
         end)
     end

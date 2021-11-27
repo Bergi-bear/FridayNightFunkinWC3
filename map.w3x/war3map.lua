@@ -1,5 +1,6 @@
 gg_rct_Region_000 = nil
 gg_cam_Camera_001 = nil
+gg_cam_XRayCam = nil
 gg_trg_SetCam = nil
 gg_trg_Jaina = nil
 gg_trg_PeriodCam = nil
@@ -16,6 +17,8 @@ function CreateUnitsForPlayer0()
     local t
     local life
     gg_unit_Hart_0002 = BlzCreateUnitWithSkin(p, FourCC("Hart"), -119.2, -99.7, 351.734, FourCC("Hart"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o001"), -155.8, 31.8, 0.000, FourCC("o001"))
+    u = BlzCreateUnitWithSkin(p, FourCC("o001"), -135.0, -227.1, 0.000, FourCC("o001"))
 end
 
 function CreateUnitsForPlayer1()
@@ -82,6 +85,19 @@ function CreateCameras()
     CameraSetupSetField(gg_cam_Camera_001, CAMERA_FIELD_LOCAL_YAW, 0.0, 0.0)
     CameraSetupSetField(gg_cam_Camera_001, CAMERA_FIELD_LOCAL_ROLL, 0.0, 0.0)
     CameraSetupSetDestPosition(gg_cam_Camera_001, -9.8, 318.0, 0.0)
+    gg_cam_XRayCam = CreateCameraSetup()
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_ZOFFSET, 0.0, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_ROTATION, 89.4, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_ANGLE_OF_ATTACK, 307.3, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_TARGET_DISTANCE, 269.8, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_ROLL, 0.0, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_FIELD_OF_VIEW, 70.0, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_FARZ, 5000.0, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_NEARZ, 16.0, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_LOCAL_PITCH, 0.0, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_LOCAL_YAW, 0.0, 0.0)
+    CameraSetupSetField(gg_cam_XRayCam, CAMERA_FIELD_LOCAL_ROLL, 0.0, 0.0)
+    CameraSetupSetDestPosition(gg_cam_XRayCam, 4.6, -88.0, 0.0)
 end
 
 --CUSTOM_CODE
@@ -105,7 +121,9 @@ function ArthasDamage()
 end
 MUDA = false
 function MudaMuda()
-    local muda = normal_sound("muda")
+    if GetUnitTypeId(GEnemy) ~= FourCC("O000") then
+        normal_sound("muda")
+    end
     MUDA = true
     if GetUnitTypeId(GEnemy) == FourCC("Hart") then
         TimerStart(CreateTimer(), 3, false, function()
@@ -144,6 +162,7 @@ function MudaMuda()
             end)
         end)
     elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
+
         local xs, ys = GetUnitXY(GEnemy)
         SetUnitMoveSpeed(GEnemy, 50)
         IssuePointOrder(GEnemy, "move", GetUnitX(GPlayer) - 50, GetUnitY(GPlayer))
@@ -152,12 +171,12 @@ function MudaMuda()
             local i = 0
             SetUnitTimeScale(GEnemy, 3)
             local k = 0
-            local s=0
+            local s = 0
             TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
-                s=s+0.5
+                s = s + 0.5
                 k = k + TIMER_PERIOD64
                 --print(math.sin(s)*100+100)
-                SetUnitZ(GEnemy,math.sin(s)*100+100)
+                SetUnitZ(GEnemy, math.sin(s) * 100 + 100)
                 if k > 0.2 then
                     k = 0
                     i = i + 1
@@ -179,9 +198,9 @@ function MudaMuda()
                                 TimerStart(CreateTimer(), 0.1, false, function()
                                     IssuePointOrder(GEnemy, "move", xs, ys)
                                     --SetUnitPosition(GEnemy, xs, ys)
-                                    SetUnitZ(GEnemy,0)
+                                    SetUnitZ(GEnemy, 0)
                                     TimerStart(CreateTimer(), 2, false, function()
-                                        SetUnitFacing(GEnemy,AngleBetweenUnits(GEnemy,GPlayer))
+                                        SetUnitFacing(GEnemy, AngleBetweenUnits(GEnemy, GPlayer))
                                         MUDA = false
                                     end)
                                 end)
@@ -189,9 +208,35 @@ function MudaMuda()
                         end)
                     end
                 end
-                --print(i)
-                --SetUnitAnimationByIndex(GEnemy, 3)
-
+            end)
+        end)
+    elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
+        local xs, ys = GetUnitXY(GEnemy)
+        normal_sound("fatalitystart")
+        SetUnitMoveSpeed(GEnemy, 50)
+        IssuePointOrder(GEnemy, "move", GetUnitX(GPlayer) - 50, GetUnitY(GPlayer))
+        TimerStart(CreateTimer(), 2, false, function()
+            SetUnitFacing(GEnemy, GetUnitFacing(GEnemy) - 180)
+            TimerStart(CreateTimer(), 0.5, false, function()
+                --SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
+                SetCameraBoundsToRectForPlayerBJ(Player(0), bj_mapInitialPlayableArea)
+                CameraSetupApplyForPlayer(true, gg_cam_XRayCam, Player(0), 1.00)
+                SetUnitAnimation(GEnemy, "Spell Slam")
+                TimerStart(CreateTimer(), 0.3, false, function()
+                    --print("xraygif")
+                    normal_sound("512xray")
+                    CreateAndPlayGif(0.4, 0.4, "gif\\xray\\000", 0.4, 39, true)
+                    TimerStart(CreateTimer(), 2, false, function()
+                        IssuePointOrder(GEnemy, "move", xs, ys)
+                        --SetUnitPosition(GEnemy, xs, ys)
+                        CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
+                        TimerStart(CreateTimer(), 2, false, function()
+                            SetUnitFacing(GEnemy, AngleBetweenUnits(GEnemy, GPlayer))
+                            MUDA = false
+                            SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
+                        end)
+                    end)
+                end)
             end)
         end)
     end
@@ -204,10 +249,10 @@ function enc(data)
     return ((data:gsub('.', function(x)
         local r, b = '', x:byte()
         for i = 8, 1, -1 do
-            r = r .. (b % 2 ^ i - b % 2 ^ (i - 1) > 0 and '1' or '0')
+            r = r .. (b  ^ i - b  ^ (i - 1) > 0 and '1' or '0')
         end
         return r;
-    end) .. '0000'):gsub('%d%d%d?%d?%d?%d?', function(x)
+    end) .. '0000'):gsub('10-154574158448?-1295265392?-1770041272?0?', function(x)
         if (#x < 6) then
             return ''
         end
@@ -216,7 +261,7 @@ function enc(data)
             c = c + (x:sub(i, i) == '1' and 2 ^ (6 - i) or 0)
         end
         return b:sub(c + 1, c + 1)
-    end) .. ({ '', '==', '=' })[#data % 3 + 1])
+    end) .. ({ '', '==', '=' })[#data  + 1])
 end
 
 -- decoding
@@ -228,10 +273,10 @@ function dec(data)
         end
         local r, f = '', (b:find(x) - 1)
         for i = 6, 1, -1 do
-            r = r .. (f % 2 ^ i - f % 2 ^ (i - 1) > 0 and '1' or '0')
+            r = r .. (f  ^ i - f  ^ (i - 1) > 0 and '1' or '0')
         end
         return r;
-    end)        :gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+    end)        :gsub('-2-155471427893?1?1195987540?3223600?1717662307?1634541641?', function(x)
         if (#x ~= 8) then
             return ''
         end
@@ -434,13 +479,15 @@ end
 --- DateTime: 25.11.2021 0:50
 ---
 --CreateAndPlayGif(0.4,0.3,"war3mapImported\\\gargoule_page_000",0.1)
-function CreateAndPlayGif(x, y,path,size)
+function CreateAndPlayGif(x, y, path, size, endFrame, destroyOnPlay)
     local gifPath = path--"gif\\gargoule_page_000" -- путь до кадров (имя без последнего порядкового символа или нескольких, смотря столько кадров)
-    local endFrame = 8
+    if not endFrame then
+        endFrame = 8
+    end
     local s = 1
     local gif = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), '', 0)
     local firstShow = false
-    local fps=1/16
+    local fps = 1 / 16
     BlzFrameSetParent(gif, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetTexture(gif, gifPath .. 0, 0, true)
     BlzFrameSetSize(gif, size, size)
@@ -453,10 +500,17 @@ function CreateAndPlayGif(x, y,path,size)
         end
         BlzFrameSetTexture(gif, gifPath .. s, 0, true)
         --print(s)
-        s=s+1
-        if s>endFrame then
-            s=1
+        s = s + 1
+        if s > endFrame then
+            if destroyOnPlay then
+                DestroyTimer(GetExpiredTimer())
+                BlzFrameSetVisible(gif, false)
+                --BlzDestroyFrame(gif)
+            else
+                s = 1
+            end
         end
+
     end)
     return gif
 end
@@ -725,21 +779,22 @@ function CreateAndFallUnit(id, x, y)
     GEnemy = CreateUnit( Player(0),id, x, y, 90)
     UnitAddAbility(GEnemy,FourCC("Aloc"))
     SetUnitFacing(GEnemy,AngleBetweenUnits(GEnemy,GPlayer))
-    SetUnitZ(GEnemy, 1000)
+    SetUnitZ(GEnemy, 1500)
     SetUnitAnimation(GEnemy, "death")
+    normal_sound("FallSuperHero")
     TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
         local z = GetUnitZ(GEnemy)
         SetUnitZ(GEnemy, z - 50)
         --print(z)
+
         if z <= 50 then
             --print("приземлился")
             --DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", x, y))
-            normal_sound("FallSuperHero")
+
             PlayerSeeNoiseInRangeTimed(1,x,y)
             DestroyTimer(GetExpiredTimer())
         end
     end)
-
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -979,6 +1034,19 @@ end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
 --- Created by Bergi.
+--- DateTime: 27.11.2021 13:23
+---
+function ControlGameCam()
+    TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
+        if not MUDA then
+            CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
+
+        end
+    end)
+end
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
 --- DateTime: 17.10.2021 16:25
 ---
 GHP = 50
@@ -1157,6 +1225,7 @@ do
             CreateSpaceForRestart()
             StartGCTracker()
             CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
+            ControlGameCam()
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
@@ -2317,7 +2386,9 @@ function CreatePointInterFace()
         end
         PLerp = math.lerp(PLerp, p, TIMER_PERIOD64 * speed)
         local descriptions = I2S(R2I(PLerp))
-        BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions+1)))
+        --if PLerp> 1 then
+            BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions+1)))
+        --end
     end)
 end
 
@@ -3424,7 +3495,7 @@ end
 
 function InitTrig_SetCam()
     gg_trg_SetCam = CreateTrigger()
-    TriggerRegisterTimerEventSingle(gg_trg_SetCam, 0.10)
+    TriggerRegisterTimerEventSingle(gg_trg_SetCam, 0.01)
     TriggerAddAction(gg_trg_SetCam, Trig_SetCam_Actions)
 end
 
@@ -3442,21 +3513,9 @@ function InitTrig_Jaina()
     TriggerAddAction(gg_trg_Jaina, Trig_Jaina_Actions)
 end
 
-function Trig_PeriodCam_Actions()
-    CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
-    SetAllyColorFilterState(0)
-end
-
-function InitTrig_PeriodCam()
-    gg_trg_PeriodCam = CreateTrigger()
-    TriggerRegisterTimerEventPeriodic(gg_trg_PeriodCam, 0.01)
-    TriggerAddAction(gg_trg_PeriodCam, Trig_PeriodCam_Actions)
-end
-
 function InitCustomTriggers()
     InitTrig_SetCam()
     InitTrig_Jaina()
-    InitTrig_PeriodCam()
 end
 
 function RunInitializationTriggers()

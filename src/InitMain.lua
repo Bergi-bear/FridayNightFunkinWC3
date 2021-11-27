@@ -26,6 +26,7 @@ do
             CreateSpaceForRestart()
             StartGCTracker()
             CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
+            ControlGameCam()
             BugSpeed() -- функция для увеличения скорости игры авто матически
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)

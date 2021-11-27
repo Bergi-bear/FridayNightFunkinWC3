@@ -31,7 +31,9 @@ function CreatePointInterFace()
         end
         PLerp = math.lerp(PLerp, p, TIMER_PERIOD64 * speed)
         local descriptions = I2S(R2I(PLerp))
-        BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions+1)))
+        --if PLerp> 1 then
+            BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions+1)))
+        --end
     end)
 end
 
