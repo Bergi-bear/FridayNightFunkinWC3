@@ -158,6 +158,12 @@ function ShuffleIcons(first, song)
         }
     end
 
+        if GetUnitTypeId(GEnemy) == FourCC("n000") then
+        enemy = {
+            [1] = { "war3mapImported\\demon1", "war3mapImported\\demon1" },
+        }
+    end
+
     if first then
         GICOEnemy, GICOPlayer = enemy[1], player[1]
     else

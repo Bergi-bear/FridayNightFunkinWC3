@@ -6,7 +6,7 @@
 EMPTY = nil
 IcoOfSongsLocked = {}
 LockedState = { true, false, false, false, false }
-PointForUnlock = { 0, 25000, 150000, 10000, 70000 }
+PointForUnlock = { 0, 35000, 150000, 10000, 70000 }
 SongCompleteCount = 1
 SongCompleted = { false, false, false, false, false, }
 function CreateSongMenus()
@@ -76,7 +76,7 @@ function StartNewSong(number)
         FourCC("O000"), -- Таурен
         nil,-- хенк
         FourCC("U000"), -- детерок
-        nil, --демонесса
+        FourCC("n000"), --демонесса
     }
     if not MUDA then
         if not restartReady then

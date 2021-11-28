@@ -25,12 +25,11 @@ do
             CreateSongMenus()
             CreateSpaceForRestart()
             StartGCTracker()
-            CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
-            GifCat=CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08,157,false,1/24,1)
+            GifCat = CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08, 157, false, 1 / 24, 1)
             ControlGameCam()
             BugSpeed() -- функция для увеличения скорости игры авто матически
             InitTaurens()
-
+            CreateMissCounter()
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
@@ -44,7 +43,6 @@ do
             StartArthasStateMachine()
             StartPeonStateMachine()
             PlayUnitAnimationFromChat()
-
             DestroyTimer(GetExpiredTimer())
         end)
     end
@@ -221,12 +219,12 @@ function StartArrow(notes, arrowPos, music)
         --StartBitMaker
         if SONG == 2 then
             --print("Start")
-            local timeToMove=false
+            local timeToMove = false
             TimerStart(CreateTimer(), 2 * GameSpeed, true, function()
                 --print("bit")
                 if GCurrentArrow > 420 and not timeToMove then
                     MoveTaurens()
-                    timeToMove=true
+                    timeToMove = true
                 end
 
                 if GCurrentArrow > 494 then
@@ -297,6 +295,7 @@ function getFirstArrow()
     for _, k in ipairs(arrows.list) do
         local delta = math.abs(arrows.y - k.y)
         if delta < 0.08 then
+            -- задержка после ошибки
 
             if not k.swaped and not k.mistake then
                 State4Key(k.y)
@@ -395,6 +394,9 @@ function KeyPressed(key)
                             amount = 5
                         elseif SONG == 2 and arrow.number > 110 and arrow.number < 180 then
                             amount = 1 -- меньше урона
+                        elseif SONG == 5 then
+                            --print("меньше")
+                            amount = 1
                         end
                         Damage(amount)
 
@@ -420,10 +422,6 @@ function KeyPressed(key)
 
 
 end
-
-
-
-
 
 function PlayPeonAnimation(type, durations)
     ----print(type)
@@ -452,6 +450,8 @@ function PlayArthasAnimation(type, durations, number)
         else
             PlayerSeeNoiseInRangeTimed(0.1)
         end
+    elseif GetUnitTypeId(GEnemy) == FourCC("n000") then
+        anim = { 14, 15, 16, 17 }
     end
     if (number == 64 or number == 81 or number == 2) and GetRandomInt(1, 2) == 1 and SONG == 1 then
         anim[type] = 3
@@ -489,8 +489,9 @@ function StartArthasStateMachine()
                 QueueUnitAnimation(GEnemy, "Stand")
             elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
                 QueueUnitAnimation(GEnemy, "Stand Ready")
+            elseif GetUnitTypeId(GEnemy) == FourCC("n000") then
+                QueueUnitAnimation(GEnemy, "Stand Ready")
             end
-
         end
     end)
 end

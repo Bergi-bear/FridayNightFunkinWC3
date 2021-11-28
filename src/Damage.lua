@@ -8,6 +8,7 @@ function Damage(amount, isSilent)
     if not isSilent then
         normal_sound("Mistake", 0, 0)
         CreateState("shit")
+        GMissCount=GMissCount+1
     end
     SetUnitAnimationByIndex(GPlayer, GetRandomInt(23, 24))
     QueueUnitAnimationBJ(GPlayer, "stand ready")

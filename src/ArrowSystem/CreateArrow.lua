@@ -4,7 +4,8 @@
 --- DateTime: 27.11.2021 20:36
 ---
 function CreateArrow(speed, pozX, number, notes, music)
-    GCurrentArrow=number
+    GCurrentArrow = number
+    --print(number,notes[number])
     local type = 0
     local isPlayer = false
     if pozX < 5 then
@@ -171,7 +172,11 @@ function CreateArrow(speed, pozX, number, notes, music)
                 elseif SONG == 2 and number > 110 and number < 180 then
                     --print(number)
                     amount = 1
+                elseif SONG == 5 then
+                    amount = 1
+
                 end
+
                 Damage(amount)
                 --print("Too late", arrow.y)
 
@@ -184,4 +189,4 @@ function CreateArrow(speed, pozX, number, notes, music)
         end
     end)
 end
-GCurrentArrow=0
+GCurrentArrow = 0
