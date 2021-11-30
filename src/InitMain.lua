@@ -55,6 +55,7 @@ Camera2Left = true
 GameSpeed = 0.6
 SONG = 1
 DelayPerTime = 1
+BasePoints=100
 
 function StarAllSound(numberSong)
     musics = {}
@@ -339,7 +340,7 @@ function KeyPressed(key)
                     if arrow.y < 0.61 and arrow.y > 0.4 then
                         --print("succes", arrow.y)
                         GHP = GHP - 5
-                        AddPoint(100 * STREAK)
+                        AddPoint(BasePoints * STREAK)
                         BlzFrameSetTexture(arrows.up[type + 6], arrows.lighted[type], 0, true)
                         BlzFrameSetVisible(arrow.frame, false)
                         CreateSquack(arrows.X[type + 6], arrows.Y[type])

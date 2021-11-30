@@ -5,7 +5,7 @@
 ---
 function CreateArrow(speed, pozX, number, notes, music)
     GCurrentArrow = number
-    --print(number,notes[number])
+    print(number,notes[number])
     local type = 0
     local isPlayer = false
     if pozX < 5 then

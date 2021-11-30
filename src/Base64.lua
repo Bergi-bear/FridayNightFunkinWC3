@@ -1,7 +1,7 @@
 b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
 -- encoding
--- заменяем всё на math.fmod()
+
 function enc(data)
     return ((data:gsub('.', function(x)
         local r, b = '', x:byte()

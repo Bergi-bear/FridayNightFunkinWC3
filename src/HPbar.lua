@@ -69,11 +69,13 @@ function CreateHPBar(colorID)
                 if GPoint>=50000 then
                     if not BlzFrameIsVisible(GifCat) then
                         BlzFrameSetVisible(GifCat,true)
+                        BasePoints=200
                     end
                 end
             else
                 BlzFrameSetTexture(ARTHAS_ICO, GICOEnemy[1], 0, true)
                 BlzFrameSetVisible(GifCat,false)
+                BasePoints=100
             end
             BlzFrameSetAbsPoint(PEON_ICO, FRAMEPOINT_CENTER, (fakeHP * 0.8 / 100) + offset, y)
         end
