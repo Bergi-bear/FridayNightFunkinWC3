@@ -5,7 +5,6 @@
 ---
 GMissCount=0
 function CreateMissCounter()
-
     local frame = CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
 
     local text = BlzCreateFrameByType("TEXT", "ButtonChargesText", frame, "", 0)

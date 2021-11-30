@@ -677,10 +677,12 @@ end
 ---
 EMPTY = nil
 IcoOfSongsLocked = {}
-LockedState = { true, false, false, false, false }
-PointForUnlock = { 0, 35000, 150000, 10000, 70000 }
+LockedState = { true, false, false, false, false ,true}
+PointForUnlock = { 0, 35000, 150000, 10000, 70000 ,0}
 SongCompleteCount = 1
-SongCompleted = { false, false, false, false, false, }
+SongCompleted = { false, false, false, false, false,false}
+
+
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
     ttBox, _, ttText = CreateToolTipBox()
@@ -720,6 +722,15 @@ function CreateSongMenus()
     EMPTY, IcoOfSongsLocked[5] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 3, "lockedicon", 5, function()
         if LockedState[5] then
             StartNewSong(5)
+        else
+            --print("Необходимо", PointForUnlock[3], "очков")
+            normal_sound("Sound\\Interface\\Error")
+        end
+
+    end)
+    EMPTY, IcoOfSongsLocked[6] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 5, "lockedicon", 6, function()
+        if LockedState[6] then
+            StartNewSong(6)
         else
             --print("Необходимо", PointForUnlock[3], "очков")
             normal_sound("Sound\\Interface\\Error")
@@ -818,7 +829,6 @@ end
 ---
 GMissCount=0
 function CreateMissCounter()
-
     local frame = CreateAndPlayGif(0.83, 0.49, "gif\\gargoule_page_000", 0.04)
 
     local text = BlzCreateFrameByType("TEXT", "ButtonChargesText", frame, "", 0)
@@ -1359,6 +1369,11 @@ function StarAllSound(numberSong)
             DestroyTimer(GetExpiredTimer())
             BreakCurrentLevel()
         end)
+    elseif numberSong == 6 then
+        SONG = 6
+        GameSpeed = 0.34 --
+        --print("старт музыки из милф")
+        StartArrow(PritoptatShort, PritoptatShortArrows, "Pritoptat")
     else
         print("Ошибка вы попутались запустить песню без кода")
     end
@@ -2192,20 +2207,20 @@ function CreatePointInterFace()
     BlzFrameSetPoint(text, FRAMEPOINT_LEFT, frame, FRAMEPOINT_LEFT, 0.025, 0.0) --Сдвиг очков относительно эмблемы
     GPointTextFrame = text
     --updatePoint
-    local p=GPoint
-    local PLerp=p
+    local p = GPoint
+    local PLerp = p
     TimerStart(CreateTimer(), TIMER_PERIOD64, true, function()
         p = GPoint
-        local speed=1--p-PLerp --8 быстро 1 медленно
-        if p-PLerp<=100 then
-            speed=20
+        local speed = 1--p-PLerp --8 быстро 1 медленно
+        if p - PLerp <= 100 then
+            speed = 20
         else
-            speed=1
+            speed = 1
         end
         PLerp = math.lerp(PLerp, p, TIMER_PERIOD64 * speed)
         local descriptions = I2S(R2I(PLerp))
         --if PLerp> 1 then
-            BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions+1)))
+        BlzFrameSetText(GPointTextFrame, I2S(R2I(descriptions + 1)))
         --end
     end)
 end
@@ -2222,7 +2237,8 @@ function AddPoint(points)
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
 
     if not LockedState[2] then
-        if GPoint >= PointForUnlock[2]  then --and SongCompleteCount>=3
+        if GPoint >= PointForUnlock[2] then
+            --and SongCompleteCount>=3
             BlzFrameSetTexture(IcoOfSongsLocked[2], "BTNzavod", 0, true)
             CreateSelections(IcoOfSongsLocked[2], 5)
             LockedState[2] = true
@@ -2231,7 +2247,8 @@ function AddPoint(points)
 
     end
     if not LockedState[3] then
-        if GPoint >= PointForUnlock[3]  then --and SongCompleteCount >= 5
+        if GPoint >= PointForUnlock[3] then
+            --and SongCompleteCount >= 5
             BlzFrameSetTexture(IcoOfSongsLocked[3], "BTNhank", 0, true)
             LockedState[3] = true
             CreateSelections(IcoOfSongsLocked[3], 5)
@@ -2239,7 +2256,8 @@ function AddPoint(points)
         end
     end
     if not LockedState[4] then
-        if GPoint >= PointForUnlock[4]  then --and SongCompleteCount >= 2
+        if GPoint >= PointForUnlock[4] then
+            --and SongCompleteCount >= 2
             BlzFrameSetTexture(IcoOfSongsLocked[4], "BTNFresh", 0, true)
             LockedState[4] = true
             CreateSelections(IcoOfSongsLocked[4], 5)
@@ -2247,10 +2265,20 @@ function AddPoint(points)
         end
     end
     if not LockedState[5] then
-        if GPoint >= PointForUnlock[5]  then --and SongCompleteCount >= 4
+        if GPoint >= PointForUnlock[5] then
+            --and SongCompleteCount >= 4
             BlzFrameSetTexture(IcoOfSongsLocked[5], "BTNMilf", 0, true)
             LockedState[5] = true
             CreateSelections(IcoOfSongsLocked[5], 5)
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
+        end
+    end
+    if not LockedState[6] then
+        if GPoint >= PointForUnlock[6] then
+            --and SongCompleteCount >= 4
+            BlzFrameSetTexture(IcoOfSongsLocked[6], "BTNMilf", 0, true)
+            LockedState[6] = true
+            CreateSelections(IcoOfSongsLocked[6], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
         end
     end
@@ -2314,11 +2342,8 @@ function AllPreload()
     StopSound(normal_sound("HankMP3"), true, false)
     StopSound(normal_sound("Fresh"), true, false)
     StopSound(normal_sound("Milf"), true, false)
-
+    StopSound(normal_sound("Pritoptat"), true, false)
 end
-
-
-
 
 function InitPreloadStart()
     --print("Start preload tester")
@@ -3443,6 +3468,165 @@ MilfPos = { --587
     -- последняя нота
     8,
 
+}
+---
+--- Generated by EmmyLua(https://github.com/EmmyLua)
+--- Created by Bergi.
+--- DateTime: 30.11.2021 1:07
+---
+PritoptatShort = {
+    0, 2, 3,
+    4, 5, 6, 7,
+    8,
+    12,
+    18, 19,
+    20, 21, 22, 23,
+    24,
+    28,
+    34, 35,
+    36, 37, 38, 39,
+    40,
+    46, 47,
+    48, 50, 51,
+    52, 53, 54, 55,
+    56,
+    --Ать Ать
+    64, 66,
+    68, 70,
+    72, 73, 74, 75,
+    76, 77, 77.5, 78, 78.5, 79, 79.5,
+    --Драмнбейс
+    80, 81, 82, 83,
+    84, 84.5, 85, 85.5, 86, 86.5, 87, 87.5,
+    88, 89, 90, 91,
+    92, 92.5, 93, 93.5, 94, 94.5, 95, 95.5,
+    96, 97, 98, 99,
+    100, 100.5, 101, 101.5, 102, 102.5, 103, 103.5,
+    104, 105, 106, 107,
+    108, 108.5, 109, 109.5, 110,
+
+    112, 113, 114, 115,
+    116, 116.5, 117, 117.5, 118, 118.5, 119, 119.5,
+    120, 121, 122, 123,
+    124, 124.5, 125, 125.5, 126, 126.5, 127, 127.5,
+    129, 130, 131,
+    132, 132.5, 133, 133.5, 134, 134.5, 135, 135.5,
+    136, 137, 138, 139,
+    140, 140.5, 141, 141.5, 142,
+    --OK
+    --Первый куплет
+    145, 145.5, 146, 146.5, 147, 147.5,
+    148,
+    153, 153.5, 154, 154.5, 155, 155.5,
+    156,
+    161, 161.5, 162, 162.5, 163, 163.5,
+    164, 167,
+    168, 169, 169.5, 170, 170.5, 171, 171.5,
+    172,
+    --Ать ать в куплете
+    178, 180,
+    182, 184,
+    186, 187, 188, 189,
+    190, 191, 191.5, 192, 192.5, 193, 193.5,
+    --OK
+    --драмн в куплете
+    195, 196, 197,
+    198, 198.5, 199, 199.5, 200, 200.5, 201, 201.5,
+    202, 203, 204, 205,
+    206, 206.5, 207, 207.5, 208, 208.5, 209, 209.5,
+    210, 211, 212, 213,
+    214, 214.5, 215, 215.5, 216, 216.5, 217, 217.5,
+    218, 219, 220, 221,
+    222, 222.5, 223, 223.5, 224,
+    226, 227, 228, 229,
+    230, 230.5, 231, 231.5, 232, 232.5, 233, 233.5,
+    234, 235, 236, 237,
+    238, 238.5, 239, 239.5, 240, 240.5, 241, 241.5,
+    243, 244, 245,
+    246, 246.5, 247, 247.5, 248, 248.5, 249, 249.5,
+    250, 251, 252, 253,
+    254, 254.5, 255, 255.5, 256,
+    --OK
+    --Второй Куплет
+
+}
+
+PritoptatShortArrows = {
+    1, 1, 1,
+    4, 3, 2, 1,
+    4,
+    3,
+    7, 7,
+    10, 9, 8, 7,
+    10,
+    9,
+    1, 1,
+    4, 3, 2, 3,
+    4,
+    7, 8,
+    7, 10, 10,
+    9, 7, 10, 8,
+    7,
+    --OK
+    --Ать Ать
+    2, 2,
+    1, 1,
+    7, 7, 7, 7,
+    7, 10, 10, 9, 7, 10, 9,
+    --Драмнбейс
+    2, 2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    7, 7, 7, 7, 10, 9, 8, 7,
+    2, 2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    8, 8, 8, 7, 8,
+    --112
+    2, 2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    7, 7, 7, 7, 10, 9, 8, 7,
+    2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    8, 8, 8, 7, 8,
+    --OK
+    --ПЕрвый Куплет
+    2, 2, 1, 1, 1, 1,
+    2,
+    9, 9, 8, 8, 8, 8,
+    7,
+    2, 2, 1, 1, 1, 1,
+    4, 3,
+    2, 9, 9, 8, 8, 8, 8,
+    7,
+    --ать ать в куплете
+    2, 4,
+    1, 3,
+    7, 10,
+    7, 10,
+    7, 10, 10, 9, 7, 9, 8,
+    --OK
+    --Драмн в куплете
+    2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    7, 7, 7, 7, 10, 9, 8, 7,
+    2, 2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    8, 8, 8, 7, 8,
+    --226
+    2, 2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    7, 7, 7, 7, 10, 9, 8, 7,
+    2, 1, 1,
+    1, 1, 1, 1, 1, 2, 3, 4,
+    8, 8, 7, 7,
+    8, 8, 8, 7, 8,
+    --OK
 }
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)

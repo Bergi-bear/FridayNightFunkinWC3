@@ -105,6 +105,11 @@ function StarAllSound(numberSong)
             DestroyTimer(GetExpiredTimer())
             BreakCurrentLevel()
         end)
+    elseif numberSong == 6 then
+        SONG = 6
+        GameSpeed = 0.34 --
+        --print("старт музыки из милф")
+        StartArrow(PritoptatShort, PritoptatShortArrows, "Pritoptat")
     else
         print("Ошибка вы попутались запустить песню без кода")
     end

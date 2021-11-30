@@ -24,11 +24,8 @@ function AllPreload()
     StopSound(normal_sound("HankMP3"), true, false)
     StopSound(normal_sound("Fresh"), true, false)
     StopSound(normal_sound("Milf"), true, false)
-
+    StopSound(normal_sound("Pritoptat"), true, false)
 end
-
-
-
 
 function InitPreloadStart()
     --print("Start preload tester")
