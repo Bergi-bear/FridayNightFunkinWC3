@@ -5,8 +5,8 @@
 ---
 EMPTY = nil
 IcoOfSongsLocked = {}
-LockedState = { true, false, false, false, false ,true}
-PointForUnlock = { 0, 35000, 150000, 10000, 70000 ,0}
+LockedState = { true, false, false, false, false ,false}
+PointForUnlock = { 0, 35000, 150000, 10000, 70000 ,100000}
 SongCompleteCount = 1
 SongCompleted = { false, false, false, false, false,false}
 
@@ -88,6 +88,7 @@ function StartNewSong(number)
         nil,-- хенк
         FourCC("U000"), -- детерок
         FourCC("n000"), --демонесса
+        FourCC("Hart"), --артас
     }
     if not MUDA then
         if not restartReady then

@@ -567,35 +567,42 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
         BlzFrameSetVisible(ttBox, true)
         BlzFrameSetAbsPoint(ttBox, FRAMEPOINT_CENTER, 0, GHandY)
         if number == 1 then
-            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот: ") ..#BoPeeBo..ColorText2("\nВраг: ").."Артас"..ColorText2("\nСпособности: ").."Случайный \nудар молотом".." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот: ") .. #BoPeeBo .. ColorText2("\nВраг: ") .. "Артас" .. ColorText2("\nСпособности: ") .. "Случайный \nудар молотом" .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
         end
         if number == 2 then
             if not LockedState[number] then
-                ShowUnlockTips(ttText,PointForUnlock[number])
+                ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот: ") .. #Zavodila.." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот: ") .. #Zavodila .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
 
         if number == 3 then
             if not LockedState[number] then
-               ShowUnlockTips(ttText,PointForUnlock[number])
+                ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .."Неизвестно".. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .. "Неизвестно" .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
         if number == 4 then
             if not LockedState[number] then
-                ShowUnlockTips(ttText,PointForUnlock[number])
+                ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот: " ) ..#FreshBit.." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот: ") .. #FreshBit .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
         if number == 5 then
             if not LockedState[number] then
-                ShowUnlockTips(ttText,PointForUnlock[number])
+                ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "M.I.L.F" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .. #Milf.." \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "M.I.L.F" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .. #Milf .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            end
+        end
+        if number == 6 then
+            if not LockedState[number] then
+                ShowUnlockTips(ttText, PointForUnlock[number])
+            else
+                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Pritoptat" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот: ") .. #PritoptatShort .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
             end
         end
 
@@ -610,7 +617,7 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
     return SelfFrame, buttonIconFrame
 end
 
-TTBoxY=0.4
+TTBoxY = 0.4
 function CreateToolTipBox()
     local tooltip = BlzCreateFrameByType("FRAME", "TestDialog", BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0), "StandardFrameTemplate", 0)
     local backdrop = BlzCreateFrame("QuestButtonDisabledBackdropTemplate", tooltip, 0, 0)
@@ -635,8 +642,8 @@ function ColorText2(s)
     return s
 end
 
-function ShowUnlockTips(ttText,dataUnlock)
-    BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать "..ColorText2(dataUnlock).. " очков и пройти предыдушую песню")
+function ShowUnlockTips(ttText, dataUnlock)
+    BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать " .. ColorText2(dataUnlock) .. " очков и пройти предыдушую песню")
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -677,8 +684,8 @@ end
 ---
 EMPTY = nil
 IcoOfSongsLocked = {}
-LockedState = { true, false, false, false, false ,true}
-PointForUnlock = { 0, 35000, 150000, 10000, 70000 ,0}
+LockedState = { true, false, false, false, false ,false}
+PointForUnlock = { 0, 35000, 150000, 10000, 70000 ,100000}
 SongCompleteCount = 1
 SongCompleted = { false, false, false, false, false,false}
 
@@ -760,6 +767,7 @@ function StartNewSong(number)
         nil,-- хенк
         FourCC("U000"), -- детерок
         FourCC("n000"), --демонесса
+        FourCC("Hart"), --артас
     }
     if not MUDA then
         if not restartReady then
@@ -2276,7 +2284,7 @@ function AddPoint(points)
     if not LockedState[6] then
         if GPoint >= PointForUnlock[6] then
             --and SongCompleteCount >= 4
-            BlzFrameSetTexture(IcoOfSongsLocked[6], "BTNMilf", 0, true)
+            BlzFrameSetTexture(IcoOfSongsLocked[6], "BTNBear", 0, true)
             LockedState[6] = true
             CreateSelections(IcoOfSongsLocked[6], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
@@ -3524,10 +3532,10 @@ PritoptatShort = {
     168, 169, 169.5, 170, 170.5, 171, 171.5,
     172,
     --Ать ать в куплете
-    178, 180,
-    182, 184,
-    186, 187, 188, 189,
-    190, 191, 191.5, 192, 192.5, 193, 193.5,
+    177, 179,
+    181, 183,
+    185, 186, 187, 188,
+    189, 190, 190.5, 191, 191.5, 192, 192.5,
     --OK
     --драмн в куплете
     195, 196, 197,

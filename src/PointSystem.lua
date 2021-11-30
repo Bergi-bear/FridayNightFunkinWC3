@@ -88,7 +88,7 @@ function AddPoint(points)
     if not LockedState[6] then
         if GPoint >= PointForUnlock[6] then
             --and SongCompleteCount >= 4
-            BlzFrameSetTexture(IcoOfSongsLocked[6], "BTNMilf", 0, true)
+            BlzFrameSetTexture(IcoOfSongsLocked[6], "BTNBear", 0, true)
             LockedState[6] = true
             CreateSelections(IcoOfSongsLocked[6], 5)
             normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")

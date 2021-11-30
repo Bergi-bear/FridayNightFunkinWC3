@@ -1,4 +1,4 @@
 require 'build'({
-  -- run = 'editor',
+  --  run = 'editor',
    run  = 'game',
 })
