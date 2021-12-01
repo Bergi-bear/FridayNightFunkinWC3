@@ -30,6 +30,7 @@ do
             BugSpeed() -- функция для увеличения скорости игры авто матически
             InitTaurens()
             CreateMissCounter()
+
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
@@ -63,6 +64,7 @@ function StarAllSound(numberSong)
     local x, y = GetPlayerStartLocationX(Player(0)), GetPlayerStartLocationY(Player(0))
     --normal_sound("All", x, y)
     musics[#musics + 1] = normal_sound("321GO", x, y)
+    CreateRSG()
     if numberSong == 1 then
         SONG = 1
         GameSpeed = 0.6
