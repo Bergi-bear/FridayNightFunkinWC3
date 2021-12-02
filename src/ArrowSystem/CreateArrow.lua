@@ -117,7 +117,7 @@ function CreateArrow(speed, pozX, number, notes, music)
             --print("Бот нажимает кнопку")
             if GetUnitTypeId(GEnemy) == FourCC("U000") then
                 --print(10*durations)
-                Damage(6 * durations, true)
+                Damage(4 * durations, true)
                 local tempDur = durations / 3
                 TimerStart(CreateTimer(), 0.15, true, function()
                     tempDur = tempDur - 0.15

@@ -35,14 +35,21 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
         mouseOnFrame = true
         BlzFrameSetVisible(ttBox, true)
         BlzFrameSetAbsPoint(ttBox, FRAMEPOINT_CENTER, 0, GHandY)
+        local NameTag = L(ColorText2("Название: "), ColorText2("Name: "))
+        local DifficultTag = L(ColorText2("\nСложность: "), ColorText2("\nDifficult: "))
+        local NotesCountTag = L(ColorText2("\nЧисло нот: "), ColorText2("\nNumber of notes: "))
+        local EnemyTag = L(ColorText2("\nВраг: "), ColorText2("\nEnemy: "))
+        local AbilityTag=L(ColorText2("\nСпособности: ") ,ColorText2("\nAbilities: ") )
+        local TipsTag=L(" \nНажмите на иконку песни, чтобы её выбрать или перезапустить."," \nClick on the song icon to select or restart it.")
+
         if number == 1 then
-            BlzFrameSetText(ttText, ColorText2("Название: ") .. "BooBeeBoo" .. ColorText2("\nСложность: ") .. " нулевая" .. ColorText2("\nЧисло нот: ") .. #BoPeeBo .. ColorText2("\nВраг: ") .. "Артас" .. ColorText2("\nСпособности: ") .. "Случайный \nудар молотом" .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+            BlzFrameSetText(ttText, NameTag .. "BooBeeBoo" .. DifficultTag .. L(" нулевая"," very easy") .. NotesCountTag .. #BoPeeBo .. EnemyTag .. L("Артас","Arthas") .. AbilityTag .. L("Грязный приём","Dirty trick") .. TipsTag)
         end
         if number == 2 then
             if not LockedState[number] then
                 ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Zavodila" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот: ") .. #Zavodila .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, NameTag .. "Zavodila" .. DifficultTag .. L(" средняя"," medium") .. NotesCountTag .. #Zavodila .. EnemyTag .. L("Керн","Kern") .. AbilityTag .. L("Тряска камеры, зов братвы","Shaking of the camera, the call of the brothers") ..TipsTag)
             end
         end
 
@@ -50,28 +57,28 @@ function CreateSimpleFrameGlue(posX, PosY, texture, number, call)
             if not LockedState[number] then
                 ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Hank" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .. "Неизвестно" .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, NameTag .. "Hank" .. DifficultTag .. L(" невозможная"," impossible") .. NotesCountTag .. L("Неизвестно","Unknown") .. TipsTag)
             end
         end
         if number == 4 then
             if not LockedState[number] then
                 ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Fresh" .. ColorText2("\nСложность: ") .. " низкая" .. ColorText2("\nЧисло нот: ") .. #FreshBit .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, NameTag .. "Fresh" .. DifficultTag .. L(" низкая"," easy") .. NotesCountTag .. #FreshBit .. EnemyTag .. L("Детеррок","Detherrock") .. AbilityTag .. L("Высасывание жизни","Life Steal") .. TipsTag)
             end
         end
         if number == 5 then
             if not LockedState[number] then
                 ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "M.I.L.F" .. ColorText2("\nСложность: ") .. " высокая" .. ColorText2("\nЧисло нот: ") .. #Milf .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, NameTag .. "M.I.L.F" .. DifficultTag .. L(" высокая"," hard").. NotesCountTag .. #Milf .. EnemyTag ..L("Демонесса","Demoness").. TipsTag)
             end
         end
         if number == 6 then
             if not LockedState[number] then
                 ShowUnlockTips(ttText, PointForUnlock[number])
             else
-                BlzFrameSetText(ttText, ColorText2("Название: ") .. "Pritoptat" .. ColorText2("\nСложность: ") .. " средняя" .. ColorText2("\nЧисло нот: ") .. #PritoptatShort .. " \nНажмите на иконку песни, чтобы её выбрать или перезапустить.")
+                BlzFrameSetText(ttText, NameTag .. "Pritoptat" .. DifficultTag .. L(" средняя"," medium")  .. NotesCountTag .. #PritoptatShort .. TipsTag)
             end
         end
 
@@ -95,9 +102,9 @@ function CreateToolTipBox()
     --BlzFrameSetParent(backdrop, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     --BlzFrameSetParent(text, BlzGetFrameByName("ConsoleUIBackdrop", 0))
     BlzFrameSetAbsPoint(tooltip, FRAMEPOINT_CENTER, 0, TTBoxY)
-    BlzFrameSetSize(tooltip, 0.2, 0.15)
-    BlzFrameSetSize(backdrop, 0.2, 0.15)
-    BlzFrameSetSize(text, 0.2 * .75, 0.15 * .9)
+    BlzFrameSetSize(tooltip, 0.24, 0.15)
+    BlzFrameSetSize(backdrop, 0.24, 0.15)
+    BlzFrameSetSize(text, 0.24 * .75, 0.15 * .9)
     BlzFrameSetPoint(backdrop, FRAMEPOINT_CENTER, tooltip, FRAMEPOINT_CENTER, 0.0, 0.0)
     BlzFrameSetAlpha(backdrop, 250)
     BlzFrameSetText(text, "ОШИБКА Первичное описание ещё не обновлено")
@@ -112,5 +119,5 @@ function ColorText2(s)
 end
 
 function ShowUnlockTips(ttText, dataUnlock)
-    BlzFrameSetText(ttText, "Чтобы разблокировать эту песню необходимо набрать " .. ColorText2(dataUnlock) .. " очков и пройти предыдушую песню")
+    BlzFrameSetText(ttText, L("Чтобы разблокировать эту песню необходимо набрать " .. ColorText2(dataUnlock) .. " очков и пройти предыдушую песню","To unlock this song, you need to type " .. ColorText2(dataUnlock).. "score points and pass the previous song"))
 end

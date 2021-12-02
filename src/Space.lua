@@ -11,7 +11,7 @@ function CreateSpaceForRestart()
     local buttonIconFrame = BlzCreateFrameByType('BACKDROP', 'FaceButtonIcon', SelfFrame, '', 0)
     local text = BlzCreateFrameByType("TEXT", "ButtonChargesText", SelfFrame, "", 0)
 
-    BlzFrameSetText(text, "SPACE - перезапуск текущей песни")
+    BlzFrameSetText(text, L("SPACE - перезапуск текущей песни","SPACE - restarting the current song"))
     BlzFrameSetSize(text, NextPoint * 7, 0.01)
     BlzFrameSetScale(text, 1)
     BlzFrameSetTextColor(text, BlzConvertColor(255, 0, 0, 0))
