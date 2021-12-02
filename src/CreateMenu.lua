@@ -5,18 +5,22 @@
 ---
 EMPTY = nil
 IcoOfSongsLocked = {}
-LockedState = { true, false, false, false, false ,false}
-PointForUnlock = { 0, 35000, 150000, 10000, 70000 ,100000}
+LockedState = { false, false, false, false, false, false }
+PointForUnlock = { 0, 35000, 150000, 10000, 70000, 100000 }
 SongCompleteCount = 1
-SongCompleted = { false, false, false, false, false,false}
-
+SongCompleted = { false, false, false, false, false, false }
 
 function CreateSongMenus()
     CreateHandArrowWPulse(-0.05, 0.4)
     ttBox, _, ttText = CreateToolTipBox()
     local nextPoint = 0.04
-    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 0, "BTNsos", 1, function()
-        StartNewSong(1)
+    EMPTY, IcoOfSongsLocked[1] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 0, "lockedicon", 1, function()
+        if LockedState[1] then
+            StartNewSong(1)
+        else
+            --print("Необходимо", PointForUnlock[2], "очков")
+            normal_sound("Sound\\Interface\\Error")
+        end
     end)
 
     EMPTY, IcoOfSongsLocked[2] = CreateSimpleFrameGlue(-0.1, 0.4 - nextPoint * 2, "lockedicon", 2, function()
@@ -85,7 +89,7 @@ function StartNewSong(number)
     local heroTable = {
         FourCC("Hart"), --артас
         FourCC("O000"), -- Таурен
-        nil,-- хенк
+        nil, -- хенк
         FourCC("U000"), -- детерок
         FourCC("n000"), --демонесса
         FourCC("Hart"), --артас
@@ -131,9 +135,9 @@ function ReplaceHeroForCurrentSong(number, id)
 end
 
 function CreateAndFallUnit(id, x, y)
-    GEnemy = CreateUnit( Player(0),id, x, y, 90)
-    UnitAddAbility(GEnemy,FourCC("Aloc"))
-    SetUnitFacing(GEnemy,AngleBetweenUnits(GEnemy,GPlayer))
+    GEnemy = CreateUnit(Player(0), id, x, y, 90)
+    UnitAddAbility(GEnemy, FourCC("Aloc"))
+    SetUnitFacing(GEnemy, AngleBetweenUnits(GEnemy, GPlayer))
     SetUnitZ(GEnemy, 1500)
     SetUnitAnimation(GEnemy, "death")
     normal_sound("FallSuperHero")
@@ -146,7 +150,7 @@ function CreateAndFallUnit(id, x, y)
             --print("приземлился")
             --DestroyEffect(AddSpecialEffect("ThunderclapCasterClassic", x, y))
 
-            PlayerSeeNoiseInRangeTimed(1,x,y)
+            PlayerSeeNoiseInRangeTimed(1, x, y)
             DestroyTimer(GetExpiredTimer())
         end
     end)

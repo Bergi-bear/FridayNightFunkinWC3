@@ -119,5 +119,5 @@ function ColorText2(s)
 end
 
 function ShowUnlockTips(ttText, dataUnlock)
-    BlzFrameSetText(ttText, L("Чтобы разблокировать эту песню необходимо набрать " .. ColorText2(dataUnlock) .. " очков и пройти предыдушую песню","To unlock this song, you need to type " .. ColorText2(dataUnlock).. "score points and pass the previous song"))
+    BlzFrameSetText(ttText, L("Чтобы разблокировать эту песню необходимо набрать " .. ColorText2(dataUnlock) .. " очков и пройти предыдушую песню","To unlock this song, you need to type " .. ColorText2(dataUnlock).. " score points and pass the previous song"))
 end

@@ -1,3 +1,4 @@
 [Misc]
+MinUnitSpeed=25.0
 ReactionDelay=0.0
 

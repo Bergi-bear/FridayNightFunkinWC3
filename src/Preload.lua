@@ -65,7 +65,7 @@ function InitTrig_SyncLoadDone ()
             --print(value,dec(value))
             LoadCode[i] = dec(value)
             TimerStart(CreateTimer(), 2, false, function()
-                AddPoint(S2I(dec(value)))
+                --AddPoint(S2I(dec(value)))
             end)
         end
 

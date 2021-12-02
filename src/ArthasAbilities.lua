@@ -16,7 +16,7 @@ function ArthasDamage()
     end)
 
 end
-MUDA = false
+MUDA = true
 function MudaMuda()
     if GetUnitTypeId(GEnemy) ~= FourCC("O000") then
         normal_sound("muda")

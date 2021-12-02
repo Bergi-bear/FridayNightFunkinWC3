@@ -39,7 +39,6 @@ end
 
 function AddPoint(points)
     GPoint = GPoint + points
-
     --math.lerp(lerp)
     --BlzFrameSetText(GPointTextFrame, descriptions)
     if points > 0 then
@@ -47,6 +46,17 @@ function AddPoint(points)
     end
     --print(enc(I2S(GPoint)))
     SaveResult(enc(I2S(GPoint))) --сохраняем очки каждый чих
+
+    if not LockedState[1] then
+        if GPoint >= PointForUnlock[1] then
+            --and SongCompleteCount>=3
+            BlzFrameSetTexture(IcoOfSongsLocked[1], "BTNsos", 0, true)
+            CreateSelections(IcoOfSongsLocked[1], 5)
+            LockedState[1] = true
+            normal_sound("Sound\\Interface\\BattleNetDoorsStereo2")
+        end
+
+    end
 
     if not LockedState[2] then
         if GPoint >= PointForUnlock[2] then

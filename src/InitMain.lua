@@ -7,8 +7,11 @@ do
     local InitGlobalsOrigin = InitGlobals
     function InitGlobals()
         InitGlobalsOrigin()
-        TimerStart(CreateTimer(), .5, false, function()
+        CinematicFadeBJ(bj_CINEFADETYPE_FADEOUT, 0, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
+        TimerStart(CreateTimer(), .05, false, function()
             DestroyTimer(GetExpiredTimer())
+            EnablePreSelect(false, false)
+            EnableDragSelect(false, false)
             --Preload("All")
             --Preload("zavodila")
             --Preloader("All")
@@ -16,21 +19,18 @@ do
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
             GJaina = gg_unit_Hjai_0001
-            HideEverything()
+            --
             ReturnFPS()
             MenuFrame()
             CreateAndStartClock()
-            CreatePointInterFace()
-            CreateGameSpeedIndicator()
-            CreateSongMenus()
-            CreateSpaceForRestart()
+
             StartGCTracker()
-            GifCat = CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08, 157, false, 1 / 24, 1)
+
             ControlGameCam()
             BugSpeed() -- функция для увеличения скорости игры авто матически
             InitTaurens()
-            CreateMissCounter()
 
+            StartFirstCinema()
             DoNotSaveReplay()
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
@@ -39,7 +39,7 @@ do
             musics = {}
             isMusicStart = false
             arrows = {}
-            StarAllSound(1) --Автостарт Первой песни
+            --StarAllSound(1) --Автостарт Первой песни
             --RestartInit()
             StartArthasStateMachine()
             StartPeonStateMachine()
@@ -51,12 +51,12 @@ end
 
 TIMER_PERIOD = 1 / 32
 TIMER_PERIOD64 = 1 / 64
-ready = false
+ready = true
 Camera2Left = true
 GameSpeed = 0.6
 SONG = 1
 DelayPerTime = 1
-BasePoints=100
+BasePoints = 100
 
 function StarAllSound(numberSong)
     musics = {}
@@ -124,12 +124,21 @@ function StarAllSound(numberSong)
     GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
+        HideEverything()
+        MUDA = false
+        CreatePointInterFace()
+        CreateGameSpeedIndicator()
+        CreateSongMenus()
+        CreateMissCounter()
+        GifCat = CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08, 157, false, 1 / 24, 1)
         ShuffleIcons(true)
         CreateHPBar("20")
         CreateHPBar("06")
         CreateHPBar("00")
         CreateVSIcons()
         ready = true
+        AddPoint(S2I(LoadCode[0]))
+        CreateSpaceForRestart()
     end
 end
 restartReady = true

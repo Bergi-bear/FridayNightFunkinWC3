@@ -8,6 +8,7 @@ function ReturnFPS()
     BlzFrameSetVisible(fps, true)
     BlzFrameClearAllPoints(fps)
     BlzFrameSetAbsPoint(fps, FRAMEPOINT_CENTER, 0.95, 0.62)
+
 end
 
 function HideEverything()
@@ -17,6 +18,7 @@ function HideEverything()
     end
     BlzHideOriginFrames(true)--скрыть всё
     BlzFrameSetScale(BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5), 0.001) --рамка мёртвой зоны отключение
+    DrawSelectionPortrait()
 end
 
 function MenuFrame()
@@ -94,4 +96,14 @@ function HideToolTips()
     BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), FRAMEPOINT_CENTER, 0.75, 0.55)
     BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), 0)
     BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), 0)
+end
+
+function DrawSelectionPortrait()
+
+    local Portrait = BlzGetFrameByName("CinematicPortrait",0)
+    BlzFrameSetVisible(Portrait, true)
+    BlzFrameClearAllPoints(Portrait)
+    BlzFrameSetSize(Portrait, 0.16, 0.16)
+    --BlzFrameSetParent(Portrait, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+    BlzFrameSetAbsPoint(Portrait, FRAMEPOINT_LEFT, 0.0, 0.04)
 end
