@@ -7,6 +7,7 @@ do
     local InitGlobalsOrigin = InitGlobals
     function InitGlobals()
         InitGlobalsOrigin()
+        CinematicModeBJ(true, GetPlayersAll())
         CinematicFadeBJ(bj_CINEFADETYPE_FADEOUT, 0, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
         TimerStart(CreateTimer(), .05, false, function()
             DestroyTimer(GetExpiredTimer())
@@ -20,8 +21,7 @@ do
             GEnemy = gg_unit_Hart_0002
             GJaina = gg_unit_Hjai_0001
             --
-            ReturnFPS()
-            MenuFrame()
+
             CreateAndStartClock()
 
             StartGCTracker()
@@ -35,7 +35,7 @@ do
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
         end)
-        TimerStart(CreateTimer(), 2.5, false, function()
+        TimerStart(CreateTimer(), 0.5, false, function()
             musics = {}
             isMusicStart = false
             arrows = {}
@@ -124,21 +124,7 @@ function StarAllSound(numberSong)
     GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
-        HideEverything()
-        MUDA = false
-        CreatePointInterFace()
-        CreateGameSpeedIndicator()
-        CreateSongMenus()
-        CreateMissCounter()
-        GifCat = CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08, 157, false, 1 / 24, 1)
-        ShuffleIcons(true)
-        CreateHPBar("20")
-        CreateHPBar("06")
-        CreateHPBar("00")
-        CreateVSIcons()
-        ready = true
-        AddPoint(S2I(LoadCode[0]))
-        CreateSpaceForRestart()
+    --перенёс
     end
 end
 restartReady = true

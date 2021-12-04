@@ -9,6 +9,7 @@ gg_trg_TestCinema = nil
 gg_unit_opeo_0003 = nil
 gg_unit_Hjai_0001 = nil
 gg_unit_Hart_0002 = nil
+gg_trg_ESC = nil
 function InitGlobals()
 end
 
@@ -1101,7 +1102,7 @@ function HideEverything()
     end
     BlzHideOriginFrames(true)--скрыть всё
     BlzFrameSetScale(BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5), 0.001) --рамка мёртвой зоны отключение
-    DrawSelectionPortrait()
+    --DrawSelectionPortrait()
 end
 
 function MenuFrame()
@@ -1177,7 +1178,7 @@ function HideToolTips()
     BlzFrameSetVisible(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), false)
     BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), FRAMEPOINT_CENTER, 0.75, 0.55)
     BlzFrameSetAbsPoint(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), FRAMEPOINT_CENTER, 0.75, 0.55)
-    BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), 0)
+    BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_TOOLTIP, 0), 255)
     BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), 0)
 end
 
@@ -1386,6 +1387,7 @@ do
     local InitGlobalsOrigin = InitGlobals
     function InitGlobals()
         InitGlobalsOrigin()
+        CinematicModeBJ(true, GetPlayersAll())
         CinematicFadeBJ(bj_CINEFADETYPE_FADEOUT, 0, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
         TimerStart(CreateTimer(), .05, false, function()
             DestroyTimer(GetExpiredTimer())
@@ -1399,8 +1401,7 @@ do
             GEnemy = gg_unit_Hart_0002
             GJaina = gg_unit_Hjai_0001
             --
-            ReturnFPS()
-            MenuFrame()
+
             CreateAndStartClock()
 
             StartGCTracker()
@@ -1414,7 +1415,7 @@ do
             SetGameSpeed(MAP_SPEED_FASTEST)
             LockGameSpeedBJ()
         end)
-        TimerStart(CreateTimer(), 2.5, false, function()
+        TimerStart(CreateTimer(), 0.5, false, function()
             musics = {}
             isMusicStart = false
             arrows = {}
@@ -1503,21 +1504,7 @@ function StarAllSound(numberSong)
     GameSpeed = GameSpeed * DelayPerTime
     --print("Текущая игровая скорость "..GameSpeed)
     if not ready then
-        HideEverything()
-        MUDA = false
-        CreatePointInterFace()
-        CreateGameSpeedIndicator()
-        CreateSongMenus()
-        CreateMissCounter()
-        GifCat = CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08, 157, false, 1 / 24, 1)
-        ShuffleIcons(true)
-        CreateHPBar("20")
-        CreateHPBar("06")
-        CreateHPBar("00")
-        CreateVSIcons()
-        ready = true
-        AddPoint(S2I(LoadCode[0]))
-        CreateSpaceForRestart()
+    --перенёс
     end
 end
 restartReady = true
@@ -3152,30 +3139,137 @@ end
 ---
 function StartFirstCinema()
     local table1 = {
-        "что в конце концов главное не то, что у тебя в кармане, а то что на душе",
-        "что у меня теперь нет ни счастья, ни несчастья",
-        "что, мол, все это так, да не так.",
-        "ты мол, Вась, знаешь, ты мне не друг, мне от тебя ничего не нужно, только не лезь в мою жизнь",
-        "что мол так, да так, ну просто супер, но в душе хотелось бы, что бы это было не так",
-        "что ты хоть и красивый, но на фиг не нужен. А он мне и говорит, а зачем я тебе нужен? В итоге он поехал домой, а я остался с кучей цветов, шарами и огромным букетом из 101 розы",
-        "у нет, так не пойдет!",
-        "сходи в город, найди себе жену, чтобы в хозяйстве была помощница...",
-        "вот ты говоришь, что, мол, счастье — это когда ничего не болит...",
+        L("что в конце концов главное не то, что у тебя в кармане, а то что на душе","in the end, the important thing is not what you have in your pocket, and the fact that his soul"),
+        L("что у меня теперь нет ни счастья, ни несчастья","now I have neither happiness nor misery"),
+        L("что, мол, все это так, да не так.","that, well, it's all so, so wrong"),
+        L("ты знаешь, ты мне не друг, мне от тебя ничего не нужно, только не лезь в мою жизнь","you know, you're not my friend, I want nothing from you, just stay out of my life"),
+        L("что мол так, да так, ну просто супер, но в душе хотелось бы, что бы это было не так","very well, Oh, well, just super, but in my heart I wish it wasn't so"),
+        L("что ты хоть и красивый, но на фиг не нужен. А он мне и говорит, а зачем я тебе нужен? В итоге он поехал домой, а я остался с кучей цветов, шарами и огромным букетом из 101 розы","what are you, though beautiful, but not needed in Fig. And he says to me, why do you need me? As a result, he went home, and I was left with a bunch of flowers, balloons and a huge bouquet of 101 roses"),
+        L("у нет, так не пойдет!","no, it won't do"),
+        L("сходи в город, найди себе жену, чтобы в хозяйстве была помощница...","go to the city, find yourself a wife so that there is an assistant in the household..."),
+        L("вот ты говоришь, что, мол, счастье — это когда ничего не болит...","here you say that, they say, happiness is when nothing hurts..."),
+    }
+    local table2={
+        L("А ты как всегда - на веселе","And you, as always, are tipsy"),
+        L("Эти твои шуточки","These jokes of yours"),
+        L("Остришь, как всегда","You're making jokes, as always"),
+
     }
 
+    local NamePeon=L("Пеонетти","Peonetty")
+    local NameJaina=L("Джайна","Jaina")
+    local NamePapirus=L("Папирус","Papyrus")
+    local NameArthas=L("Артас","Arthas")
+
     SetCameraBoundsToRectForPlayerBJ(Player(0), bj_mapInitialPlayableArea)
-    HideGameUnits()
+    HideGameUnits(false)
     CreateFakeUnits()
-    CinematicModeBJ(true, GetPlayersAll())
+
+    local gg_trg_ESC = CreateTrigger()
+    TriggerRegisterPlayerEventEndCinematic(gg_trg_ESC, Player(0))
+    TriggerAddAction(gg_trg_ESC, function()
+        if not GameISStarted then
+            StartGame()
+        end
+        GameISStarted = true
+        DisableTrigger(GetTriggeringTrigger())
+
+    end)
+
+    ClearMapMusicBJ()
+    PlayMusicBJ("LuvSeemee")
+    SetMusicVolumeBJ(15)
+
+
+    --CinematicModeBJ(true, GetPlayersAll()) -- перенёс в инит
     CameraSetupApplyForPlayer(false, gg_cam_FirstCinema, Player(0), 1.00)
-    SetCameraTargetControllerNoZForPlayer(Player(0), FakeJaina, 0, 0, true)
+    SetCameraTargetControllerNoZForPlayer(Player(0), FakePeon, 0, 0, true)
 
     TimerStart(CreateTimer(), 2, false, function()
-        CinematicFadeBJ(bj_CINEFADETYPE_FADEIN, 5, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
-        TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), "Пеонетти", GetRectCenter(GetPlayableMapRect()), nil, "И тут я ему и говорю, " .. table1[math.random(1, #table1)], bj_TIMETYPE_ADD, 0, false)
+        if GameISStarted then
+            return
+        end
+        CinematicFadeBJ(bj_CINEFADETYPE_FADEIN, 7, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
+        math.randomseed(123)
+        TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), NamePeon, GetRectCenter(GetPlayableMapRect()), nil, L("И тут я ему и говорю, ","And then I tell him, ") .. table1[GetRandomInt(1, #table1)], bj_TIMETYPE_ADD, 0, false)
 
-        TimerStart(CreateTimer(), 4, false, function()
-            TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("Hjai"), "Джайна", GetRectCenter(GetPlayableMapRect()), nil, "А ты забавный", bj_TIMETYPE_ADD, 0, false)
+        TimerStart(CreateTimer(), 8, false, function()
+            if GameISStarted then
+                return
+            end
+            TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("Hjai"), NameJaina, GetRectCenter(GetPlayableMapRect()), nil, table2[GetRandomInt(1, #table2)], bj_TIMETYPE_ADD, 0, false)
+            TimerStart(CreateTimer(), 4, false, function()
+                if GameISStarted then
+                    return
+                end
+                TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("Hjai"), NameJaina, GetRectCenter(GetPlayableMapRect()), nil, L("Но скажи, а мы скоро уже туда придём, я, кажется, уже натерла ножки...","But tell me, and we'll be there soon, I think I've already rubbed my legs..."), bj_TIMETYPE_ADD, 0, false)
+                TimerStart(CreateTimer(), 6, false, function()
+                    if GameISStarted then
+                        return
+                    end
+                    TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), NamePeon, GetRectCenter(GetPlayableMapRect()), nil, L("Я не просил тебя идти со мной, ты можешь пойти назад в любой момент","I didn't ask you to come with me, you can go back at any time"), bj_TIMETYPE_ADD, 0, false)
+                    TimerStart(CreateTimer(), 6, false, function()
+                        if GameISStarted then
+                            return
+                        end
+                        TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("Hjai"), NameJaina, GetRectCenter(GetPlayableMapRect()), nil, L("Какой же ты иногда грубый мужлан, но я чувсвую, что это мой долг - поддержать тебя, ведь ты всё таки мой...","What a rude bumpkin you are sometimes, but I feel that it is my duty to support you, because you are still my..."), bj_TIMETYPE_ADD, 0, false)
+                        TimerStart(CreateTimer(), 6, false, function()
+                            if GameISStarted then
+                                return
+                            end
+                            TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), NamePeon, GetRectCenter(GetPlayableMapRect()), nil, L("О, мы уже пришли, посмотри, это же Папирус. Привет, Папирус!","Oh, we've already come, look, it's Papyrus. Hello, Papyrus!"), bj_TIMETYPE_ADD, 0, false)
+                            TimerStart(CreateTimer(), 3, false, function()
+                                if GameISStarted then
+                                    return
+                                end
+                                TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("Hjai"), NameJaina, GetRectCenter(GetPlayableMapRect()), nil, L("Папирус, пойдёшь с нами?","Papyrus, will you come with us?"), bj_TIMETYPE_ADD, 0, false)
+                                BlzPauseUnitEx(FakeJaina, true)
+                                TimerStart(CreateTimer(), 3, false, function()
+                                    if GameISStarted then
+                                        return
+                                    end
+                                    BlzPauseUnitEx(FakeJaina, false)
+                                    TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("uske"), NamePapirus, GetRectCenter(GetPlayableMapRect()), nil, L("Оу, как приятно, что позвали, но я в другой раз, удачи вам","Oh, how nice to be called, but I'll do it another time, good luck to you"), bj_TIMETYPE_ADD, 0, false)
+                                    TimerStart(CreateTimer(), 8, false, function()
+                                        if GameISStarted then
+                                            return
+                                        end
+                                        SetUnitLookAt(FakeJaina,"bone_head",FakeArthas,0,0,120)
+                                        SetUnitLookAt(FakePeon,"bone_head",FakeArthas,0,0,120)
+                                        TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("H000"), NameArthas, GetRectCenter(GetPlayableMapRect()), nil, L("Посмотрите на него, явился, АХАХАХХ, и ещё подружку с собой взял","Look at him, he showed up, AHAHAHH, and he also took his girlfriend with him"), bj_TIMETYPE_ADD, 0, false)
+                                        TimerStart(CreateTimer(), 6, false, function()
+                                            if GameISStarted then
+                                                return
+                                            end
+                                            TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("H000"), NameArthas, GetRectCenter(GetPlayableMapRect()), nil, L("Как же ты ничтожен, жалкий батрак","How insignificant you are, you miserable peon"), bj_TIMETYPE_ADD, 0, false)
+                                            TimerStart(CreateTimer(), 6, false, function()
+                                                if GameISStarted then
+                                                    return
+                                                end
+                                                SetUnitAnimation(FakePeon,"Stand Ready")
+                                                SetUnitAnimation(FakeJaina,"Stand Ready")
+                                                TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), NamePeon, GetRectCenter(GetPlayableMapRect()), nil, L("И это говорит мне тот, кто пронёс оружие на музыкальную битву?","And this is what the one who brought the weapon to the musical battle tells me?"), bj_TIMETYPE_ADD, 0, false)
+                                                TimerStart(CreateTimer(), 6, false, function()
+                                                    if GameISStarted then
+                                                        return
+                                                    end
+                                                    TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("H000"), NameArthas, GetRectCenter(GetPlayableMapRect()), nil, L("Ну всё, ты сам напросился!!!","Well, that's it, you asked for it!!!"), bj_TIMETYPE_ADD, 0, false)
+                                                    TimerStart(CreateTimer(), 3.5, false, function()
+                                                        if GameISStarted then
+                                                            return
+                                                        end
+                                                        StartGame()
+                                                    end)
+                                                end)
+                                            end)
+                                        end)
+                                    end)
+                                end)
+                            end)
+                        end)
+                    end)
+                end)
+            end)
         end)
     end)
 
@@ -3189,10 +3283,11 @@ end
 
 function CreateFakeUnits()
     local x, y = 2460, 0
-    local xEnd, yEnd = 0, 0
+    local xEnd, yEnd = 100, 0
 
-    FakeJaina = CreateUnit(Player(0), FourCC("Hjai"), x, y, 0)
+    FakeJaina = CreateUnit(Player(0), FourCC("Hjai"), x+80, y, 0)
     FakePeon = CreateUnit(Player(0), FourCC("opeo"), x, y, 0)
+    FakeArthas = CreateUnit(Player(0), FourCC("Hart"), xEnd - 200, yEnd, 0)
 
     AddUnitAnimationProperties(FakeJaina, "cinematic", true)
     AddUnitAnimationProperties(FakePeon, "cinematic", true)
@@ -3200,6 +3295,46 @@ function CreateFakeUnits()
     SetUnitMoveSpeed(FakePeon, 50)
     IssuePointOrder(FakeJaina, "move", xEnd, yEnd)
     IssuePointOrder(FakePeon, "move", xEnd, MoveY(yEnd, 30, 270))
+end
+
+function HideFakePlayer()
+    ShowUnit(FakeJaina, false)
+    ShowUnit(FakePeon, false)
+    ShowUnit(FakeArthas, false)
+
+end
+
+GameISStarted = false
+function StartGame()
+    --print("Выворт исходной камеры")
+    GameISStarted = true
+    ClearMapMusicBJ()
+    StopMusic(true)
+    CinematicModeBJ(false, GetPlayersAll())
+    CameraSetupApplyForPlayer(false, gg_cam_Camera_001, Player(0), 1.00)
+    SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
+    HideFakePlayer()
+    MUDA = false
+    ready = false
+    StarAllSound(1)
+    HideGameUnits(true)
+    HideEverything()
+    ReturnFPS()
+    MenuFrame()
+    MUDA = false
+    CreatePointInterFace()
+    CreateGameSpeedIndicator()
+    CreateSongMenus()
+    CreateMissCounter()
+    GifCat = CreateAndPlayGif(-0.092, 0.08, "gif\\CatGif\\frame_", 0.08, 157, false, 1 / 24, 1)
+    ShuffleIcons(true)
+    CreateHPBar("20")
+    CreateHPBar("06")
+    CreateHPBar("00")
+    CreateVSIcons()
+    ready = true
+    AddPoint(S2I(LoadCode[0]))
+    CreateSpaceForRestart()
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -4085,9 +4220,19 @@ function InitTrig_Jaina()
     TriggerAddAction(gg_trg_Jaina, Trig_Jaina_Actions)
 end
 
+function Trig_ESC_Actions()
+end
+
+function InitTrig_ESC()
+    gg_trg_ESC = CreateTrigger()
+    TriggerRegisterPlayerEventEndCinematic(gg_trg_ESC, Player(0))
+    TriggerAddAction(gg_trg_ESC, Trig_ESC_Actions)
+end
+
 function InitCustomTriggers()
     InitTrig_SetCam()
     InitTrig_Jaina()
+    InitTrig_ESC()
 end
 
 function RunInitializationTriggers()
