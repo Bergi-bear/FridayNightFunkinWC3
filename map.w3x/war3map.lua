@@ -3151,6 +3151,18 @@ end
 --- DateTime: 02.12.2021 23:43
 ---
 function StartFirstCinema()
+    local table1 = {
+        "что в конце концов главное не то, что у тебя в кармане, а то что на душе",
+        "что у меня теперь нет ни счастья, ни несчастья",
+        "что, мол, все это так, да не так.",
+        "ты мол, Вась, знаешь, ты мне не друг, мне от тебя ничего не нужно, только не лезь в мою жизнь",
+        "что мол так, да так, ну просто супер, но в душе хотелось бы, что бы это было не так",
+        "что ты хоть и красивый, но на фиг не нужен. А он мне и говорит, а зачем я тебе нужен? В итоге он поехал домой, а я остался с кучей цветов, шарами и огромным букетом из 101 розы",
+        "у нет, так не пойдет!",
+        "сходи в город, найди себе жену, чтобы в хозяйстве была помощница...",
+        "вот ты говоришь, что, мол, счастье — это когда ничего не болит...",
+    }
+
     SetCameraBoundsToRectForPlayerBJ(Player(0), bj_mapInitialPlayableArea)
     HideGameUnits()
     CreateFakeUnits()
@@ -3158,15 +3170,13 @@ function StartFirstCinema()
     CameraSetupApplyForPlayer(false, gg_cam_FirstCinema, Player(0), 1.00)
     SetCameraTargetControllerNoZForPlayer(Player(0), FakeJaina, 0, 0, true)
 
-    TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), "Пеонетти", GetRectCenter(GetPlayableMapRect()), nil, "И тут я ему и говорю, бла бла бла", bj_TIMETYPE_ADD, 3, true)
-    TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("Hjai"), "Джайна", GetRectCenter(GetPlayableMapRect()), nil, "А ты забавный", bj_TIMETYPE_ADD, 3, false)
-    TimerStart(CreateTimer(), 3, false, function()
-
-    end)
-
     TimerStart(CreateTimer(), 2, false, function()
         CinematicFadeBJ(bj_CINEFADETYPE_FADEIN, 5, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
+        TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), "Пеонетти", GetRectCenter(GetPlayableMapRect()), nil, "И тут я ему и говорю, " .. table1[math.random(1, #table1)], bj_TIMETYPE_ADD, 0, false)
 
+        TimerStart(CreateTimer(), 4, false, function()
+            TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("Hjai"), "Джайна", GetRectCenter(GetPlayableMapRect()), nil, "А ты забавный", bj_TIMETYPE_ADD, 0, false)
+        end)
     end)
 
 end
