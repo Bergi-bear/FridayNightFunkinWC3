@@ -9,18 +9,15 @@ do
         InitGlobalsOrigin()
         CinematicModeBJ(true, GetPlayersAll())
         CinematicFadeBJ(bj_CINEFADETYPE_FADEOUT, 0, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
-        TimerStart(CreateTimer(), .05, false, function()
+        TimerStart(CreateTimer(), 0.05, false, function()
             DestroyTimer(GetExpiredTimer())
             EnablePreSelect(false, false)
             EnableDragSelect(false, false)
-            --Preload("All")
-            --Preload("zavodila")
-            --Preloader("All")
-            --Preloader("zavodila")
             GPlayer = gg_unit_opeo_0003
             GEnemy = gg_unit_Hart_0002
             GJaina = gg_unit_Hjai_0001
             --
+            ---perebor = CreateGroup()
 
             CreateAndStartClock()
 
@@ -45,6 +42,11 @@ do
             StartPeonStateMachine()
             PlayUnitAnimationFromChat()
             DestroyTimer(GetExpiredTimer())
+
+
+            TimerStart(CreateTimer(), 1, false, function()
+                InitEtcGroup()
+            end)
         end)
     end
 end
@@ -132,7 +134,9 @@ restartReady = true
 function BreakCurrentLevel()
     for _, v in pairs(musics) do
         StopSound(v, true, false)
+        ETCPlay(false)
     end
+
     --if arrows[1] then
     -- print("Первый запуск очистки")
     for i, v in pairs(arrows.timers) do

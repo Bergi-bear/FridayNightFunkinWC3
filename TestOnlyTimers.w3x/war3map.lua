@@ -137,19 +137,89 @@ function Zero(s)
 	end
 	return ns
 end
-function Trig_Init_Actions()
-        CreateAndStartClock()
-        InitSonTrigger()
+function InitEtcGroup()
+    local id = { FourCC("h001"), FourCC("h002"), FourCC("h003"), FourCC("h004"), FourCC("h005"), FourCC("h006") } ---01-06
+    local e = nil
+    local perebor2 = CreateGroup()
+
+    --GroupEnumUnitsInRect(perebor, bj_mapInitialPlayableArea, nil)
+
+    local group = CreateGroup()
+    GroupEnumUnitsInRange(group, 0, 0, 8000, nil)
+    while true do
+        local target = FirstOfGroup(group)
+        print(GetUnitName(target),"в переборе")
+        if target == nil then
+            print("группа пуста")
+            break
+        end
+        if UnitAlive(target) then
+            print(GetUnitName(target))
+        end
+        GroupRemoveUnit(group, target)
+    end
+    --[[
+    while true do
+        e = FirstOfGroup(perebor2)
+        print(GetUnitName(e), " в переборе")
+        if e == nil then
+            print("перебор группы завершен")
+            break
+        end
+        if UnitAlive(e) then
+            print(e)
+            if GetAnyInTable(id, GetUnitTypeId(e)) then
+                table.insert(ETCUnits, e)
+            end
+        end
+        GroupRemoveUnit(perebor2, e)
+        print("remove")
+    end]]
+end
+function CreateUnitsForPlayer0()
+    local p = Player(0)
+    local u
+    local unitID
+    local t
+    local life
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -270.9, -112.9, 143.563, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -342.4, -173.8, 296.706, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -377.3, -177.6, 11.327, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -358.2, 55.4, 27.708, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -227.2, 229.9, 324.733, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -66.3, 142.6, 158.581, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), 69.7, -54.8, 190.223, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), 68.4, -193.9, 244.684, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -99.6, -219.9, 250.002, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -365.2, -50.7, 108.186, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -396.6, 236.6, 305.253, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -199.5, 409.2, 53.571, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), 51.9, 187.3, 198.639, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -113.7, -175.1, 241.663, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -206.9, 40.6, 185.839, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -70.0, 53.9, 299.167, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -57.0, -35.4, 244.651, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -89.9, -102.3, 109.493, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hpea"), -128.6, -76.7, 239.971, FourCC("hpea"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), 245.5, 31.8, 252.847, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), 234.3, -104.9, 328.721, FourCC("hfoo"))
+    u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), 246.3, -276.4, 243.717, FourCC("hfoo"))
 end
 
-function InitTrig_Init()
-    gg_trg_Init = CreateTrigger()
-    TriggerRegisterTimerEventSingle(gg_trg_Init, 0.01)
-    TriggerAddAction(gg_trg_Init, Trig_Init_Actions)
+function CreatePlayerBuildings()
+end
+
+function CreatePlayerUnits()
+    CreateUnitsForPlayer0()
+end
+
+function CreateAllUnits()
+    CreatePlayerBuildings()
+    CreatePlayerUnits()
 end
 
 function Trig_StartTest_Actions()
-        StartSong()
+        InitEtcGroup()
 end
 
 function InitTrig_StartTest()
@@ -159,7 +229,6 @@ function InitTrig_StartTest()
 end
 
 function InitCustomTriggers()
-    InitTrig_Init()
     InitTrig_StartTest()
 end
 
@@ -182,6 +251,7 @@ function main()
     SetAmbientDaySound("LordaeronSummerDay")
     SetAmbientNightSound("LordaeronSummerNight")
     SetMapMusic("Music", true, 0)
+    CreateAllUnits()
     InitBlizzard()
     InitGlobals()
     InitCustomTriggers()

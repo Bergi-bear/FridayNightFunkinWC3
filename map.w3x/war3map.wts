@@ -55,29 +55,45 @@ STRING 11
 1
 }
 
-STRING 12
-{
-Пеонетти
-}
-
-STRING 13
-{
-И тут я ему и говорю, бла бла бла
-}
-
-STRING 14
-{
-Джайна
-}
-
-STRING 15
-{
-И тут я ему и говорю, бла бла бла
-}
-
 STRING 16
 // Units: o002 (Синематик для портрета), Name (Name)
 {
 Синематик для портрета
+}
+
+STRING 18
+// Units: h002 (Begrist), Name (Name)
+{
+Begrist
+}
+
+STRING 19
+// Units: h001 (Samuro), Name (Name)
+{
+Samuro
+}
+
+STRING 20
+// Units: h003 (chiefthunderskins), Name (Name)
+{
+chiefthunderskins
+}
+
+STRING 21
+// Units: h004 (rockarthas), Name (Name)
+{
+rockarthas
+}
+
+STRING 22
+// Units: h005 (maikyl), Name (Name)
+{
+maikyl
+}
+
+STRING 23
+// Units: h006 (signicious), Name (Name)
+{
+signicious
 }
 

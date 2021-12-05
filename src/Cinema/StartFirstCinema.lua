@@ -113,7 +113,7 @@ function StartFirstCinema()
                                                     return
                                                 end
                                                 SetUnitAnimation(FakePeon, "Stand Ready")
-                                                SetUnitAnimation(FakeJaina, "Stand Ready")
+                                                SetUnitAnimationByIndex(FakeJaina, 31)
                                                 TransmissionFromUnitTypeWithNameBJ(GetPlayersAll(), Player(0), FourCC("o002"), NamePeon, GetRectCenter(GetPlayableMapRect()), nil, L("И это говорит мне тот, кто пронёс оружие на музыкальную битву?", "And this is what the one who brought the weapon to the musical battle tells me?"), bj_TIMETYPE_ADD, 0, false)
                                                 TimerStart(CreateTimer(), 6, false, function()
                                                     if GameISStarted then

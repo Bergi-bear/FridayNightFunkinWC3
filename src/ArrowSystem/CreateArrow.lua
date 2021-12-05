@@ -102,6 +102,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                 --создание музыки по первой стрелке
                 local snd = normal_sound(music)
                 musics[#musics + 1] = snd
+                ETCPlay(true)
                 isMusicStart = true
                 --SetSoundPitch(snd,0.5)
                 --GSound = CreateTimer()
