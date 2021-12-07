@@ -18,7 +18,7 @@ function HideEverything()
     end
     BlzHideOriginFrames(true)--скрыть всё
     BlzFrameSetScale(BlzFrameGetChild(BlzGetFrameByName("ConsoleUI", 0), 5), 0.001) --рамка мёртвой зоны отключение
-    --DrawSelectionPortrait()
+    DrawSelectionPortrait(false)
 end
 
 function MenuFrame()
@@ -98,12 +98,13 @@ function HideToolTips()
     BlzFrameSetAlpha(BlzGetOriginFrame(ORIGIN_FRAME_UBERTOOLTIP, 0), 0)
 end
 
-function DrawSelectionPortrait()
+function DrawSelectionPortrait(state)
 
-    local Portrait = BlzGetFrameByName("CinematicPortrait",0)
-    BlzFrameSetVisible(Portrait, true)
+    local Portrait =BlzGetOriginFrame(ORIGIN_FRAME_PORTRAIT, 0)-- BlzGetFrameByName("Portrait",0)
+
     BlzFrameClearAllPoints(Portrait)
-    BlzFrameSetSize(Portrait, 0.16, 0.16)
-    --BlzFrameSetParent(Portrait, BlzGetFrameByName("ConsoleUIBackdrop", 0))
-    BlzFrameSetAbsPoint(Portrait, FRAMEPOINT_LEFT, 0.0, 0.04)
+    BlzFrameSetSize(Portrait, 0.001, 0.001)
+   -- BlzFrameSetParent(Portrait, BlzGetFrameByName("ConsoleUIBackdrop", 0))
+    BlzFrameSetAbsPoint(Portrait, FRAMEPOINT_LEFT, 0, 0)
+    BlzFrameSetVisible(Portrait, state)
 end
