@@ -157,6 +157,7 @@ function ShuffleIcons(first, song)
             [1] = { "war3mapImported\\kern1", "war3mapImported\\kern1" },
             [2] = { "war3mapImported\\kern2", "war3mapImported\\kern2" },
             [3] = { "war3mapImported\\kern3", "war3mapImported\\kern3" },
+            [4] = { "war3mapImported\\kern4", "war3mapImported\\kern4" },
         }
     end
 

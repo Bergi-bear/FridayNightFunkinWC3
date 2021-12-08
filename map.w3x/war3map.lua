@@ -17,10 +17,11 @@ function CreateNeutralPassive()
     local t
     local life
     gg_unit_Hjai_0001 = BlzCreateUnitWithSkin(p, FourCC("Hjai"), -6.6, 52.0, 277.203, FourCC("Hjai"))
-    SetUnitState(gg_unit_Hjai_0001, UNIT_STATE_MANA, 0)
+    SetUnitColor(gg_unit_Hjai_0001, ConvertPlayerColor(0))
     gg_unit_Hart_0002 = BlzCreateUnitWithSkin(p, FourCC("Hart"), -119.2, -99.7, 351.734, FourCC("Hart"))
-    SetUnitState(gg_unit_Hart_0002, UNIT_STATE_MANA, 0)
+    SetUnitColor(gg_unit_Hart_0002, ConvertPlayerColor(1))
     gg_unit_opeo_0003 = BlzCreateUnitWithSkin(p, FourCC("opeo"), 101.0, -89.5, 175.620, FourCC("opeo"))
+    SetUnitColor(gg_unit_opeo_0003, ConvertPlayerColor(0))
     u = BlzCreateUnitWithSkin(p, FourCC("h001"), -258.9, 182.4, 320.900, FourCC("h001"))
     u = BlzCreateUnitWithSkin(p, FourCC("h002"), -201.6, 324.2, 305.770, FourCC("h002"))
     u = BlzCreateUnitWithSkin(p, FourCC("ogru"), 413.1, 289.5, 212.191, FourCC("ogru"))
@@ -1341,6 +1342,7 @@ function ShuffleIcons(first, song)
             [1] = { "war3mapImported\\kern1", "war3mapImported\\kern1" },
             [2] = { "war3mapImported\\kern2", "war3mapImported\\kern2" },
             [3] = { "war3mapImported\\kern3", "war3mapImported\\kern3" },
+            [4] = { "war3mapImported\\kern4", "war3mapImported\\kern4" },
         }
     end
 
