@@ -30,13 +30,12 @@ function StartFirstCinema()
     SetCameraBoundsToRectForPlayerBJ(Player(0), bj_mapInitialPlayableArea)
     HideGameUnits(false)
     CreateFakeUnits()
-
     ClearMapMusicBJ()
     PlayMusicBJ("LuvSeemee")
     SetMusicVolumeBJ(15)
 
 
-    --CinematicModeBJ(true, GetPlayersAll()) -- перенёс в инит
+    CinematicModeBJ(true, GetPlayersAll()) -- перенёс в инит
     CameraSetupApplyForPlayer(false, gg_cam_FirstCinema, Player(0), 1.00)
     SetCameraTargetControllerNoZForPlayer(Player(0), FakePeon, 0, 0, true)
 
@@ -51,6 +50,22 @@ function StartFirstCinema()
             GameISStarted = true
             DisableTrigger(GetTriggeringTrigger())
         end)
+        --Фековые юниты идут из точтки (старта) в точку 0,0 джайна идёт в точку 0,50
+        local SpeechInWalk = {
+            L("И тут я ему и говорю, тут длинная рандомная фраза 7 сек", "And then I tell him, "), --Peonetty
+            L("Эти твои шуточки и тут тоже рандомная но короткая враза на 4 сек", "These jokes of yours"), --Jaina
+            L("Но скажи, а мы скоро уже туда придём, я, кажется, уже натерла ножки...", "But tell me, and we'll be there soon, I think I've already rubbed my legs..."),--Jaina
+            L("Я не просил тебя идти со мной, ты можешь пойти назад в любой момент", "I didn't ask you to come with me, you can go back at any time"),--Peonetty
+            L("Какой же ты иногда грубый мужлан, но я чувсвую, что это мой долг - поддержать тебя, ведь ты всё таки мой...", "What a rude bumpkin you are sometimes, but I feel that it is my duty to support you, because you are still my..."),--Jaina
+            L("О, мы уже пришли, посмотри, это же Папирус. Привет, Папирус!", "Oh, we've already come, look, it's Papyrus. Hello, Papyrus!"),--Peonetty в момонт когда пошли к скелету
+            L("Папирус, пойдёшь с нами?", "Papyrus, will you come with us?"),--Jaina Джайна останавливается, на секунду
+            L("Оу, как приятно, что позвали, но я в другой раз, удачи вам", "Oh, how nice to be called, but I'll do it another time, good luck to you"),--Papyrus -- Это скелет который стоит при входе
+            L("Посмотрите на него, явился, АХАХАХХ, и ещё подружку с собой взял", "Look at him, he showed up, AHAHAHH, and he also took his girlfriend with him"),--Arthas Артас начинает говорить когда пеон ещё идёт
+            L("Как же ты ничтожен, жалкий батрак", "How insignificant you are, you miserable peon"),--Arthas пеон уже должен быть на точке во время этой фразы
+            L("И это говорит мне тот, кто пронёс оружие на музыкальную битву?", "And this is what the one wh-o brought the weapon to the musical battle tells me?"),--Peonetty, пеон и джайна проигрывают анимацию Stand Ready
+            L("Ну всё, ты сам напросился!!!", "Well, that's it, you asked for it!!!"),--Arthas через 2 сек после это фразы Кастом скрипт StartGame(), фейковые юниты должны быть скрыты, потому что отоброзяться игровые
+
+        }
 
         if GameISStarted then
             return
@@ -201,4 +216,5 @@ function StartGame()
     ready = true
     AddPoint(S2I(LoadCode[0]))
     CreateSpaceForRestart()
+    ControlGameCam()
 end

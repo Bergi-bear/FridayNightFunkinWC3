@@ -9,6 +9,7 @@ do
         InitGlobalsOrigin()
         CinematicModeBJ(true, GetPlayersAll())
         CinematicFadeBJ(bj_CINEFADETYPE_FADEOUT, 0, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
+        FogModifierStart(CreateFogModifierRect(Player(0), FOG_OF_WAR_VISIBLE, bj_mapInitialPlayableArea, true, false))
         TimerStart(CreateTimer(), 0.05, false, function()
             DestroyTimer(GetExpiredTimer())
             EnablePreSelect(false, false)
@@ -23,7 +24,7 @@ do
 
             StartGCTracker()
 
-            ControlGameCam()
+
             BugSpeed() -- функция для увеличения скорости игры авто матически
             InitTaurens()
 
@@ -445,7 +446,12 @@ function PlayArthasAnimation(type, durations, number)
     --print(durations)
     local anim = { 46, 47, 49, 27 }
     if GetUnitTypeId(GEnemy) == FourCC("Hart") then
-        anim = { 46, 47, 49, 27 }
+        local r=GetRandomInt(1,2)
+        if r==1 then
+            anim = { 46, 47, 49, 27 }
+        else
+            anim = { 53, 47, 49, 27 }
+        end
     elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
         anim = { 19, 20, 21, 22 }
     elseif GetUnitTypeId(GEnemy) == FourCC("O000") then

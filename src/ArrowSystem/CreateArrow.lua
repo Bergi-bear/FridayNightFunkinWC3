@@ -59,6 +59,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                 if SONG > 0 then
                     SongCompleted[SONG] = true
                     SongCompleteCount = SongCompleteCount + 1
+                    ETCPlay(false)
                     --print("где разблокировка песни "..SONG+1)
                     --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
                 end

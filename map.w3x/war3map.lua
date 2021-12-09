@@ -1369,6 +1369,7 @@ do
         InitGlobalsOrigin()
         CinematicModeBJ(true, GetPlayersAll())
         CinematicFadeBJ(bj_CINEFADETYPE_FADEOUT, 0, "ReplaceableTextures\\CameraMasks\\Black_mask.blp", 0, 0, 0, 0.00)
+        FogModifierStart(CreateFogModifierRect(Player(0), FOG_OF_WAR_VISIBLE, bj_mapInitialPlayableArea, true, false))
         TimerStart(CreateTimer(), 0.05, false, function()
             DestroyTimer(GetExpiredTimer())
             EnablePreSelect(false, false)
@@ -1383,7 +1384,7 @@ do
 
             StartGCTracker()
 
-            ControlGameCam()
+
             BugSpeed() -- функция для увеличения скорости игры авто матически
             InitTaurens()
 
@@ -1805,7 +1806,12 @@ function PlayArthasAnimation(type, durations, number)
     --print(durations)
     local anim = { 46, 47, 49, 27 }
     if GetUnitTypeId(GEnemy) == FourCC("Hart") then
-        anim = { 46, 47, 49, 27 }
+        local r=GetRandomInt(1,2)
+        if r==1 then
+            anim = { 46, 47, 49, 27 }
+        else
+            anim = { 53, 47, 49, 27 }
+        end
     elseif GetUnitTypeId(GEnemy) == FourCC("U000") then
         anim = { 19, 20, 21, 22 }
     elseif GetUnitTypeId(GEnemy) == FourCC("O000") then
@@ -2724,8 +2730,8 @@ end
 ---
 Taurens = {}
 function InitTaurens()
-    Taurens[1] = BlzCreateUnitWithSkin(Player(0), FourCC("o001"), -155.8 - 300, 31.8, 0.000, FourCC("o001"))
-    Taurens[2] = BlzCreateUnitWithSkin(Player(0), FourCC("o001"), -135.0 - 300, -227.1, 0.000, FourCC("o001"))
+    Taurens[1] = BlzCreateUnitWithSkin(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("o001"), -155.8 - 300, 31.8, 0.000, FourCC("o001"))
+    Taurens[2] = BlzCreateUnitWithSkin(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("o001"), -135.0 - 300, -227.1, 0.000, FourCC("o001"))
     SetUnitMoveSpeed(Taurens[1], 100)
     SetUnitMoveSpeed(Taurens[2], 100)
 end
@@ -2936,6 +2942,7 @@ function CreateArrow(speed, pozX, number, notes, music)
                 if SONG > 0 then
                     SongCompleted[SONG] = true
                     SongCompleteCount = SongCompleteCount + 1
+                    ETCPlay(false)
                     --print("где разблокировка песни "..SONG+1)
                     --SONG=SONG+1 -- перелистывание на следую песню может сработать и на анлокнутую
                 end
@@ -3149,13 +3156,12 @@ function StartFirstCinema()
     SetCameraBoundsToRectForPlayerBJ(Player(0), bj_mapInitialPlayableArea)
     HideGameUnits(false)
     CreateFakeUnits()
-
     ClearMapMusicBJ()
     PlayMusicBJ("LuvSeemee")
     SetMusicVolumeBJ(15)
 
 
-    --CinematicModeBJ(true, GetPlayersAll()) -- перенёс в инит
+    CinematicModeBJ(true, GetPlayersAll()) -- перенёс в инит
     CameraSetupApplyForPlayer(false, gg_cam_FirstCinema, Player(0), 1.00)
     SetCameraTargetControllerNoZForPlayer(Player(0), FakePeon, 0, 0, true)
 
@@ -3170,6 +3176,22 @@ function StartFirstCinema()
             GameISStarted = true
             DisableTrigger(GetTriggeringTrigger())
         end)
+        --Фековые юниты идут из точтки (старта) в точку 0,0 джайна идёт в точку 0,50
+        local SpeechInWalk = {
+            L("И тут я ему и говорю, тут длинная рандомная фраза 7 сек", "And then I tell him, "), --Peonetty
+            L("Эти твои шуточки и тут тоже рандомная но короткая враза на 4 сек", "These jokes of yours"), --Jaina
+            L("Но скажи, а мы скоро уже туда придём, я, кажется, уже натерла ножки...", "But tell me, and we'll be there soon, I think I've already rubbed my legs..."),--Jaina
+            L("Я не просил тебя идти со мной, ты можешь пойти назад в любой момент", "I didn't ask you to come with me, you can go back at any time"),--Peonetty
+            L("Какой же ты иногда грубый мужлан, но я чувсвую, что это мой долг - поддержать тебя, ведь ты всё таки мой...", "What a rude bumpkin you are sometimes, but I feel that it is my duty to support you, because you are still my..."),--Jaina
+            L("О, мы уже пришли, посмотри, это же Папирус. Привет, Папирус!", "Oh, we've already come, look, it's Papyrus. Hello, Papyrus!"),--Peonetty в момонт когда пошли к скелету
+            L("Папирус, пойдёшь с нами?", "Papyrus, will you come with us?"),--Jaina Джайна останавливается, на секунду
+            L("Оу, как приятно, что позвали, но я в другой раз, удачи вам", "Oh, how nice to be called, but I'll do it another time, good luck to you"),--Papyrus -- Это скелет который стоит при входе
+            L("Посмотрите на него, явился, АХАХАХХ, и ещё подружку с собой взял", "Look at him, he showed up, AHAHAHH, and he also took his girlfriend with him"),--Arthas Артас начинает говорить когда пеон ещё идёт
+            L("Как же ты ничтожен, жалкий батрак", "How insignificant you are, you miserable peon"),--Arthas пеон уже должен быть на точке во время этой фразы
+            L("И это говорит мне тот, кто пронёс оружие на музыкальную битву?", "And this is what the one wh-o brought the weapon to the musical battle tells me?"),--Peonetty, пеон и джайна проигрывают анимацию Stand Ready
+            L("Ну всё, ты сам напросился!!!", "Well, that's it, you asked for it!!!"),--Arthas через 2 сек после это фразы Кастом скрипт StartGame(), фейковые юниты должны быть скрыты, потому что отоброзяться игровые
+
+        }
 
         if GameISStarted then
             return
@@ -3320,6 +3342,7 @@ function StartGame()
     ready = true
     AddPoint(S2I(LoadCode[0]))
     CreateSpaceForRestart()
+    ControlGameCam()
 end
 ---
 --- Generated by EmmyLua(https://github.com/EmmyLua)
@@ -4339,8 +4362,6 @@ ZavodilaPOS={ --613
 function Trig_SetCam_Actions()
     ResetUnitAnimation(gg_unit_Hart_0002)
     ResetUnitAnimation(gg_unit_opeo_0003)
-    SetCameraBoundsToRectForPlayerBJ(Player(0), gg_rct_Region_000)
-    CameraSetupApplyForPlayer(true, gg_cam_Camera_001, Player(0), 0)
     EndThematicMusicBJ()
     StopMusicBJ(true)
 end

@@ -6,8 +6,8 @@
 ---
 Taurens = {}
 function InitTaurens()
-    Taurens[1] = BlzCreateUnitWithSkin(Player(0), FourCC("o001"), -155.8 - 300, 31.8, 0.000, FourCC("o001"))
-    Taurens[2] = BlzCreateUnitWithSkin(Player(0), FourCC("o001"), -135.0 - 300, -227.1, 0.000, FourCC("o001"))
+    Taurens[1] = BlzCreateUnitWithSkin(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("o001"), -155.8 - 300, 31.8, 0.000, FourCC("o001"))
+    Taurens[2] = BlzCreateUnitWithSkin(Player(PLAYER_NEUTRAL_PASSIVE), FourCC("o001"), -135.0 - 300, -227.1, 0.000, FourCC("o001"))
     SetUnitMoveSpeed(Taurens[1], 100)
     SetUnitMoveSpeed(Taurens[2], 100)
 end
